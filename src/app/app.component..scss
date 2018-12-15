@@ -1,0 +1,32 @@
+.app-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+
+  .app-left-container,
+  .app-center-container,
+  .app-right-container {
+    position: absolute;
+    top: 50px;
+    bottom: 0;
+  }
+
+  .center-top-container {
+    position: absolute;
+    top: 0;
+    bottom: 50%;
+    left: 0;
+    right: 0;
+  }
+
+  .center-bottom-container {
+    position: absolute;
+    top: 50%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
