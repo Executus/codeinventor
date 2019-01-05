@@ -12,4 +12,11 @@ export class ObjectViewComponent implements OnInit {
   ngOnInit() {
   }
 
+  onNewEmptyObject(): void {
+
+  }
+
+  onNewObjectFromClass(): void {
+    
+  }
 }
