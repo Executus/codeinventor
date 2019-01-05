@@ -6,7 +6,7 @@
   </div>
   <div class="row new-object-btn-row">
     <div class="col-md-12">
-      <button class="btn btn-primary" ng-click="onNewEmptyObject()">
+      <button class="btn btn-primary" (click)="onNewEmptyObject()">
         <i class="fas fa-plus"></i>
       </button>
       <label>New Empty Object</label>
@@ -14,10 +14,15 @@
   </div>
   <div class="row new-object-btn-row">
     <div class="col-md-12">
-      <button class="btn btn-primary" ng-click="onNewObjectFromClass()">
+      <button class="btn btn-primary" (click)="onNewObjectFromClass()">
         <i class="far fa-plus-square"></i>
       </button>
       <label>New Object from Class...</label>
+    </div>
+  </div>
+  <div class="row m-0">
+    <div class="col-md-12 object-tree-container">
+      <app-object-tree></app-object-tree>
     </div>
   </div>
 </div>

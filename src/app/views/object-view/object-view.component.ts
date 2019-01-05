@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ObjectService } from '../../services/object.service';
 
 @Component({
   selector: 'app-object-view',
@@ -7,13 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ObjectViewComponent implements OnInit {
 
-  constructor() { }
+  constructor(private objectService: ObjectService) { }
 
   ngOnInit() {
   }
 
   onNewEmptyObject(): void {
-
+    this.objectService.createNewEmptyObject();
   }
 
   onNewObjectFromClass(): void {

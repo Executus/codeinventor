@@ -10,7 +10,9 @@ import { SceneViewComponent } from './views/scene-view/scene-view.component';
 import { ObjectViewComponent } from './views/object-view/object-view.component';
 import { BehaviourViewComponent } from './views/behaviour-view/behaviour-view.component';
 import { AssetsViewComponent } from './views/assets-view/assets-view.component';
+import { ObjectTreeComponent } from './object-tree/object-tree.component';
 
+import { ObjectService } from './services/object.service';
 
 @NgModule({
   declarations: [
@@ -19,14 +21,17 @@ import { AssetsViewComponent } from './views/assets-view/assets-view.component';
     SceneViewComponent,
     ObjectViewComponent,
     BehaviourViewComponent,
-    AssetsViewComponent
+    AssetsViewComponent,
+    ObjectTreeComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NgbModule
   ],
-  providers: [],
+  providers: [
+    ObjectService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
