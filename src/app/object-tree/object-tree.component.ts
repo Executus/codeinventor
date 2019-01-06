@@ -10,6 +10,7 @@ import { ObjectService } from '../services/object.service';
 export class ObjectTreeComponent implements OnInit {
 
   private treeData: Object[] = [];
+  private selectedObject: Object = null;
 
   constructor(private objectService: ObjectService) {
     this.objectService.registerObjectTree(this);
@@ -18,8 +19,23 @@ export class ObjectTreeComponent implements OnInit {
   ngOnInit() {
   }
 
-  public createNewEmptyObject(): void {
+  public createNewEmptyObject(parent: Object): void {
     let obj: Object = new Object();
-    this.treeData.push(obj);
+
+    if (parent === null) {
+      this.treeData.push(obj);
+    } else {
+      parent.addChild(obj);
+    }
+  }
+
+  private onSelectObject(object: Object): void {
+    if (this.selectedObject === object) {
+      this.selectedObject = null;
+    } else {
+      this.selectedObject = object;
+    }
+
+    this.objectService.setSelectedObject(this.selectedObject);
   }
 }

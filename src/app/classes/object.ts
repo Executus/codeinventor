@@ -12,4 +12,8 @@ export class Object {
     return this.name;
   }
 
+  public addChild(child: Object) {
+    child.parent = this;
+    this.children.push(child);
+  }
 }
