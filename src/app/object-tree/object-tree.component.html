@@ -1,18 +1,17 @@
-<div *ngFor="let object of treeData">
-  <div class="row" (click)="onSelectObject(object)" [ngClass]="{'selected': selectedObject === object}">
-    <div class="col-md-1">
-      <i class="fas fa-caret-right"></i>
+<ng-template #treeList let-treeData>
+  <div *ngFor="let object of treeData">
+    <div class="row" (click)="onSelectObject(object)" [ngClass]="{'selected': selectedObject === object}"
+         [ngStyle]="{'padding-left': (object.nestedLevel * 10) + 'px'}">
+      <div class="col-md-1">
+        <i class="fas fa-caret-right"></i>
+      </div>
+      <div class="col-md-10">
+        {{object.getName()}}
+      </div>
     </div>
-    <div class="col-md-10">
-      {{object.getName()}}
-    </div>
-  </div>
-  <div *ngFor="let child of object.children" class="row indented" (click)="onSelectObject(child)" [ngClass]="{'selected': selectedObject === child}">
-    <div class="col-md-1">
-      <i class="fas fa-caret-right"></i>
-    </div>
-    <div class="col-md-10">
-      {{child.getName()}}
+    <div *ngIf="object.children.length > 0">
+      <ng-container *ngTemplateOutlet="treeList; context:{ $implicit: object.children }"></ng-container>
     </div>
   </div>
-</div>
+</ng-template>
+<ng-container *ngTemplateOutlet="treeList; context:{ $implicit: treeData }"></ng-container>
