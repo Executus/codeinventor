@@ -26,6 +26,7 @@ export class ObjectTreeComponent implements OnInit {
       this.treeData.push(obj);
     } else {
       parent.addChild(obj);
+      parent.setExpanded(true);
     }
   }
 
@@ -41,6 +42,24 @@ export class ObjectTreeComponent implements OnInit {
 
   private onExpandObject(object: Object, $event): void {
     object.toggleExpanded();
+    $event.stopPropagation();
+  }
+
+  private removeObject(object: Object, $event): void {
+    if (object === this.selectedObject) {
+      this.selectedObject = null;
+    }
+
+    let parent = object.getParent();
+    if (parent === null) {
+      let idx = this.treeData.indexOf(object);
+      if (idx > -1) {
+        this.treeData.splice(idx, 1);
+      }
+    } else {
+      parent.removeChild(object);
+    }
+
     $event.stopPropagation();
   }
 }

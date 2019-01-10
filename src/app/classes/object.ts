@@ -14,13 +14,28 @@ export class Object {
     return this.name;
   }
 
-  public addChild(child: Object) {
+  public addChild(child: Object): void {
     child.parent = this;
     child.nestedLevel = this.nestedLevel + 1;
     this.children.push(child);
   }
 
+  public removeChild(child: Object): void {
+    let idx = this.children.indexOf(child);
+    if (idx > -1) {
+      this.children.splice(idx, 1);
+    }
+  }
+
   public toggleExpanded(): void {
     this.expanded = !this.expanded;
+  }
+
+  public setExpanded(expand: boolean): void {
+    this.expanded = expand;
+  }
+
+  public getParent(): Object {
+    return this.parent;
   }
 }

@@ -5,8 +5,14 @@
       <div class="col-md-1">
         <i class="fas pointer" [ngClass]="{'fa-caret-right': !object.expanded, 'fa-caret-down': object.expanded}" (click)="onExpandObject(object, $event)"></i>
       </div>
-      <div class="col-md-10">
+      <div class="col-md-9">
         {{object.getName()}}
+      </div>
+      <div class="col-md-1">
+        <i class="fas fa-edit pointer"></i>
+      </div>
+      <div class="col-md-1">
+        <i class="fas fa-times-circle pointer" (click)="removeObject(object, $event)"></i>
       </div>
     </div>
     <div *ngIf="object.children.length > 0" [hidden]="!object.expanded">
