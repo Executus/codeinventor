@@ -38,4 +38,9 @@ export class ObjectTreeComponent implements OnInit {
 
     this.objectService.setSelectedObject(this.selectedObject);
   }
+
+  private onExpandObject(object: Object, $event): void {
+    object.toggleExpanded();
+    $event.stopPropagation();
+  }
 }

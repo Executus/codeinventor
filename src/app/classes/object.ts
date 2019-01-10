@@ -4,6 +4,7 @@ export class Object {
   private parent: Object = null;
   private children: Object[] = [];
   private nestedLevel: number = 1;
+  private expanded: boolean = false;
 
   constructor() {
     this.name = 'New Object';
@@ -17,5 +18,9 @@ export class Object {
     child.parent = this;
     child.nestedLevel = this.nestedLevel + 1;
     this.children.push(child);
+  }
+
+  public toggleExpanded(): void {
+    this.expanded = !this.expanded;
   }
 }
