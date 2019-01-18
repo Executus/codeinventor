@@ -6,10 +6,11 @@
         <i class="fas pointer" [ngClass]="{'fa-caret-right': !object.expanded, 'fa-caret-down': object.expanded}" (click)="onExpandObject(object, $event)"></i>
       </div>
       <div class="col-md-9">
-        {{object.getName()}}
+        <span [hidden]="object.editing">{{object.getName()}}</span>
+        <input appFocusOnShow *ngIf="object.editing" (blur)="object.editing = false;" type="text" class="form-control" [(ngModel)]="object.name">
       </div>
       <div class="col-md-1">
-        <i class="fas fa-edit pointer"></i>
+        <i class="fas fa-edit pointer" (click)="editName(object, $event)"></i>
       </div>
       <div class="col-md-1">
         <i class="fas fa-times-circle pointer" (click)="removeObject(object, $event)"></i>

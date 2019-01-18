@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -13,6 +14,7 @@ import { AssetsViewComponent } from './views/assets-view/assets-view.component';
 import { ObjectTreeComponent } from './object-tree/object-tree.component';
 
 import { ObjectService } from './services/object.service';
+import { FocusOnShowDirective } from './directives/focus-on-show.directive';
 
 @NgModule({
   declarations: [
@@ -22,11 +24,13 @@ import { ObjectService } from './services/object.service';
     ObjectViewComponent,
     BehaviourViewComponent,
     AssetsViewComponent,
-    ObjectTreeComponent
+    ObjectTreeComponent,
+    FocusOnShowDirective
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
     NgbModule
   ],
   providers: [

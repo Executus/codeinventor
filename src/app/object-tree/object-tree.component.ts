@@ -62,4 +62,9 @@ export class ObjectTreeComponent implements OnInit {
 
     $event.stopPropagation();
   }
+
+  private editName(object: Object, $event): void {
+    object.toggleEditing();
+    $event.stopPropagation();
+  }
 }

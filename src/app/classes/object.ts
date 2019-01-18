@@ -5,6 +5,7 @@ export class Object {
   private children: Object[] = [];
   private nestedLevel: number = 1;
   private expanded: boolean = false;
+  private editing: boolean = false;
 
   constructor() {
     this.name = 'New Object';
@@ -37,5 +38,9 @@ export class Object {
 
   public getParent(): Object {
     return this.parent;
+  }
+
+  public toggleEditing(): void {
+    this.editing = !this.editing;
   }
 }
