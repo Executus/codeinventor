@@ -1,25 +1,26 @@
 'use strict';
 
-let express = require('express');
-let path = require('path');
-//var cookieParser = require('cookie-parser');
-let logger = require('morgan');
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
-//var indexRouter = require('./routes/index');
-//var usersRouter = require('./routes/users');
-let ObjectsRoute = require('./routes/objects');
+const ObjectsRoute = require('./routes/objects');
 
-var app = express();
+let app = express();
+
+const corsOptions = {
+  origin: ['http://localhost:4200'],
+  default: 'http://localhost:4200',
+  optionsSuccessStatus: 200
+}
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-//app.use(cookieParser());
-//app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors(corsOptions));
 
-//app.use('/', indexRouter);
-//app.use('/users', usersRouter);
 app.use('/objects', ObjectsRoute);
 
 module.exports = app;

@@ -34,7 +34,7 @@ router.post('/', function(req, res, next) {
       if (err) {
         return res.status(500).send(err);
       }
-      return status(200).send(object);
+      return res.status(200).send(object);
     });
   } else {
     let data = {
@@ -52,7 +52,7 @@ router.put('/', function(req, res, next) {
       if (err) {
         return res.status(500).send(err);
       }
-      return status(200).send(object);
+      return res.status(200).send(object);
     });
   } else {
     let data = {
@@ -70,7 +70,7 @@ router.delete('/', function(req, res, next) {
       if (err) {
         return res.status(500).send(err);
       }
-      return status(200).send(object);
+      return res.status(200).send(object);
     });
   } else {
     let data = {

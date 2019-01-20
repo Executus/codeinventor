@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Object } from '../classes/object';
 import { ObjectService } from '../services/object.service';
+import { HttpService } from '../services/http.service';
 
 @Component({
   selector: 'app-object-tree',
@@ -12,7 +13,7 @@ export class ObjectTreeComponent implements OnInit {
   private treeData: Object[] = [];
   private selectedObject: Object = null;
 
-  constructor(private objectService: ObjectService) {
+  constructor(private objectService: ObjectService, private httpService: HttpService) {
     this.objectService.registerObjectTree(this);
   }
 
@@ -28,6 +29,14 @@ export class ObjectTreeComponent implements OnInit {
       parent.addChild(obj);
       parent.setExpanded(true);
     }
+
+    var req = {
+      Object: obj
+    }
+    
+    this.httpService.Post('/objects', req).subscribe(res => {
+      obj = res.Object;
+    });
   }
 
   private onSelectObject(object: Object): void {
