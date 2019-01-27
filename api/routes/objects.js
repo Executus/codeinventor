@@ -52,11 +52,15 @@ router.post('/', function(req, res, next) {
 router.put('/', function(req, res, next) {
   let obj = req.body.Object;
   if (obj) {
-    ObjectUtility.updateObject(obj, function(err, object) {
+    ObjectUtility.updateObject(obj, function(err) {
       if (err) {
         return res.status(500).send(err);
       }
-      return res.status(200).send(object);
+
+      let data = {
+        result: 'success'
+      }
+      return res.status(200).send(data);
     });
   } else {
     let data = {

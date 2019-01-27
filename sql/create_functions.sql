@@ -25,3 +25,15 @@ BEGIN
   FROM tbl_object AS o;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_update_object(IN in_n_object_id BIGINT, IN in_n_parent_id BIGINT, IN in_s_name TEXT, IN in_n_nested_level INTEGER)
+  RETURNS BIGINT AS 
+$$
+BEGIN
+  UPDATE tbl_object
+  SET (k_parent, s_name, n_nested_level, t_modified)
+  = (in_n_parent_id, in_s_name, in_n_nested_level, now())
+  WHERE k_object = in_n_object_id;
+  RETURN in_n_object_id;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;

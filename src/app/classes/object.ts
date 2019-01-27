@@ -47,7 +47,7 @@ export class Object {
     return this.parent;
   }
 
-  public toggleEditing(): void {
-    this.editing = !this.editing;
+  public setEditing(editing): void {
+    this.editing = editing;
   }
 }

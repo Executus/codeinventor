@@ -64,4 +64,24 @@ db.prototype.getObjects = function(cb) {
   });
 }
 
+db.prototype.updateObject = function(objectId, parentId, name, nestedLevel, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_update_object($1, $2, $3, $4)", [objectId, parentId, name, nestedLevel], function (err, objectId) {
+      if (err) {
+        console.error("error running db function func_update_object", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null);
+    });
+  });
+}
+
 module.exports = new db();

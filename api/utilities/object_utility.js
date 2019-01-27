@@ -45,7 +45,17 @@ ObjectUtility.prototype.createObject = function(obj, cb) {
 }
 
 ObjectUtility.prototype.updateObject = function(obj, cb) {
+  let parentId = null;
+  if (obj.parent) {
+    parentId = obj.parent.id;
+  }
 
+  db.updateObject(obj.id, parentId, obj.name, obj.nestedLevel, function (err) {
+    if (err) {
+      return cb(err);
+    }
+    return cb(null);
+  });
 }
 
 ObjectUtility.prototype.deleteObject = function(obj, cb) {

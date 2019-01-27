@@ -76,8 +76,19 @@ export class ObjectTreeComponent implements OnInit {
   }
 
   private editName(object: Object, $event): void {
-    object.toggleEditing();
+    object.setEditing(true);
     $event.stopPropagation();
+  }
+
+  private onEditNameBlur(object: Object): void {
+    object.setEditing(false);
+
+    let req = {
+      Object: object
+    }
+    this.httpService.Put('/objects', req).subscribe(res => {
+      
+    });
   }
 
   private buildObjects(objects: any[]): Object[] {
@@ -91,7 +102,7 @@ export class ObjectTreeComponent implements OnInit {
       for (let j = 0; j < children.length; j++) {
         obj.addChild(children[j]);
       }
-      
+
       ret.push(obj);
     }
 
