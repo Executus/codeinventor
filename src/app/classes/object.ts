@@ -1,5 +1,6 @@
 export class Object {
 
+  private id: number = -1;
   private name: string = '';
   private parent: Object = null;
   private children: Object[] = [];
@@ -9,6 +10,12 @@ export class Object {
 
   constructor() {
     this.name = 'New Object';
+  }
+
+  public setData(id, name, nestedLevel): void {
+    this.id = id;
+    this.name = name;
+    this.nestedLevel = nestedLevel;
   }
 
   public getName(): string {

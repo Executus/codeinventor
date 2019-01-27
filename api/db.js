@@ -16,14 +16,14 @@ function db() {
   this.pool = new pg.Pool(this.pgConfig);
 }
 
-db.prototype.insertObject = function(parentId, name, cb) {
+db.prototype.insertObject = function(parentId, name, nestedLevel, cb) {
   this.pool.connect(function (err, client, done) {
     if (err) {
       console.error("error fetching client from pool", err);
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_insert_object($1, $2)", [parentId, name], function (err, recordSet) {
+    client.query("SELECT * FROM func_insert_object($1, $2, $3)", [parentId, name, nestedLevel], function (err, recordSet) {
       if (err) {
         console.error("error running db function func_insert_object", err);
         return cb(err);
@@ -35,6 +35,30 @@ db.prototype.insertObject = function(parentId, name, cb) {
         return cb(null, recordSet.rows[0]);
       } else {
         return cb(new Error("Unexpected result from db function func_insert_object"));
+      }
+    });
+  });
+}
+
+db.prototype.getObjects = function(cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_get_objects()", [], function (err, recordSet) {
+      if (err) {
+        console.error("error running db function func_get_objects", err);
+        return cb(err);
+      }
+
+      done();
+
+      if (recordSet) {
+        return cb(null, recordSet);
+      } else {
+        return cb(new Error("Unexpected result from db function func_get_objects"));
       }
     });
   });

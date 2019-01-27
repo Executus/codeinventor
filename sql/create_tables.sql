@@ -3,6 +3,7 @@ CREATE TABLE tbl_object
   k_object                      BIGSERIAL PRIMARY KEY,
   k_parent                      BIGINT REFERENCES tbl_object(k_object),
   s_name                        TEXT,
+  n_nested_level                INTEGER NOT NULL,
   t_created                     TIMESTAMP NOT NULL,
   t_modified                    TIMESTAMP NOT NULL
 )

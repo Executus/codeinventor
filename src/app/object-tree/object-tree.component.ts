@@ -18,6 +18,9 @@ export class ObjectTreeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.httpService.Get('/objects').subscribe(res => {
+      this.treeData = this.buildObjects(res.Objects);
+    });
   }
 
   public createNewEmptyObject(parent: Object): void {
@@ -33,7 +36,7 @@ export class ObjectTreeComponent implements OnInit {
     var req = {
       Object: obj
     }
-    
+
     this.httpService.Post('/objects', req).subscribe(res => {
       obj = res.Object;
     });
@@ -75,5 +78,23 @@ export class ObjectTreeComponent implements OnInit {
   private editName(object: Object, $event): void {
     object.toggleEditing();
     $event.stopPropagation();
+  }
+
+  private buildObjects(objects: any[]): Object[] {
+    let ret = [];
+
+    for (let i = 0; i < objects.length; i++) {
+      let obj = new Object();
+      obj.setData(objects[i].id, objects[i].name, objects[i].nestedLevel);
+
+      let children: Object[] = this.buildObjects(objects[i].children);
+      for (let j = 0; j < children.length; j++) {
+        obj.addChild(children[j]);
+      }
+      
+      ret.push(obj);
+    }
+
+    return ret;
   }
 }

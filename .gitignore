@@ -119,3 +119,4 @@ typings/
 
 #DynamoDB Local files
 .dynamodb/
+.vscode/launch.json

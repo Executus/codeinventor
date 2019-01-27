@@ -11,7 +11,11 @@ router.get('/', function(req, res, next) {
     if (err) {
       return res.status(500).send(err);
     }
-    return res.status(200).send(objects);
+
+    let data = {
+      Objects: objects
+    }
+    return res.status(200).send(data);
   });
 });
 
