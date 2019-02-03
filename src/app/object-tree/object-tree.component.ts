@@ -35,6 +35,9 @@ export class ObjectTreeComponent implements OnInit {
       parent.setExpanded(true);
     }
 
+    this.selectedObject = obj;
+    this.objectService.setSelectedObject(this.selectedObject);
+
     var req = {
       Object: obj.jsonSerialise()
     }
