@@ -20,7 +20,9 @@ ObjectUtility.prototype.getObjects = function(cb) {
         return cb(err);
       }
 
-      return cb(null, objects);
+      let objTreeJson = objTree.jsonSerialise();
+
+      return cb(null, objTreeJson);
     });
   });
 }
@@ -45,12 +47,7 @@ ObjectUtility.prototype.createObject = function(obj, cb) {
 }
 
 ObjectUtility.prototype.updateObject = function(obj, cb) {
-  let parentId = null;
-  if (obj.parent) {
-    parentId = obj.parent.id;
-  }
-
-  db.updateObject(obj.id, parentId, obj.name, obj.nestedLevel, function (err) {
+  db.updateObject(obj.id, obj.name, function (err) {
     if (err) {
       return cb(err);
     }
@@ -59,7 +56,29 @@ ObjectUtility.prototype.updateObject = function(obj, cb) {
 }
 
 ObjectUtility.prototype.deleteObject = function(obj, cb) {
+  let objectsToDelete = [];
+  objectsToDelete.push(obj.id);
 
+  let deleteFunc = function(objects) {
+    for (let i = 0; i < objects.length; i++) {
+      if (objects[i].children && objects[i].children.length > 0) {
+        deleteFunc(objects[i].children);
+      }
+      objectsToDelete.push(objects[i].id);
+    }
+  }
+
+  if (obj.children && obj.children.length > 0) {
+    deleteFunc(obj.children);
+  }
+
+  db.deleteObjects(objectsToDelete, function (err) {
+    if (err) {
+      return cb(err);
+    }
+
+    return cb(null);
+  });
 }
 
 module.exports = new ObjectUtility();

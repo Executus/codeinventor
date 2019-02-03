@@ -50,4 +50,20 @@ export class Object {
   public setEditing(editing): void {
     this.editing = editing;
   }
+
+  public jsonSerialise(): any {
+    let json: any = {
+      id: this.id,
+      name: this.name,
+      nestedLevel: this.nestedLevel,
+      parent: (this.parent) ? this.parent.id : null,
+      children:[]
+    };
+
+    for (let i = 0; i < this.children.length; i++) {
+      json.children.push(this.children[i].id);
+    }
+
+    return json;
+  }
 }

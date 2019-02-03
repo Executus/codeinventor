@@ -26,14 +26,26 @@ BEGIN
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
-CREATE OR REPLACE FUNCTION func_update_object(IN in_n_object_id BIGINT, IN in_n_parent_id BIGINT, IN in_s_name TEXT, IN in_n_nested_level INTEGER)
+CREATE OR REPLACE FUNCTION func_update_object(IN in_n_object_id BIGINT, IN in_s_name TEXT)
   RETURNS BIGINT AS 
 $$
 BEGIN
   UPDATE tbl_object
-  SET (k_parent, s_name, n_nested_level, t_modified)
-  = (in_n_parent_id, in_s_name, in_n_nested_level, now())
+  SET (s_name, t_modified) = (in_s_name, now())
   WHERE k_object = in_n_object_id;
   RETURN in_n_object_id;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_delete_objects(IN in_n_object_ids INTEGER[])
+  RETURNS INTEGER AS
+$$
+DECLARE
+  n_records_deleted   INTEGER;
+BEGIN
+  DELETE FROM tbl_object
+  WHERE k_object = ANY(in_n_object_ids);
+  GET DIAGNOSTICS n_records_deleted = ROW_COUNT;
+  RETURN n_records_deleted;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;

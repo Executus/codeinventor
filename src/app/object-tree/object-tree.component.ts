@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Object } from '../classes/object';
 import { ObjectService } from '../services/object.service';
 import { HttpService } from '../services/http.service';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { DeleteObjectModalComponent } from '../modals/delete-object-modal/delete-object-modal.component';
 
 @Component({
   selector: 'app-object-tree',
@@ -13,7 +15,7 @@ export class ObjectTreeComponent implements OnInit {
   private treeData: Object[] = [];
   private selectedObject: Object = null;
 
-  constructor(private objectService: ObjectService, private httpService: HttpService) {
+  constructor(private objectService: ObjectService, private httpService: HttpService, private modalService: NgbModal) {
     this.objectService.registerObjectTree(this);
   }
 
@@ -34,11 +36,11 @@ export class ObjectTreeComponent implements OnInit {
     }
 
     var req = {
-      Object: obj
+      Object: obj.jsonSerialise()
     }
 
     this.httpService.Post('/objects', req).subscribe(res => {
-      obj = res.Object;
+      obj.setData(res.Object.id, res.Object.name, res.Object.nestedLevel);
     });
   }
 
@@ -58,21 +60,32 @@ export class ObjectTreeComponent implements OnInit {
   }
 
   private removeObject(object: Object, $event): void {
-    if (object === this.selectedObject) {
-      this.selectedObject = null;
-    }
-
-    let parent = object.getParent();
-    if (parent === null) {
-      let idx = this.treeData.indexOf(object);
-      if (idx > -1) {
-        this.treeData.splice(idx, 1);
-      }
-    } else {
-      parent.removeChild(object);
-    }
-
     $event.stopPropagation();
+
+    // Display modal to warn user of recursive delete
+    let modal: NgbModalRef = this.modalService.open(DeleteObjectModalComponent);
+    let modalComponent: DeleteObjectModalComponent = modal.componentInstance as DeleteObjectModalComponent;
+    if (modalComponent) {
+      modalComponent.setObjectName(object.getName());
+    }
+    modal.result.then(result => {
+      if (result === 'delete') {
+        // Perform the delete
+        if (object === this.selectedObject) {
+          this.selectedObject = null;
+        }
+    
+        let parent = object.getParent();
+        if (parent === null) {
+          let idx = this.treeData.indexOf(object);
+          if (idx > -1) {
+            this.treeData.splice(idx, 1);
+          }
+        } else {
+          parent.removeChild(object);
+        }
+      }
+    });
   }
 
   private editName(object: Object, $event): void {
@@ -84,11 +97,12 @@ export class ObjectTreeComponent implements OnInit {
     object.setEditing(false);
 
     let req = {
-      Object: object
-    }
-    this.httpService.Put('/objects', req).subscribe(res => {
-      
-    });
+      Object: object.jsonSerialise()
+    };
+
+    console.log(req);
+
+    this.httpService.Put('/objects', req).subscribe(result => {});
   }
 
   private buildObjects(objects: any[]): Object[] {

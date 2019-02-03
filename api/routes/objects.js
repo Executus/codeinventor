@@ -38,7 +38,12 @@ router.post('/', function(req, res, next) {
       if (err) {
         return res.status(500).send(err);
       }
-      return res.status(200).send(object);
+
+      let data = {
+        Object: object
+      };
+
+      return res.status(200).send(data);
     });
   } else {
     let data = {
@@ -74,11 +79,15 @@ router.put('/', function(req, res, next) {
 router.delete('/', function(req, res, next) {
   let obj = req.body.Object;
   if (obj) {
-    ObjectUtility.deleteObject(obj, function(err, object) {
+    ObjectUtility.deleteObject(obj, function(err) {
       if (err) {
         return res.status(500).send(err);
       }
-      return res.status(200).send(object);
+
+      let data = {
+        result: 'success'
+      }
+      return res.status(200).send(data);
     });
   } else {
     let data = {

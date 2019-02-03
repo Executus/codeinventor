@@ -32,7 +32,7 @@ db.prototype.insertObject = function(parentId, name, nestedLevel, cb) {
       done();
 
       if (recordSet && recordSet.rowCount > 0) {
-        return cb(null, recordSet.rows[0]);
+        return cb(null, recordSet.rows[0].func_insert_object);
       } else {
         return cb(new Error("Unexpected result from db function func_insert_object"));
       }
@@ -64,16 +64,36 @@ db.prototype.getObjects = function(cb) {
   });
 }
 
-db.prototype.updateObject = function(objectId, parentId, name, nestedLevel, cb) {
+db.prototype.updateObject = function(objectId, name, cb) {
   this.pool.connect(function (err, client, done) {
     if (err) {
       console.error("error fetching client from pool", err);
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_update_object($1, $2, $3, $4)", [objectId, parentId, name, nestedLevel], function (err, objectId) {
+    client.query("SELECT * FROM func_update_object($1, $2)", [objectId, name], function (err, objectId) {
       if (err) {
         console.error("error running db function func_update_object", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null);
+    });
+  });
+}
+
+db.prototype.deleteObjects = function(objectIds, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_delete_objects($1)", [objectIds], function (err, numObjectsDeleted) {
+      if (err) {
+        console.error("error running db function func_delete_objects", err);
         return cb(err);
       }
 

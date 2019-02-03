@@ -18,6 +18,7 @@ import { ObjectService } from './services/object.service';
 import { HttpService } from './services/http.service';
 
 import { FocusOnShowDirective } from './directives/focus-on-show.directive';
+import { DeleteObjectModalComponent } from './modals/delete-object-modal/delete-object-modal.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { FocusOnShowDirective } from './directives/focus-on-show.directive';
     BehaviourViewComponent,
     AssetsViewComponent,
     ObjectTreeComponent,
-    FocusOnShowDirective
+    FocusOnShowDirective,
+    DeleteObjectModalComponent
   ],
   imports: [
     BrowserModule,
@@ -41,6 +43,9 @@ import { FocusOnShowDirective } from './directives/focus-on-show.directive';
     ObjectService,
     HttpService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    DeleteObjectModalComponent
+  ]
 })
 export class AppModule { }

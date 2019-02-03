@@ -3,7 +3,7 @@
     <div class="row" (click)="onSelectObject(object)" [ngClass]="{'selected': selectedObject === object}"
          [ngStyle]="{'padding-left': (object.nestedLevel * 10) + 'px'}">
       <div class="col-md-1">
-        <i class="fas pointer" [ngClass]="{'fa-caret-right': !object.expanded, 'fa-caret-down': object.expanded}" (click)="onExpandObject(object, $event)"></i>
+        <i *ngIf="object.children.length > 0" class="fas pointer" [ngClass]="{'fa-caret-right': !object.expanded, 'fa-caret-down': object.expanded}" (click)="onExpandObject(object, $event)"></i>
       </div>
       <div class="col-md-9">
         <span [hidden]="object.editing">{{object.getName()}}</span>
