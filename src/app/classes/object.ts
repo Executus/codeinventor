@@ -12,6 +12,10 @@ export class Object {
     this.name = 'New Object';
   }
 
+  public getId(): number {
+    return this.id;
+  }
+
   public setData(id, name, nestedLevel): void {
     this.id = id;
     this.name = name;

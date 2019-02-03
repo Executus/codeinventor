@@ -37,14 +37,14 @@ BEGIN
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
-CREATE OR REPLACE FUNCTION func_delete_objects(IN in_n_object_ids INTEGER[])
+CREATE OR REPLACE FUNCTION func_delete_objects(IN in_n_object_id INTEGER)
   RETURNS INTEGER AS
 $$
 DECLARE
   n_records_deleted   INTEGER;
 BEGIN
   DELETE FROM tbl_object
-  WHERE k_object = ANY(in_n_object_ids);
+  WHERE k_object = in_n_object_id;
   GET DIAGNOSTICS n_records_deleted = ROW_COUNT;
   RETURN n_records_deleted;
 END

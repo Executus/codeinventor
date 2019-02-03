@@ -71,19 +71,14 @@ export class ObjectTreeComponent implements OnInit {
     modal.result.then(result => {
       if (result === 'delete') {
         // Perform the delete
-        if (object === this.selectedObject) {
+        this.httpService.Delete('/objects/' + object.getId()).subscribe(res => {
           this.selectedObject = null;
-        }
-    
-        let parent = object.getParent();
-        if (parent === null) {
-          let idx = this.treeData.indexOf(object);
-          if (idx > -1) {
-            this.treeData.splice(idx, 1);
-          }
-        } else {
-          parent.removeChild(object);
-        }
+          this.objectService.setSelectedObject(this.selectedObject);
+          // Get Objects to get the correct state of the tree
+          this.httpService.Get('/objects').subscribe(res => {
+            this.treeData = this.buildObjects(res.Objects);
+          });
+        });
       }
     });
   }
@@ -99,8 +94,6 @@ export class ObjectTreeComponent implements OnInit {
     let req = {
       Object: object.jsonSerialise()
     };
-
-    console.log(req);
 
     this.httpService.Put('/objects', req).subscribe(result => {});
   }

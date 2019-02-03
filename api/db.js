@@ -84,14 +84,14 @@ db.prototype.updateObject = function(objectId, name, cb) {
   });
 }
 
-db.prototype.deleteObjects = function(objectIds, cb) {
+db.prototype.deleteObjects = function(objectId, cb) {
   this.pool.connect(function (err, client, done) {
     if (err) {
       console.error("error fetching client from pool", err);
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_delete_objects($1)", [objectIds], function (err, numObjectsDeleted) {
+    client.query("SELECT * FROM func_delete_objects($1)", [objectId], function (err, numObjectsDeleted) {
       if (err) {
         console.error("error running db function func_delete_objects", err);
         return cb(err);

@@ -76,25 +76,18 @@ router.put('/', function(req, res, next) {
 });
 
 /* Delete an object */
-router.delete('/', function(req, res, next) {
-  let obj = req.body.Object;
-  if (obj) {
-    ObjectUtility.deleteObject(obj, function(err) {
-      if (err) {
-        return res.status(500).send(err);
-      }
-
-      let data = {
-        result: 'success'
-      }
-      return res.status(200).send(data);
-    });
-  } else {
-    let data = {
-      error: 'Bad request - Object not found in body.'
+router.delete('/:objectid', function(req, res, next) {
+  let objId = req.params.objectid;
+  ObjectUtility.deleteObject(objId, function(err) {
+    if (err) {
+      return res.status(500).send(err);
     }
-    return res.status(400).send(data);
-  }
+
+    let data = {
+      result: 'success'
+    }
+    return res.status(200).send(data);
+  });
 });
 
 module.exports = router;

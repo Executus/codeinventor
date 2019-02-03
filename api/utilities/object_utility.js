@@ -55,24 +55,8 @@ ObjectUtility.prototype.updateObject = function(obj, cb) {
   });
 }
 
-ObjectUtility.prototype.deleteObject = function(obj, cb) {
-  let objectsToDelete = [];
-  objectsToDelete.push(obj.id);
-
-  let deleteFunc = function(objects) {
-    for (let i = 0; i < objects.length; i++) {
-      if (objects[i].children && objects[i].children.length > 0) {
-        deleteFunc(objects[i].children);
-      }
-      objectsToDelete.push(objects[i].id);
-    }
-  }
-
-  if (obj.children && obj.children.length > 0) {
-    deleteFunc(obj.children);
-  }
-
-  db.deleteObjects(objectsToDelete, function (err) {
+ObjectUtility.prototype.deleteObject = function(objId, cb) {
+  db.deleteObjects(objId, function (err) {
     if (err) {
       return cb(err);
     }
