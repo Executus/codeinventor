@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { ObjectTreeComponent }  from '../object-tree/object-tree.component';
 import { Object }  from '../classes/object';
 
+export interface SelectObjectListener {
+  onObjectSelected(object: Object): void;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -9,6 +13,7 @@ export class ObjectService {
 
   private objectTree: ObjectTreeComponent = null;
   private selectedObject: Object = null;
+  private selectObjectListeners: SelectObjectListener[] = [];
 
   constructor() { }
 
@@ -28,5 +33,14 @@ export class ObjectService {
 
   public setSelectedObject(object: Object): void {
     this.selectedObject = object;
+    this.selectObjectListeners.forEach(listener => {
+      listener.onObjectSelected(this.selectedObject);
+    })
+  }
+
+  public registerSelectObjectListener(listener: SelectObjectListener) {
+    if (this.selectObjectListeners.includes(listener) === false) {
+      this.selectObjectListeners.push(listener);
+    }
   }
 }

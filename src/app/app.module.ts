@@ -19,6 +19,7 @@ import { HttpService } from './services/http.service';
 
 import { FocusOnShowDirective } from './directives/focus-on-show.directive';
 import { DeleteObjectModalComponent } from './modals/delete-object-modal/delete-object-modal.component';
+import { BehaviourListComponent } from './behaviour-list/behaviour-list.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { DeleteObjectModalComponent } from './modals/delete-object-modal/delete-
     AssetsViewComponent,
     ObjectTreeComponent,
     FocusOnShowDirective,
-    DeleteObjectModalComponent
+    DeleteObjectModalComponent,
+    BehaviourListComponent
   ],
   imports: [
     BrowserModule,

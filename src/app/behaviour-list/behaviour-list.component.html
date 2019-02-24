@@ -1,0 +1,33 @@
+<div class="row behaviour-list">
+  <div *ngFor="let behaviour of behaviours" class="col-md-12">
+    <div class="row">
+      <div class="col-md-12">
+        <h4>{{behaviour.name}}</h4>
+      </div>
+    </div>
+    <div *ngFor="let property of behaviour.properties" class="row property-row">
+      <div class="col-md-4 offset-md-1">
+        <h5>{{property.name}}</h5>
+      </div>
+      <div class="col-md-7">
+        <span *ngIf="property.innerProperties && property.innerProperties.length > 0">
+          <span *ngFor="let innerProp of property.innerProperties">
+            <h6>{{innerProp.name}}</h6>
+            <span [ngSwitch]="innerProp.type">
+              <span *ngSwitchCase="'float'">
+                <input class="form-control float-input" type="number" step="0.01">
+              </span>
+            </span>
+          </span>
+        </span>
+        <span *ngIf="!property.innerProperties || property.innerProperties.length === 0">
+          <span [ngSwitch]="property.type">
+            <span *ngSwitchCase="'float'">
+              <input class="form-control float-input" type="number" step="0.01">
+            </span>
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

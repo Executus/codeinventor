@@ -1,3 +1,6 @@
+import { Behaviour } from './behaviour';
+import { BehaviourTransform } from './behaviour-transform';
+
 export class Object {
 
   private id: number = -1;
@@ -7,9 +10,11 @@ export class Object {
   private nestedLevel: number = 1;
   private expanded: boolean = false;
   private editing: boolean = false;
+  private behaviours: Behaviour[] = [];
 
   constructor() {
     this.name = 'New Object';
+    this.behaviours.push(new BehaviourTransform());
   }
 
   public getId(): number {
@@ -69,5 +74,9 @@ export class Object {
     }
 
     return json;
+  }
+
+  public getBehaviours(): Behaviour[] {
+    return this.behaviours;
   }
 }
