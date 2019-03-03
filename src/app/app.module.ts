@@ -16,10 +16,12 @@ import { ObjectTreeComponent } from './object-tree/object-tree.component';
 
 import { ObjectService } from './services/object.service';
 import { HttpService } from './services/http.service';
+import { RuntimeService } from './runtime/runtime.service';
 
 import { FocusOnShowDirective } from './directives/focus-on-show.directive';
 import { DeleteObjectModalComponent } from './modals/delete-object-modal/delete-object-modal.component';
 import { BehaviourListComponent } from './behaviour-list/behaviour-list.component';
+import { RuntimeComponent } from './runtime/runtime.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import { BehaviourListComponent } from './behaviour-list/behaviour-list.componen
     ObjectTreeComponent,
     FocusOnShowDirective,
     DeleteObjectModalComponent,
-    BehaviourListComponent
+    BehaviourListComponent,
+    RuntimeComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +46,8 @@ import { BehaviourListComponent } from './behaviour-list/behaviour-list.componen
   ],
   providers: [
     ObjectService,
-    HttpService
+    HttpService,
+    RuntimeService
   ],
   bootstrap: [AppComponent],
   entryComponents: [

@@ -2,7 +2,7 @@
   <div class="row">
     <app-toolbar-view></app-toolbar-view>
   </div>
-  <div class="row">
+  <div class="row" *ngIf="runtime.isRuntimeRunning() === false">
     <div class="col-md-3 app-left-container p-0">
       <app-object-view></app-object-view>
     </div>
@@ -20,6 +20,11 @@
     </div>
     <div class="col-md-3 offset-md-9 app-right-container p-0">
       <app-behaviour-view></app-behaviour-view>
+    </div>
+  </div>
+  <div class="row" *ngIf="runtime.isRuntimeRunning()">
+    <div class="col-md-12">
+      <app-runtime></app-runtime>
     </div>
   </div>
 </div>
