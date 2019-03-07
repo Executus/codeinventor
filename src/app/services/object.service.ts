@@ -25,6 +25,12 @@ export class ObjectService {
     }
   }
 
+  public unregisterObjectTree(tree: ObjectTreeComponent): void {
+    if (this.objectTree === tree) {
+      this.objectTree = null;
+    }
+  }
+
   public createNewEmptyObject(): void {
     if (this.objectTree !== null) {
       this.objectTree.createNewEmptyObject(this.selectedObject);
@@ -41,6 +47,13 @@ export class ObjectService {
   public registerSelectObjectListener(listener: SelectObjectListener) {
     if (this.selectObjectListeners.includes(listener) === false) {
       this.selectObjectListeners.push(listener);
+    }
+  }
+
+  public unregisterSelectObjectListener(listener: SelectObjectListener) {
+    let idx = this.selectObjectListeners.indexOf(listener); 
+    if (idx > -1) {
+      this.selectObjectListeners.splice(idx, 1);
     }
   }
 }

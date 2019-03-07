@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Object } from '../classes/object';
 import { ObjectService } from '../services/object.service';
 import { HttpService } from '../services/http.service';
@@ -10,7 +10,7 @@ import { DeleteObjectModalComponent } from '../modals/delete-object-modal/delete
   templateUrl: './object-tree.component.html',
   styleUrls: ['./object-tree.component..scss']
 })
-export class ObjectTreeComponent implements OnInit {
+export class ObjectTreeComponent implements OnInit, OnDestroy {
 
   private treeData: Object[] = [];
   private selectedObject: Object = null;
@@ -23,6 +23,10 @@ export class ObjectTreeComponent implements OnInit {
     this.httpService.Get('/objects').subscribe(res => {
       this.treeData = this.buildObjects(res.Objects);
     });
+  }
+
+  ngOnDestroy() {
+    this.objectService.unregisterObjectTree(this);
   }
 
   public createNewEmptyObject(parent: Object): void {

@@ -7,7 +7,6 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RuntimeComponent implements OnInit {
 
-  private canvas;
   private gl;
   private programInfo;
 
@@ -38,8 +37,8 @@ export class RuntimeComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.canvas = document.querySelector('#glCanvas');
-    this.gl = this.canvas.getContext('webgl');
+    let canvas = document.querySelector('#glCanvas');
+    this.gl = canvas.getContext('webgl');
 
     if (this.gl === null) {
       alert('Unable to intialise WebGL. Your browser may not support it.');

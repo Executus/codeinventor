@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Behaviour }  from '../classes/behaviour';
 import { Object } from '../classes/object';
 import { SelectObjectListener, ObjectService }  from '../services/object.service';
@@ -8,7 +8,7 @@ import { SelectObjectListener, ObjectService }  from '../services/object.service
   templateUrl: './behaviour-list.component.html',
   styleUrls: ['./behaviour-list.component..scss']
 })
-export class BehaviourListComponent implements OnInit, SelectObjectListener {
+export class BehaviourListComponent implements OnInit, OnDestroy, SelectObjectListener {
 
   private behaviours: Behaviour[];
 
@@ -17,6 +17,10 @@ export class BehaviourListComponent implements OnInit, SelectObjectListener {
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy() {
+    this.objectService.unregisterSelectObjectListener(this);
   }
 
   onObjectSelected(object: Object): void {
