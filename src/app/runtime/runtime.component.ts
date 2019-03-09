@@ -37,7 +37,7 @@ export class RuntimeComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    let canvas = document.querySelector('#glCanvas');
+    let canvas: HTMLCanvasElement = document.querySelector('#glCanvas');
     this.gl = canvas.getContext('webgl');
 
     if (this.gl === null) {

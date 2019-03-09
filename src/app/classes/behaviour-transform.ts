@@ -13,14 +13,19 @@ export class BehaviourTransform implements Behaviour {
 
     let position = new PropertyVector2d();
     position.name = 'Position';
+    position.setXValue(0.0);
+    position.setYValue(0.0);
     this.properties.push(position);
 
     let scale = new PropertyVector2d();
     scale.name = 'Scale';
+    scale.setXValue(1.0);
+    scale.setYValue(1.0);
     this.properties.push(scale);
 
     let rot = new PropertyFloat();
     rot.name = 'Rotation';
+    rot.setValue(0.0);
     this.properties.push(rot);
   }
 

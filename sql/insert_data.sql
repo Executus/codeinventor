@@ -4,4 +4,5 @@ INSERT INTO tbl_property_data_type (s_name) VALUES
 ('string'),
 ('boolean'),
 ('timestamp'),
-('file');
+('file'),
+('vector2d');
