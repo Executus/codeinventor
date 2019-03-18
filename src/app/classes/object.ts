@@ -17,6 +17,26 @@ export class Object {
     this.behaviours.push(new BehaviourTransform());
   }
 
+  public update(): void {
+    for (let i = 0; i < this.behaviours.length; i++) {
+      this.behaviours[i].update();
+    }
+
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i].update();
+    }
+  }
+
+  public draw(): void {
+    for (let i = 0; i < this.behaviours.length; i++) {
+      this.behaviours[i].draw();
+    }
+
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i].draw();
+    }
+  }
+
   public getId(): number {
     return this.id;
   }

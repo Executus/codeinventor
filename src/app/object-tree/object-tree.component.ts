@@ -122,4 +122,8 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
 
     return ret;
   }
+
+  public getObjectTreeData(): Object[] {
+    return this.treeData;
+  }
 }

@@ -29,4 +29,12 @@ export class BehaviourTransform implements Behaviour {
     this.properties.push(rot);
   }
 
+  update(): void {
+
+  }
+
+  draw(): void {
+    
+  }
+
 }

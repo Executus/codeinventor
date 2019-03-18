@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ObjectService } from '../services/object.service';
+import { Object } from '../classes/object';
 
 @Component({
   selector: 'app-runtime',
@@ -9,6 +11,7 @@ export class RuntimeComponent implements OnInit {
 
   private gl;
   private programInfo;
+  private sceneTree: Object[] = [];
 
   private vsSource = `
     attribute vec2 a_position;
@@ -34,7 +37,7 @@ export class RuntimeComponent implements OnInit {
     }
   `;
 
-  constructor() {}
+  constructor(private objectService: ObjectService) {}
 
   ngOnInit() {
     let canvas: HTMLCanvasElement = document.querySelector('#glCanvas');
@@ -63,9 +66,31 @@ export class RuntimeComponent implements OnInit {
       }
     }
 
+    this.initScene();
+
     setInterval(function(context) {
-      context.drawScene();
+      context.mainLoop();
     }, 20, this);
+  }
+
+  private mainLoop() {
+    this.updateScene();
+    this.drawScene();
+  }
+
+  private initScene() {
+    let objectTree = this.objectService.getObjectTreeData();
+    if (objectTree) {
+      this.sceneTree = JSON.parse(JSON.stringify(objectTree));
+    }
+  }
+
+  private updateScene() {
+    if (this.sceneTree) {
+      for (let i = 0; i < this.sceneTree.length; i++) {
+        this.sceneTree[i].update();
+      }
+    }
   }
 
   private drawScene() {
@@ -87,9 +112,9 @@ export class RuntimeComponent implements OnInit {
 
     this.gl.uniform2f(this.programInfo.uniformLocations.resolution, this.gl.canvas.width, this.gl.canvas.height);
 
-    let primitiveType = this.gl.TRIANGLE_STRIP;
+    let primitiveType = this.gl.TRIANGLES;
     let drawOffset = 0;
-    let count = 4;
+    let count = 6;
     this.gl.drawArrays(primitiveType, drawOffset, count);
   }
 
@@ -130,7 +155,8 @@ export class RuntimeComponent implements OnInit {
       600, 600,
       300, 300,
       600, 300,
-      
+      300, 300,
+      600, 600
     ];
 
     this.gl.bufferData(this.gl.ARRAY_BUFFER,

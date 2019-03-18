@@ -56,4 +56,11 @@ export class ObjectService {
       this.selectObjectListeners.splice(idx, 1);
     }
   }
+
+  public getObjectTreeData(): Object[] {
+    if (this.objectTree) {
+      return this.objectTree.getObjectTreeData();
+    }
+    return null;
+  }
 }
