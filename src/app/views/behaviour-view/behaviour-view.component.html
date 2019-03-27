@@ -9,4 +9,9 @@
       <app-behaviour-list></app-behaviour-list>
     </div>
   </div>
+  <div *ngIf="objectService.getSelectedObject()" class="row mt-3">
+    <div class="col-md-12 text-center">
+      <button class="btn btn-primary">Add Behaviour</button>
+    </div>
+  </div>
 </div>

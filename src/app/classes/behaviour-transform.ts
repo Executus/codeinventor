@@ -2,20 +2,28 @@ import { Behaviour } from './behaviour';
 import { Property } from './property';
 import { PropertyVector2d } from './property-vector2d';
 import { PropertyFloat } from './property-float';
+import { Object } from './object';
 
 export class BehaviourTransform implements Behaviour {
   name: string;
   properties: Property[];
+  attachedObject: Object;
 
-  constructor() {
+  private localPos: PropertyVector2d;
+  private worldPos: PropertyVector2d;
+
+  constructor(owner: Object) {
     this.name = 'Transform';
     this.properties = [];
+    this.attachedObject = owner;
 
-    let position = new PropertyVector2d();
-    position.name = 'Position';
-    position.setXValue(0.0);
-    position.setYValue(0.0);
-    this.properties.push(position);
+    this.worldPos = new PropertyVector2d();
+
+    this.localPos = new PropertyVector2d();
+    this.localPos.name = 'Position';
+    this.localPos.setXValue(0.0);
+    this.localPos.setYValue(0.0);
+    this.properties.push(this.localPos);
 
     let scale = new PropertyVector2d();
     scale.name = 'Scale';
@@ -30,11 +38,25 @@ export class BehaviourTransform implements Behaviour {
   }
 
   update(): void {
-
+    this.worldPos.setXValue(this.localPos.x());
+    this.worldPos.setYValue(this.localPos.y());
+    
+    let parentObject: Object = this.attachedObject.getParent();
+    if (parentObject) {
+      let parentTransform: BehaviourTransform = parentObject.getBehaviour<BehaviourTransform>('BehaviourTransform');
+      if (parentTransform) {
+        this.worldPos.setXValue(parentTransform.worldPos.x() + this.localPos.x());
+        this.worldPos.setYValue(parentTransform.worldPos.y() + this.localPos.y());
+      }
+    }
   }
 
   draw(): void {
     
+  }
+
+  getAttachedObject(): Object {
+    return this.attachedObject;
   }
 
 }

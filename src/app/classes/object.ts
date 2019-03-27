@@ -14,7 +14,7 @@ export class Object {
 
   constructor() {
     this.name = 'New Object';
-    this.behaviours.push(new BehaviourTransform());
+    this.behaviours.push(new BehaviourTransform(this));
   }
 
   public update(): void {
@@ -98,5 +98,14 @@ export class Object {
 
   public getBehaviours(): Behaviour[] {
     return this.behaviours;
+  }
+
+  public getBehaviour<T extends Behaviour>(typename: string): T {
+    for (let i = 0; i < this.behaviours.length; i++) {
+      if (this.behaviours[i].constructor['name'] === typename) {
+        return <T>this.behaviours[i];
+      }
+    }
+    return null;
   }
 }

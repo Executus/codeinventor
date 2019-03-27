@@ -19,4 +19,12 @@ export class PropertyVector2d implements Property {
   public setYValue(newY: number) {
     this.yValue = newY;
   };
+
+  public x(): number {
+    return this.xValue;
+  }
+
+  public y(): number {
+    return this.yValue;
+  }
 }

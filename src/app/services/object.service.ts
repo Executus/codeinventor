@@ -44,6 +44,10 @@ export class ObjectService {
     })
   }
 
+  public getSelectedObject(): Object {
+    return this.selectedObject;
+  }
+
   public registerSelectObjectListener(listener: SelectObjectListener) {
     if (this.selectObjectListeners.includes(listener) === false) {
       this.selectObjectListeners.push(listener);

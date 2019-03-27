@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ObjectService } from '../../services/object.service';
 
 @Component({
   selector: 'app-behaviour-view',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BehaviourViewComponent implements OnInit {
 
-  constructor() { }
+  constructor(private objectService: ObjectService) { }
 
   ngOnInit() {
   }
