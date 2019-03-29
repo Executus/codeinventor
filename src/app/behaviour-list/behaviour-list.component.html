@@ -1,8 +1,11 @@
-<div class="row behaviour-list">
-  <div *ngFor="let behaviour of behaviours" class="col-md-12">
+<div *ngIf="selectedObject" class="row behaviour-list">
+  <div *ngFor="let behaviour of selectedObject.getBehaviours(); let i = index" class="col-md-12">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-11">
         <h4>{{behaviour.name}}</h4>
+      </div>
+      <div class="col-md-1">
+        <i class="fas fa-times-circle pointer" (click)="onRemoveBehaviour(i)"></i>
       </div>
     </div>
     <div *ngFor="let property of behaviour.properties" class="row property-row">

@@ -11,7 +11,12 @@
   </div>
   <div *ngIf="objectService.getSelectedObject()" class="row mt-3">
     <div class="col-md-12 text-center">
-      <button class="btn btn-primary">Add Behaviour</button>
+      <button class="btn btn-primary" (click)="onAddBehaviour()">Add Behaviour</button>
+      <div *ngIf="showAddBehaviourList" class="add-behaviour-panel">
+        <ul>
+          <li *ngFor="let item of behaviours">{{item}}</li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

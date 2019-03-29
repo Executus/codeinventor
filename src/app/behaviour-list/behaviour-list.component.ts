@@ -10,7 +10,7 @@ import { SelectObjectListener, ObjectService }  from '../services/object.service
 })
 export class BehaviourListComponent implements OnInit, OnDestroy, SelectObjectListener {
 
-  private behaviours: Behaviour[];
+  private selectedObject: Object = null;
 
   constructor(private objectService: ObjectService) {
     this.objectService.registerSelectObjectListener(this);
@@ -24,9 +24,10 @@ export class BehaviourListComponent implements OnInit, OnDestroy, SelectObjectLi
   }
 
   onObjectSelected(object: Object): void {
-    if (object) {
-      this.behaviours = object.getBehaviours();
-    }
+    this.selectedObject = object;
   }
 
+  onRemoveBehaviour(index: number): void {
+    this.selectedObject.removeBehaviour(index);
+  }
 }

@@ -8,9 +8,15 @@ import { ObjectService } from '../../services/object.service';
 })
 export class BehaviourViewComponent implements OnInit {
 
+  behaviours = ['Sprite', 'Transform'];
+  private showAddBehaviourList: boolean = false;
+
   constructor(private objectService: ObjectService) { }
 
   ngOnInit() {
   }
 
+  private onAddBehaviour(): void {
+    this.showAddBehaviourList = !this.showAddBehaviourList;
+  }
 }

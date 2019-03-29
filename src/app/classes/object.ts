@@ -108,4 +108,10 @@ export class Object {
     }
     return null;
   }
+
+  public removeBehaviour(index: number): void {
+    if (index >= 0 && index < this.behaviours.length) {
+      this.behaviours.splice(index, 1);
+    }
+  }
 }
