@@ -17,6 +17,7 @@ import { ObjectTreeComponent } from './object-tree/object-tree.component';
 import { ObjectService } from './services/object.service';
 import { HttpService } from './services/http.service';
 import { RuntimeService } from './runtime/runtime.service';
+import { BehaviourService } from './services/behaviour.service';
 
 import { FocusOnShowDirective } from './directives/focus-on-show.directive';
 import { DeleteObjectModalComponent } from './modals/delete-object-modal/delete-object-modal.component';
@@ -47,7 +48,8 @@ import { RuntimeComponent } from './runtime/runtime.component';
   providers: [
     ObjectService,
     HttpService,
-    RuntimeService
+    RuntimeService,
+    BehaviourService
   ],
   bootstrap: [AppComponent],
   entryComponents: [

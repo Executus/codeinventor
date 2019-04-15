@@ -28,6 +28,6 @@ export class BehaviourListComponent implements OnInit, OnDestroy, SelectObjectLi
   }
 
   onRemoveBehaviour(index: number): void {
-    this.selectedObject.removeBehaviour(index);
+    this.objectService.removeObjectBehaviour(index);
   }
 }

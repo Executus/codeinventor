@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ObjectTreeComponent }  from '../object-tree/object-tree.component';
 import { Object }  from '../classes/object';
+import { Behaviour } from '../classes/behaviour';
+
+export interface BehavioursChangedListener {
+  onObjectBehavioursChanged(behaviours: Behaviour[]): void;
+}
 
 export interface SelectObjectListener {
   onObjectSelected(object: Object): void;
@@ -14,6 +19,7 @@ export class ObjectService {
   private objectTree: ObjectTreeComponent = null;
   private selectedObject: Object = null;
   private selectObjectListeners: SelectObjectListener[] = [];
+  private behavioursChangedListeners: BehavioursChangedListener[] = [];
 
   constructor() { }
 
@@ -66,5 +72,27 @@ export class ObjectService {
       return this.objectTree.getObjectTreeData();
     }
     return null;
+  }
+
+  public registerBehavioursChangedListener(listener: BehavioursChangedListener) {
+    if (this.behavioursChangedListeners.includes(listener) === false) {
+      this.behavioursChangedListeners.push(listener);
+    }
+  }
+
+  public unregisterBehavioursChangedListener(listener: BehavioursChangedListener) {
+    let idx = this.behavioursChangedListeners.indexOf(listener); 
+    if (idx > -1) {
+      this.behavioursChangedListeners.splice(idx, 1);
+    }
+  }
+
+  public removeObjectBehaviour(index: number): void {
+    if (this.selectedObject) {
+      this.selectedObject.removeBehaviour(index);
+      this.behavioursChangedListeners.forEach(listener => {
+        listener.onObjectBehavioursChanged(this.selectedObject.getBehaviours());
+      });
+    }
   }
 }

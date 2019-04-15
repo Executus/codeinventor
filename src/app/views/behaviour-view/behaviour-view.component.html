@@ -14,7 +14,7 @@
       <button class="btn btn-primary" (click)="onAddBehaviour()">Add Behaviour</button>
       <div *ngIf="showAddBehaviourList" class="add-behaviour-panel">
         <ul>
-          <li *ngFor="let item of behaviours">{{item}}</li>
+          <li *ngFor="let item of behavioursToAdd" (click)="onChooseBehaviour(item)">{{item}}</li>
         </ul>
       </div>
     </div>
