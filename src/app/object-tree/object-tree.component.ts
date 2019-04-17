@@ -4,6 +4,7 @@ import { ObjectService } from '../services/object.service';
 import { HttpService } from '../services/http.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteObjectModalComponent } from '../modals/delete-object-modal/delete-object-modal.component';
+import { BehaviourService } from '../services/behaviour.service';
 
 @Component({
   selector: 'app-object-tree',
@@ -15,7 +16,8 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
   private treeData: Object[] = [];
   private selectedObject: Object = null;
 
-  constructor(private objectService: ObjectService, private httpService: HttpService, private modalService: NgbModal) {
+  constructor(private objectService: ObjectService, private httpService: HttpService, private modalService: NgbModal,
+              private behaviourService: BehaviourService) {
     this.objectService.registerObjectTree(this);
   }
 
@@ -30,7 +32,7 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
   }
 
   public createNewEmptyObject(parent: Object): void {
-    let obj: Object = new Object();
+    let obj: Object = new Object(this.behaviourService);
 
     if (parent === null) {
       this.treeData.push(obj);
@@ -109,7 +111,7 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
     let ret = [];
 
     for (let i = 0; i < objects.length; i++) {
-      let obj = new Object();
+      let obj = new Object(this.behaviourService);
       obj.setData(objects[i].id, objects[i].name, objects[i].nestedLevel);
 
       let children: Object[] = this.buildObjects(objects[i].children);

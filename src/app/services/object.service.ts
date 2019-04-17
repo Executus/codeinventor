@@ -95,4 +95,13 @@ export class ObjectService {
       });
     }
   }
+
+  public addObjectBehaviour(behaviourDef: string): void {
+    if (this.selectedObject) {
+      this.selectedObject.addBehaviour(behaviourDef);
+      this.behavioursChangedListeners.forEach(listener => {
+        listener.onObjectBehavioursChanged(this.selectedObject.getBehaviours());
+      });
+    }
+  }
 }

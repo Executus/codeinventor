@@ -31,8 +31,9 @@ export class BehaviourViewComponent implements OnInit, SelectObjectListener, Beh
     this.showAddBehaviourList = !this.showAddBehaviourList;
   }
 
-  private onChooseBehaviour(behaviour): void {
-
+  private onChooseBehaviour(behaviourDef: string): void {
+    this.objectService.addObjectBehaviour(behaviourDef);
+    this.showAddBehaviourList = false;
   }
 
   private updateBehavioursBtn(behaviours: Behaviour[]) {

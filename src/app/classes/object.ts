@@ -1,5 +1,6 @@
 import { Behaviour } from './behaviour';
 import { BehaviourTransform } from './behaviour-transform';
+import { BehaviourService } from '../services/behaviour.service';
 
 export class Object {
 
@@ -12,7 +13,7 @@ export class Object {
   private editing: boolean = false;
   private behaviours: Behaviour[] = [];
 
-  constructor() {
+  constructor(private behaviourService: BehaviourService) {
     this.name = 'New Object';
     this.behaviours.push(new BehaviourTransform(this));
   }
@@ -112,6 +113,19 @@ export class Object {
   public removeBehaviour(index: number): void {
     if (index >= 0 && index < this.behaviours.length) {
       this.behaviours.splice(index, 1);
+    }
+  }
+
+  public addBehaviour(behaviourDef: string): void {
+    for (let i = 0; i < this.behaviours.length; i++) {
+      if (this.behaviours[i].constructor['name'] === behaviourDef) {
+        return;
+      }
+    }
+
+    let newBehaviour = this.behaviourService.createBehaviour(behaviourDef, this);
+    if (newBehaviour) {
+      this.behaviours.push(newBehaviour);
     }
   }
 }
