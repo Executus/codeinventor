@@ -3,6 +3,7 @@ import { Behaviour } from '../classes/behaviour';
 import { BehaviourTransform } from '../classes/behaviour-transform';
 import { BehaviourSprite } from '../classes/behaviour-sprite';
 import { Object } from '../classes/object';
+import { RuntimeService } from '../runtime/runtime.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class BehaviourService {
 
   private behaviourDefinitions: string[] = [];
 
-  constructor() {
+  constructor(private runtimeService: RuntimeService) {
     // Built in behaviours defined here
     this.behaviourDefinitions.push('Transform');
     this.behaviourDefinitions.push('Sprite');
@@ -37,7 +38,7 @@ export class BehaviourService {
         return new BehaviourTransform(object);
       break;
       case 'Sprite':
-        return new BehaviourSprite(object);
+        return new BehaviourSprite(object, this.runtimeService);
       break;
     }
 

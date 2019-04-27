@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ObjectService } from '../services/object.service';
 import { Object } from '../classes/object';
+import { RuntimeService }  from './runtime.service';
+import * as cloneDeep from 'lodash/cloneDeep';
 
 @Component({
   selector: 'app-runtime',
@@ -9,7 +11,7 @@ import { Object } from '../classes/object';
 })
 export class RuntimeComponent implements OnInit {
 
-  private gl;
+  private gl: WebGLRenderingContext;
   private programInfo;
   private sceneTree: Object[] = [];
 
@@ -37,11 +39,12 @@ export class RuntimeComponent implements OnInit {
     }
   `;
 
-  constructor(private objectService: ObjectService) {}
+  constructor(private objectService: ObjectService, private runtimeService: RuntimeService) {}
 
   ngOnInit() {
     let canvas: HTMLCanvasElement = document.querySelector('#glCanvas');
     this.gl = canvas.getContext('webgl');
+    this.runtimeService.setGlContext(this.gl);
 
     if (this.gl === null) {
       alert('Unable to intialise WebGL. Your browser may not support it.');
@@ -66,6 +69,9 @@ export class RuntimeComponent implements OnInit {
       }
     }
 
+    this.runtimeService.setGlContext(this.gl);
+    this.runtimeService.setShaderProgramInfo(this.programInfo);
+
     this.initScene();
 
     setInterval(function(context) {
@@ -81,7 +87,8 @@ export class RuntimeComponent implements OnInit {
   private initScene() {
     let objectTree = this.objectService.getObjectTreeData();
     if (objectTree) {
-      this.sceneTree = JSON.parse(JSON.stringify(objectTree));
+      // deep copy the tree
+      this.sceneTree = cloneDeep(objectTree);
     }
   }
 
@@ -97,7 +104,14 @@ export class RuntimeComponent implements OnInit {
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     this.gl.useProgram(this.programInfo.program);
-    this.gl.enableVertexAttribArray(this.programInfo.attribLocations.vertexPosition);
+
+    if (this.sceneTree) {
+      for (let i = 0; i < this.sceneTree.length; i++) {
+        this.sceneTree[i].draw();
+      }
+    }
+
+    /*this.gl.enableVertexAttribArray(this.programInfo.attribLocations.vertexPosition);
 
     const buffers = this.initBuffers();
     
@@ -115,7 +129,7 @@ export class RuntimeComponent implements OnInit {
     let primitiveType = this.gl.TRIANGLES;
     let drawOffset = 0;
     let count = 6;
-    this.gl.drawArrays(primitiveType, drawOffset, count);
+    this.gl.drawArrays(primitiveType, drawOffset, count);*/
   }
 
   private initShaderProgram(vsSource, fsSource) {
