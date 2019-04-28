@@ -15,13 +15,13 @@
       <div class="col-md-7">
         <span [ngSwitch]="property.type">
           <span *ngSwitchCase="'float'">
-            <input class="form-control float-input" type="number" step="0.01" [(ngModel)]="property.value">
+            <input class="form-control float-input" type="number" step="0.01" [(ngModel)]="property.Value">
           </span>
           <span *ngSwitchCase="'vector2d'">
             <h6>X</h6>
-            <input class="form-control float-input" type="number" step="0.01" [(ngModel)]="property.xValue">
+            <input class="form-control float-input" type="number" step="0.01" [(ngModel)]="property.X">
             <h6>Y</h6>
-            <input class="form-control float-input" type="number" step="0.01" [(ngModel)]="property.yValue">
+            <input class="form-control float-input" type="number" step="0.01" [(ngModel)]="property.Y">
           </span>
         </span>
       </div>

@@ -9,44 +9,36 @@ export class BehaviourTransform implements Behaviour {
   properties: Property[];
   attachedObject: Object;
 
-  private localPos: PropertyVector2d;
-  private worldPos: PropertyVector2d;
+  public LocalPosition: PropertyVector2d;
+  public WorldPosition: PropertyVector2d;
 
   constructor(owner: Object) {
     this.name = 'Transform';
     this.properties = [];
     this.attachedObject = owner;
 
-    this.worldPos = new PropertyVector2d();
+    this.WorldPosition = new PropertyVector2d();
 
-    this.localPos = new PropertyVector2d();
-    this.localPos.name = 'Position';
-    this.localPos.setXValue(0.0);
-    this.localPos.setYValue(0.0);
-    this.properties.push(this.localPos);
+    this.LocalPosition = new PropertyVector2d('Position', 0.0, 0.0);
+    this.properties.push(this.LocalPosition);
 
-    let scale = new PropertyVector2d();
-    scale.name = 'Scale';
-    scale.setXValue(1.0);
-    scale.setYValue(1.0);
+    let scale = new PropertyVector2d('Scale', 1.0, 1.0);
     this.properties.push(scale);
 
-    let rot = new PropertyFloat();
-    rot.name = 'Rotation';
-    rot.setValue(0.0);
+    let rot = new PropertyFloat('Rotation', 0.0);
     this.properties.push(rot);
   }
 
   update(): void {
-    this.worldPos.setXValue(this.localPos.x());
-    this.worldPos.setYValue(this.localPos.y());
+    this.WorldPosition.X = this.LocalPosition.X;
+    this.WorldPosition.Y = this.LocalPosition.Y;
     
     let parentObject: Object = this.attachedObject.getParent();
     if (parentObject) {
       let parentTransform: BehaviourTransform = parentObject.getBehaviour<BehaviourTransform>('BehaviourTransform');
       if (parentTransform) {
-        this.worldPos.setXValue(parentTransform.worldPos.x() + this.localPos.x());
-        this.worldPos.setYValue(parentTransform.worldPos.y() + this.localPos.y());
+        this.WorldPosition.X = parentTransform.WorldPosition.X + this.LocalPosition.X;
+        this.WorldPosition.Y = parentTransform.WorldPosition.Y + this.LocalPosition.Y;
       }
     }
   }

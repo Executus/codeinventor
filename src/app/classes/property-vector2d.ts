@@ -5,26 +5,14 @@ export class PropertyVector2d implements Property {
   name: string;
   type: string;
 
-  private xValue: number;
-  private yValue: number;
+  public X: number;
+  public Y: number;
 
-  constructor() {
+  constructor(name?: string, x?: number, y?: number) {
     this.type = 'vector2d';
-  }
 
-  public setXValue(newX: number) {
-    this.xValue = newX;
-  };
-
-  public setYValue(newY: number) {
-    this.yValue = newY;
-  };
-
-  public x(): number {
-    return this.xValue;
-  }
-
-  public y(): number {
-    return this.yValue;
+    this.name = name || '';
+    this.X = x || 0.0;
+    this.Y = y || 0.0;
   }
 }

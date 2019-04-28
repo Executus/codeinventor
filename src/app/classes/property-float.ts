@@ -4,13 +4,12 @@ export class PropertyFloat implements Property {
   name: string;
   type: string;
 
-  private value: number;
+  public Value: number;
 
-  constructor() {
+  constructor(name?: string, value?: number) {
     this.type = 'float';
-  }
 
-  public setValue(newValue: number) {
-    this.value = newValue;
+    this.name = name || '';
+    this.Value = value || 0.0;
   }
 }
