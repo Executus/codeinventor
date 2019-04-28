@@ -11,6 +11,7 @@ export class BehaviourTransform implements Behaviour {
 
   public LocalPosition: PropertyVector2d;
   public WorldPosition: PropertyVector2d;
+  public Rotation: PropertyFloat;
 
   constructor(owner: Object) {
     this.name = 'Transform';
@@ -25,8 +26,8 @@ export class BehaviourTransform implements Behaviour {
     let scale = new PropertyVector2d('Scale', 1.0, 1.0);
     this.properties.push(scale);
 
-    let rot = new PropertyFloat('Rotation', 0.0);
-    this.properties.push(rot);
+    this.Rotation = new PropertyFloat('Rotation', 0.0);
+    this.properties.push(this.Rotation);
   }
 
   update(): void {
