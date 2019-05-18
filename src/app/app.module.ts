@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
+import { AngularFileUploaderModule } from 'angular-file-uploader';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -23,6 +24,7 @@ import { FocusOnShowDirective } from './directives/focus-on-show.directive';
 import { DeleteObjectModalComponent } from './modals/delete-object-modal/delete-object-modal.component';
 import { BehaviourListComponent } from './behaviour-list/behaviour-list.component';
 import { RuntimeComponent } from './runtime/runtime.component';
+import { FileSelectModalComponent } from './modals/file-select-modal/file-select-modal.component';
 
 @NgModule({
   declarations: [
@@ -36,14 +38,16 @@ import { RuntimeComponent } from './runtime/runtime.component';
     FocusOnShowDirective,
     DeleteObjectModalComponent,
     BehaviourListComponent,
-    RuntimeComponent
+    RuntimeComponent,
+    FileSelectModalComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     NgbModule,
-    HttpClientModule
+    HttpClientModule,
+    AngularFileUploaderModule
   ],
   providers: [
     ObjectService,
@@ -53,7 +57,8 @@ import { RuntimeComponent } from './runtime/runtime.component';
   ],
   bootstrap: [AppComponent],
   entryComponents: [
-    DeleteObjectModalComponent
+    DeleteObjectModalComponent,
+    FileSelectModalComponent
   ]
 })
 export class AppModule { }

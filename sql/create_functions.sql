@@ -49,3 +49,19 @@ BEGIN
   RETURN n_records_deleted;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_get_files(IN in_n_type INTEGER)
+  RETURNS TABLE(
+    k_file          INTEGER,
+    n_type          INTEGER,
+    x_data          BYTEA,
+    u_filename      UUID
+  ) AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT f.k_file, f.n_type, f.x_data, f.u_filename
+  FROM tbl_file AS f
+  WHERE f.n_type = in_n_type;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;

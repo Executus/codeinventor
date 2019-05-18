@@ -4,6 +4,7 @@ import { Object } from './object';
 import { PropertyVector2d } from './property-vector2d';
 import { RuntimeService } from '../runtime/runtime.service';
 import { BehaviourTransform } from './behaviour-transform';
+import { PropertyFile, FILETYPE } from './property-file';
 
 export class BehaviourSprite implements Behaviour {
   name: string;
@@ -11,6 +12,7 @@ export class BehaviourSprite implements Behaviour {
   attachedObject: Object;
 
   public Size: PropertyVector2d;
+  public Texture: PropertyFile;
 
   constructor(owner: Object, private runtimeService: RuntimeService) {
     this.name = 'Sprite';
@@ -19,6 +21,9 @@ export class BehaviourSprite implements Behaviour {
 
     this.Size = new PropertyVector2d('Size', 300, 300);
     this.properties.push(this.Size);
+
+    this.Texture = new PropertyFile('Texture', FILETYPE.Image);
+    this.properties.push(this.Texture);
   }
 
   update(): void {

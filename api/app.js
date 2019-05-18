@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const ObjectsRoute = require('./routes/objects');
+const FilesRoute = require('./routes/files');
 
 let app = express();
 
@@ -22,5 +23,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors(corsOptions));
 
 app.use('/objects', ObjectsRoute);
+app.use('/files', FilesRoute);
 
 module.exports = app;

@@ -23,6 +23,10 @@
             <h6>Y</h6>
             <input class="form-control float-input" type="number" step="0.01" [(ngModel)]="property.Y">
           </span>
+          <span *ngSwitchCase="'file'">
+            <label class="">Test.png</label>
+            <button class="btn btn-sm btn-secondary ml-2" (click)="onChooseFile(property.FileType)">...</button>
+          </span>
         </span>
       </div>
     </div>

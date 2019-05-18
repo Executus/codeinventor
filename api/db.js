@@ -104,4 +104,24 @@ db.prototype.deleteObjects = function(objectId, cb) {
   });
 }
 
+db.prototype.getFiles = function(type, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_get_files($1)", [type], function (err, fileRecords) {
+      if (err) {
+        console.error("error running db function func_get_files", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null, fileRecords);
+    });
+  });
+}
+
 module.exports = new db();

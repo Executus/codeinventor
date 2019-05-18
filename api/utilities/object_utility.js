@@ -4,9 +4,7 @@ const db = require('../db');
 const ObjectItem = require('../data_objects/object_item');
 const ObjectTree = require('../data_objects/object_tree');
 
-function ObjectUtility() {
-
-}
+function ObjectUtility() {}
 
 ObjectUtility.prototype.getObjects = function(cb) {
   db.getObjects(function (err, recordSet) {

@@ -74,3 +74,16 @@ CREATE TABLE tbl_behaviour_instance_property
 WITH (
   OIDS=FALSE
 );
+
+CREATE TABLE tbl_file
+(
+  k_file                        SERIAL PRIMARY KEY,
+  n_type                        INTEGER NOT NULL,
+  x_data                        BYTEA NOT NULL,
+  u_filename                    UUID NOT NULL,
+  t_created                     TIMESTAMP NOT NULL,
+  t_modified                    TIMESTAMP NOT NULL
+)
+WITH (
+  OIDS=FALSE
+);
