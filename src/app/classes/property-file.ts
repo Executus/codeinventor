@@ -1,13 +1,11 @@
 import { Property } from './property';
-
-export enum FILETYPE {
-  Image
-}
+import { File, FILETYPE } from './file';
 
 export class PropertyFile implements Property {
   name: string;
   type: string;
 
+  public Value: File;
   public FileType: FILETYPE;
 
   constructor(name?: string, fileType?: FILETYPE) {
@@ -15,5 +13,6 @@ export class PropertyFile implements Property {
 
     this.name = name || '';
     this.FileType = fileType;
+    this.Value = null;
   }
 }

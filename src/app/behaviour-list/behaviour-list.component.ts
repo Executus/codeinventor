@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Behaviour }  from '../classes/behaviour';
-import { FILETYPE } from '../classes/property-file';
+import { FILETYPE } from '../classes/file';
 import { Object } from '../classes/object';
 import { SelectObjectListener, ObjectService }  from '../services/object.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { FileSelectModalComponent } from '../modals/file-select-modal/file-select-modal.component';
+import { PropertyFile } from '../classes/property-file';
+import { File } from '../classes/file';
 
 @Component({
   selector: 'app-behaviour-list',
@@ -34,14 +36,16 @@ export class BehaviourListComponent implements OnInit, OnDestroy, SelectObjectLi
     this.objectService.removeObjectBehaviour(index);
   }
 
-  onChooseFile(filetype: FILETYPE): void {
+  onChooseFile(property: PropertyFile): void {
     let modal: NgbModalRef = this.modalService.open(FileSelectModalComponent);
     let modalComponent: FileSelectModalComponent = modal.componentInstance as FileSelectModalComponent;
     if (modalComponent) {
-      modalComponent.setFileType(filetype);
+      modalComponent.setFileType(property.FileType);
     }
-    modal.result.then(result => {
-      
+    modal.result.then((result: File) => {
+      if (result) {
+        property.Value = result;
+      }
     });
   }
 }

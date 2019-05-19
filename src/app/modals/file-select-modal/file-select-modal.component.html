@@ -6,8 +6,8 @@
 </div>
 <div class="modal-body">
   <div *ngFor="let row of files" class="card-deck">
-    <div *ngFor="let file of row.files" class="card">
-      <img [src]="'http://localhost:3000/files/' + file.name" class="card-img-top">
+    <div *ngFor="let file of row.files" class="card" (click)="onSelectFile(file)" [ngClass]="{'selected': selectedFile && selectedFile.id === file.id}">
+      <img [src]="'http://localhost:3000/files/' + file.filename" class="card-img-top">
     </div>
   </div>
 </div>
@@ -18,5 +18,5 @@
     (ApiResponse)="onFileUploaded($event)">
   </angular-file-uploader>-->
   <button type="button" ngbAutofocus class="btn btn-outline-secondary" (click)="modal.dismiss('cancel')">Cancel</button>
-  <button type="button" class="btn btn-primary" (click)="modal.close('select')">Select</button>
+  <button type="button" class="btn btn-primary" (click)="modal.close(selectedFile)" [disabled]="selectedFile === null">Select</button>
 </div>

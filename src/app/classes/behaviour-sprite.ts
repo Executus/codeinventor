@@ -4,7 +4,8 @@ import { Object } from './object';
 import { PropertyVector2d } from './property-vector2d';
 import { RuntimeService } from '../runtime/runtime.service';
 import { BehaviourTransform } from './behaviour-transform';
-import { PropertyFile, FILETYPE } from './property-file';
+import { PropertyFile } from './property-file';
+import { FILETYPE } from './file';
 
 export class BehaviourSprite implements Behaviour {
   name: string;

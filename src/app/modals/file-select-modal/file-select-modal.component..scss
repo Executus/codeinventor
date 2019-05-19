@@ -2,4 +2,8 @@
   .card-deck {
     margin-bottom: 10px;
   }
+
+  .card.selected {
+    border: 1px solid navy;
+  }
 }

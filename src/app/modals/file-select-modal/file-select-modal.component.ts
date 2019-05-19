@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FILETYPE } from '../../classes/property-file';
+import { File, FILETYPE } from '../../classes/file';
 import { HttpService } from '../../services/http.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -12,6 +12,7 @@ export class FileSelectModalComponent implements OnInit {
 
   private fileType: FILETYPE;
   private files = [];
+  private selectedFile: File = null;
 
   private fileUploaderConfig = {
     multiple: false,
@@ -37,12 +38,20 @@ export class FileSelectModalComponent implements OnInit {
           })
         }
 
-        this.files[this.files.length - 1].files.push(res.Files[i]);
+        this.files[this.files.length - 1].files.push({
+          id: res.Files[i].id,
+          type: this.fileType,
+          filename: res.Files[i].name
+        });
       }
     });
   }
 
   private onFileUploaded(event) {
 
+  }
+
+  private onSelectFile(file: File): void {
+    this.selectedFile = file;
   }
 }
