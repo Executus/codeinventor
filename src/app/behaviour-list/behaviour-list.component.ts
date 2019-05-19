@@ -46,6 +46,6 @@ export class BehaviourListComponent implements OnInit, OnDestroy, SelectObjectLi
       if (result) {
         property.Value = result;
       }
-    });
+    }, () => {});
   }
 }
