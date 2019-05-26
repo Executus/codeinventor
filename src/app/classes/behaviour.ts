@@ -6,6 +6,7 @@ export interface Behaviour {
   properties: Property[];
   attachedObject: Object;
 
+  init(): void;
   update(): void;
   draw(): void;
   getAttachedObject(): Object;

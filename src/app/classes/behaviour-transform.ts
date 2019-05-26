@@ -30,6 +30,10 @@ export class BehaviourTransform implements Behaviour {
     this.properties.push(this.Rotation);
   }
 
+  init(): void {
+    
+  }
+
   update(): void {
     this.WorldPosition.X = this.LocalPosition.X;
     this.WorldPosition.Y = this.LocalPosition.Y;

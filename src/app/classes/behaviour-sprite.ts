@@ -11,6 +11,12 @@ export class BehaviourSprite implements Behaviour {
   name: string;
   properties: Property[];
   attachedObject: Object;
+  image: HTMLImageElement;
+  imageLoaded: boolean;
+  tex: WebGLTexture;
+  vertices = [];
+  positionBuffer: WebGLBuffer;
+  texcoordBuffer: WebGLBuffer;
 
   public Size: PropertyVector2d;
   public Texture: PropertyFile;
@@ -19,6 +25,8 @@ export class BehaviourSprite implements Behaviour {
     this.name = 'Sprite';
     this.properties = [];
     this.attachedObject = owner;
+    this.image = null;
+    this.imageLoaded = false;
 
     this.Size = new PropertyVector2d('Size', 300, 300);
     this.properties.push(this.Size);
@@ -27,28 +35,62 @@ export class BehaviourSprite implements Behaviour {
     this.properties.push(this.Texture);
   }
 
-  update(): void {
+  init(): void {
+    let self = this;
+    let gl = this.runtimeService.getGlContext();
+
+    // Position buffer
+    this.positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+
+    let positions = [
+      0, 0,
+      0, 1,
+      1, 0,
+      1, 0,
+      0, 1,
+      1, 1,
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+    // Texcoord buffer
+    this.texcoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.texcoordBuffer);
+
+    let texcoords = [
+      0, 0,
+      0, 1,
+      1, 0,
+      1, 0,
+      0, 1,
+      1, 1,
+    ];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords), gl.STATIC_DRAW);
+
+    // Texture
+    this.tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, this.tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+                  new Uint8Array([0, 0, 255, 255]));
+
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     
+    this.image = new Image();
+    this.image.crossOrigin = "";
+    this.image.src = 'http://localhost:3000/files/' + this.Texture.Value.filename;
+    this.image.addEventListener('load', function() {
+      gl.bindTexture(gl.TEXTURE_2D, self.tex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self.image);
+    });
   }
 
-  draw(): void {
+  update(): void {
     let transform: BehaviourTransform = this.attachedObject.getBehaviour<BehaviourTransform>('BehaviourTransform');
     if (transform) {
       let posX = transform.WorldPosition.X;
       let posY = transform.WorldPosition.Y;
-
-      let gl = this.runtimeService.getGlContext();
-
-      if (gl === null) {
-        return;
-      }
-
-      let programInfo = this.runtimeService.getShaderProgramInfo();
-
-      gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
-
-      const positionBuffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
       // Apply size
       let vert1x = -(this.Size.X / 2); let vert1y = -(this.Size.Y / 2);     // Top left vertex
@@ -90,7 +132,7 @@ export class BehaviourSprite implements Behaviour {
       vert6x += posX; vert6y += posY;
 
       // 2 triangles to make a quad, 3 vertices each
-      const positions = [
+      this.vertices = [
         vert1x, vert1y,     // Top left vertex
         vert2x, vert2y,     // Bottom left vertex
         vert3x, vert3y,     // Bottom right vertex
@@ -99,27 +141,45 @@ export class BehaviourSprite implements Behaviour {
         vert5x, vert5y,     // Top right vertex
         vert6x, vert6y,     // Top left vertex
       ];
-
-      gl.bufferData(gl.ARRAY_BUFFER,
-                        new Float32Array(positions),
-                        gl.STATIC_DRAW);
-      
-      // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-      let size = 2;               // 2 components per iteration
-      let type = gl.FLOAT;   // the data is 32bit floats
-      let normalize = false;      // don't normalize the data
-      let stride = 0;             // 0 = move forward size * sizeof(type) each iteration to get the next position
-      let offset = 0;             // start at the beginning of the buffer
-
-      gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, size, type, normalize, stride, offset);
-
-      gl.uniform2f(programInfo.uniformLocations.resolution, gl.canvas.width, gl.canvas.height);
-
-      let primitiveType = gl.TRIANGLES;
-      let drawOffset = 0;
-      let count = 6;
-      gl.drawArrays(primitiveType, drawOffset, count);
     }
+  }
+
+  draw(): void {
+    let gl = this.runtimeService.getGlContext();
+
+    if (gl === null) {
+      return;
+    }
+
+    let programInfo = this.runtimeService.getShaderProgramInfo();
+
+    gl.bindTexture(gl.TEXTURE_2D, this.tex);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+    gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+
+    // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
+    let size = 2;               // 2 components per iteration
+    let type = gl.FLOAT;   // the data is 32bit floats
+    let normalize = false;      // don't normalize the data
+    let stride = 0;             // 0 = move forward size * sizeof(type) each iteration to get the next position
+    let offset = 0;             // start at the beginning of the buffer
+
+    gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, size, type, normalize, stride, offset);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.texcoordBuffer);
+    gl.enableVertexAttribArray(programInfo.attribLocations.texcoordPosition);
+    gl.vertexAttribPointer(programInfo.attribLocations.texcoordPosition, size, type, normalize, stride, offset);
+
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices),gl.STATIC_DRAW);
+
+    gl.uniform2f(programInfo.uniformLocations.resolutionPosition, gl.canvas.width, gl.canvas.height);
+    gl.uniform1i(programInfo.uniformLocations.texturePosition, 0);
+
+    let primitiveType = gl.TRIANGLES;
+    let drawOffset = 0;
+    let count = 6;
+    gl.drawArrays(primitiveType, drawOffset, count);
   }
 
   getAttachedObject(): Object {

@@ -17,7 +17,9 @@ export class RuntimeComponent implements OnInit {
 
   private vsSource = `
     attribute vec2 a_position;
+    attribute vec2 a_texcoord;
     uniform vec2 u_resolution;
+    varying vec2 v_texcoord;
 
     void main() {
       // convert from pixels to 0.0 -> 1.0
@@ -30,12 +32,20 @@ export class RuntimeComponent implements OnInit {
       vec2 clipSpace = zeroToTwo -  1.0;
 
       gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+
+      v_texcoord = a_texcoord;
     }
   `;
 
   private fsSource = `
+    precision mediump float;
+
+    varying vec2 v_texcoord;
+    uniform sampler2D u_texture;
+
     void main() {
-      gl_FragColor = vec4(1, 1, 1, 1);
+      //gl_FragColor = vec4(1, 1, 1, 1);
+      gl_FragColor = texture2D(u_texture, v_texcoord);
     }
   `;
 
@@ -62,10 +72,12 @@ export class RuntimeComponent implements OnInit {
     this.programInfo = {
       program: shaderProgram,
       attribLocations: {
-        vertexPosition: this.gl.getAttribLocation(shaderProgram, 'a_position')
+        vertexPosition: this.gl.getAttribLocation(shaderProgram, 'a_position'),
+        texcoordPosition: this.gl.getAttribLocation(shaderProgram, 'a_texcoord')
       },
       uniformLocations: {
-        resolution: this.gl.getUniformLocation(shaderProgram, 'u_resolution')
+        resolutionPosition: this.gl.getUniformLocation(shaderProgram, 'u_resolution'),
+        texturePosition: this.gl.getUniformLocation(shaderProgram, 'u_texture')
       }
     }
 
@@ -89,6 +101,10 @@ export class RuntimeComponent implements OnInit {
     if (objectTree) {
       // deep copy the tree
       this.sceneTree = cloneDeep(objectTree);
+
+      for (let i = 0; i < this.sceneTree.length; i++) {
+        this.sceneTree[i].init();
+      }
     }
   }
 
@@ -110,26 +126,6 @@ export class RuntimeComponent implements OnInit {
         this.sceneTree[i].draw();
       }
     }
-
-    /*this.gl.enableVertexAttribArray(this.programInfo.attribLocations.vertexPosition);
-
-    const buffers = this.initBuffers();
-    
-    // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-    let size = 2;               // 2 components per iteration
-    let type = this.gl.FLOAT;   // the data is 32bit floats
-    let normalize = false;      // don't normalize the data
-    let stride = 0;             // 0 = move forward size * sizeof(type) each iteration to get the next position
-    let offset = 0;             // start at the beginning of the buffer
-
-    this.gl.vertexAttribPointer(this.programInfo.attribLocations.vertexPosition, size, type, normalize, stride, offset);
-
-    this.gl.uniform2f(this.programInfo.uniformLocations.resolution, this.gl.canvas.width, this.gl.canvas.height);
-
-    let primitiveType = this.gl.TRIANGLES;
-    let drawOffset = 0;
-    let count = 6;
-    this.gl.drawArrays(primitiveType, drawOffset, count);*/
   }
 
   private initShaderProgram(vsSource, fsSource) {
@@ -159,27 +155,4 @@ export class RuntimeComponent implements OnInit {
     }
     return shader;
   }
-
-  private initBuffers() {
-    const positionBuffer = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
-
-    const positions = [
-      300, 600,
-      600, 600,
-      300, 300,
-      600, 300,
-      300, 300,
-      600, 600
-    ];
-
-    this.gl.bufferData(this.gl.ARRAY_BUFFER,
-                       new Float32Array(positions),
-                       this.gl.STATIC_DRAW);
-
-    return {
-      position: positionBuffer
-    };
-  }
-
 }

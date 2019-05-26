@@ -18,6 +18,16 @@ export class Object {
     this.behaviours.push(new BehaviourTransform(this));
   }
 
+  public init(): void {
+    for (let i = 0; i < this.behaviours.length; i++) {
+      this.behaviours[i].init();
+    }
+
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i].init();
+    }
+  }
+
   public update(): void {
     for (let i = 0; i < this.behaviours.length; i++) {
       this.behaviours[i].update();
