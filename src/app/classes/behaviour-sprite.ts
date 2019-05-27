@@ -58,12 +58,12 @@ export class BehaviourSprite implements Behaviour {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.texcoordBuffer);
 
     let texcoords = [
-      0, 0,
-      0, 1,
-      1, 0,
-      1, 0,
-      0, 1,
-      1, 1,
+      0, 0,   // Top left
+      0, 1,   // Bottom left
+      1, 1,   // Bottom right
+      1, 1,   // Bottom right
+      1, 0,   // Top right
+      0, 0,   // Top left
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords), gl.STATIC_DRAW);
 
@@ -167,11 +167,11 @@ export class BehaviourSprite implements Behaviour {
 
     gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, size, type, normalize, stride, offset);
 
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
+
     gl.bindBuffer(gl.ARRAY_BUFFER, this.texcoordBuffer);
     gl.enableVertexAttribArray(programInfo.attribLocations.texcoordPosition);
     gl.vertexAttribPointer(programInfo.attribLocations.texcoordPosition, size, type, normalize, stride, offset);
-
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices),gl.STATIC_DRAW);
 
     gl.uniform2f(programInfo.uniformLocations.resolutionPosition, gl.canvas.width, gl.canvas.height);
     gl.uniform1i(programInfo.uniformLocations.texturePosition, 0);
