@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { BehaviourEditorComponent } from '../../modals/behaviour-editor/behaviour-editor.component';
 
 @Component({
   selector: 'app-assets-view',
@@ -7,9 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AssetsViewComponent implements OnInit {
 
-  constructor() { }
+  constructor(private modalService: NgbModal) { }
 
   ngOnInit() {
+  }
+
+  onNewBehaviour(): void {
+    let modal: NgbModalRef = this.modalService.open(BehaviourEditorComponent, { windowClass: 'behav-editor-modal' });
+    let modalComponent: BehaviourEditorComponent = modal.componentInstance as BehaviourEditorComponent;
+    
+    modal.result.then(result => {
+      
+    }, () => {});
   }
 
 }

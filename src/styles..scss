@@ -2,3 +2,15 @@
 .pointer {
   cursor: pointer;
 }
+
+.behav-editor-modal {
+  .modal-dialog {
+    margin: 40px;
+    max-width: inherit;
+    height: 850px;
+
+    .modal-content {
+      height: 100%;
+    }
+  }
+}
