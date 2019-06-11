@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import * as $ from '../../lib/jquery';
 import * as droplet from '../../lib/droplet';
@@ -15,9 +16,9 @@ export class BehaviourEditorComponent implements OnInit {
   callbacks = {};
   pane;
   subscribers = [];
-  mimeType = 'text/coffeescript';
+  mimeType = 'text/javascript';
 
-  constructor() {
+  constructor(public modal: NgbActiveModal) {
     this.pane = this.initialPaneState();
   }
 
@@ -147,7 +148,7 @@ export class BehaviourEditorComponent implements OnInit {
         new droplet.Editor(
             document.getElementById(id),
             {
-              mode: 'coffee',
+              mode: 'javascript',
               palette: this.paletteForPane(paneState),
               modeOptions: this.dropletOptionsForMimeType(this.mimeType)
             });
@@ -239,7 +240,7 @@ export class BehaviourEditorComponent implements OnInit {
 
     this.setupAceEditor(pane, mainContainer, editor,
       //modeForMimeType(editorMimeType(paneState)), text);
-      'coffee', '');
+      'javascript', '');
     var session = editor.getSession();
     session.on('change', function() {
       // Any editing that changes the line count ends the debugging session.
