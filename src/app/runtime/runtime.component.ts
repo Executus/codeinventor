@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ObjectService } from '../services/object.service';
 import { Object } from '../classes/object';
 import { RuntimeService }  from './runtime.service';
@@ -9,11 +9,12 @@ import * as cloneDeep from 'lodash/cloneDeep';
   templateUrl: './runtime.component.html',
   styleUrls: ['./runtime.component..scss']
 })
-export class RuntimeComponent implements OnInit {
+export class RuntimeComponent implements OnInit, OnDestroy {
 
   private gl: WebGLRenderingContext;
   private programInfo;
   private sceneTree: Object[] = [];
+  private intervalId;
 
   private vsSource = `
     attribute vec2 a_position;
@@ -54,7 +55,6 @@ export class RuntimeComponent implements OnInit {
   ngOnInit() {
     let canvas: HTMLCanvasElement = document.querySelector('#glCanvas');
     this.gl = canvas.getContext('webgl');
-    this.runtimeService.setGlContext(this.gl);
 
     if (this.gl === null) {
       alert('Unable to intialise WebGL. Your browser may not support it.');
@@ -86,14 +86,20 @@ export class RuntimeComponent implements OnInit {
 
     this.initScene();
 
-    setInterval(function(context) {
+    this.intervalId = setInterval(function(context) {
       context.mainLoop();
     }, 20, this);
   }
 
+  ngOnDestroy() {
+    clearInterval(this.intervalId);
+  }
+
   private mainLoop() {
-    this.updateScene();
-    this.drawScene();
+    if (this.runtimeService.isRuntimeRunning()) {
+      this.updateScene();
+      this.drawScene();
+    }
   }
 
   private initScene() {

@@ -20,11 +20,6 @@ class BehaviourSprite {
     this.image = null;
     this.imageLoaded = false;
 
-    this.tex = null;
-    this.vertices = [];
-    this.positionBuffer = null;
-    this.texcoordBuffer = null;
-
     this.Size = new PropertyVector2d('Size', 300, 300);
     this.properties.push(this.Size);
 
@@ -33,6 +28,11 @@ class BehaviourSprite {
   }
 
   init(runtimeService) {
+    this.tex = null;
+    this.vertices = [];
+    this.positionBuffer = null;
+    this.texcoordBuffer = null;
+    
     let self = this;
     let gl = runtimeService.getGlContext();
 
