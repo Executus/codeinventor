@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-basic-title">Behaviour Editor</h4>
+  <h4 class="modal-title" id="modal-basic-title">Behaviour Editor - {{behaviourName}}</h4>
 </div>
 <div class="modal-body">
   <div id="bravopanebox" class="left panebox" style="width: 100%">
@@ -18,5 +18,5 @@
 </div>
 <div class="modal-footer">
   <button type="button" ngbAutofocus class="btn btn-outline-secondary" (click)="modal.dismiss('cancel')">Cancel</button>
-  <button type="button" class="btn btn-primary" (click)="modal.close()">Save</button>
+  <button type="button" class="btn btn-primary" (click)="modal.close(getPaneEditorData())">Save</button>
 </div>

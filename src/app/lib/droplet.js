@@ -64106,7 +64106,7 @@ Editor.prototype.setValue = function(value) {
   if (this.currentlyUsingBlocks) {
     result = this.setValue_raw(value);
     if (result.success === false) {
-      this.setEditorState(false);
+      //this.setEditorState(false);
       this.aceEditor.setValue(value);
       if (result.error) {
         return this.fireEvent('parseerror', [result.error]);

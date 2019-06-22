@@ -1,0 +1,10 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Enter a behaviour name</h4>
+</div>
+<div class="modal-body">
+  <input type="text" class="form-control" [(ngModel)]="behaviourName">
+</div>
+<div class="modal-footer">
+  <button type="button" ngbAutofocus class="btn btn-outline-secondary" (click)="modal.dismiss('cancel')">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="modal.close(behaviourName)" [disabled]="behaviourName === ''">Ok</button>
+</div>

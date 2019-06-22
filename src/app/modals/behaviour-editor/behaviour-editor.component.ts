@@ -13,18 +13,26 @@ import * as palette from '../../lib/palette';
 })
 export class BehaviourEditorComponent implements OnInit {
 
+  behaviourName: string;
   callbacks = {};
   pane;
   subscribers = [];
   mimeType = 'text/javascript';
 
   constructor(public modal: NgbActiveModal) {
+    this.behaviourName = '';
     this.pane = this.initialPaneState();
+  }
+
+  public init(behaviourName: string): void {
+    this.behaviourName = behaviourName;
   }
 
   ngOnInit() {
     var pane = $('.left').find('.pane').attr('id');
-    var doc = {};
+    var doc = {
+      data: 'export class ' + this.behaviourName + ' {\n  \n}'
+    };
     var mpp = this.pane;
     //if (!doc.file) { doc.file = 'setdoc'; }
     mpp.isdir = false;
@@ -55,6 +63,18 @@ export class BehaviourEditorComponent implements OnInit {
     };
   }
 
+  public getPaneEditorData() {
+    var paneState = this.pane;
+    if (!paneState.editor) {
+      return null;
+    }
+    var text = paneState.dropletEditor.getValue();
+    //text = normalizeCarriageReturns(text);
+    //updateMeta(paneState);
+    //var metaCopy = copyJSON(paneState.meta);
+    return {data: text, mime: paneState.mimeType/*, meta: metaCopy*/ };
+  }
+
   fireEvent(tag, args) {
     if (tag in this.callbacks) {
       var cbs = this.callbacks[tag].slice();
@@ -82,6 +102,9 @@ export class BehaviourEditorComponent implements OnInit {
       }
       if (this.mimeType == 'text/html') {
         basePalette = palette.HTML_PALETTE;
+      }
+      if (this.mimeType == 'text/typescript') {
+        basePalette = palette.TYPESCRIPT_PALETTE;
       }
     }
     if (basePalette) {
@@ -170,7 +193,7 @@ export class BehaviourEditorComponent implements OnInit {
       self.fireEvent('parseerror', [pane, e]);
     });
     dropletEditor.setEditorState(useblocks);
-    //dropletEditor.setValue(text);
+    dropletEditor.setValue(text);
 
     // show blocks in text editor view
     //if (state.studyCondition == 'hybrid') {
