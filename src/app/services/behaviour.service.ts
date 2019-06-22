@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Behaviour } from '../classes/behaviour';
-import { BehaviourTransform } from '../classes/behaviour-transform';
-import { BehaviourSprite } from '../classes/behaviour-sprite';
 import { Object } from '../classes/object';
 import { RuntimeService } from '../runtime/runtime.service';
+
+import * as BehaviourTransform from '../classes/behaviour-transform';
+import * as BehaviourSprite from '../classes/behaviour-sprite';
 
 @Injectable({
   providedIn: 'root'

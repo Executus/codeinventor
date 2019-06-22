@@ -1,6 +1,9 @@
 import { Behaviour } from './behaviour';
-import { BehaviourTransform } from './behaviour-transform';
+//import { BehaviourTransform } from './behaviour-transform';
 import { BehaviourService } from '../services/behaviour.service';
+import { RuntimeService } from '../runtime/runtime.service';
+
+import * as BehaviourTransform from './behaviour-transform';
 
 export class Object {
 
@@ -18,33 +21,33 @@ export class Object {
     this.behaviours.push(new BehaviourTransform(this));
   }
 
-  public init(): void {
+  public init(runtimeService: RuntimeService): void {
     for (let i = 0; i < this.behaviours.length; i++) {
-      this.behaviours[i].init();
+      this.behaviours[i].init(runtimeService);
     }
 
     for (let i = 0; i < this.children.length; i++) {
-      this.children[i].init();
+      this.children[i].init(runtimeService);
     }
   }
 
-  public update(): void {
+  public update(runtimeService: RuntimeService): void {
     for (let i = 0; i < this.behaviours.length; i++) {
-      this.behaviours[i].update();
+      this.behaviours[i].update(runtimeService);
     }
 
     for (let i = 0; i < this.children.length; i++) {
-      this.children[i].update();
+      this.children[i].update(runtimeService);
     }
   }
 
-  public draw(): void {
+  public draw(runtimeService: RuntimeService): void {
     for (let i = 0; i < this.behaviours.length; i++) {
-      this.behaviours[i].draw();
+      this.behaviours[i].draw(runtimeService);
     }
 
     for (let i = 0; i < this.children.length; i++) {
-      this.children[i].draw();
+      this.children[i].draw(runtimeService);
     }
   }
 
@@ -111,10 +114,10 @@ export class Object {
     return this.behaviours;
   }
 
-  public getBehaviour<T extends Behaviour>(typename: string): T {
+  public getBehaviour(typename: string) {
     for (let i = 0; i < this.behaviours.length; i++) {
       if (this.behaviours[i].constructor['name'] === typename) {
-        return <T>this.behaviours[i];
+        return this.behaviours[i];
       }
     }
     return null;

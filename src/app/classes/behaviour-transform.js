@@ -1,19 +1,15 @@
-import { Behaviour } from './behaviour';
-import { Property } from './property';
-import { PropertyVector2d } from './property-vector2d';
-import { PropertyFloat } from './property-float';
-import { Object } from './object';
+'use strict';
+//import { Behaviour } from './behaviour';
+//import { Property } from './property';
+//import { PropertyVector2d } from './property-vector2d';
+//import { PropertyFloat } from './property-float';
+//import { Object } from './object';
 
-export class BehaviourTransform implements Behaviour {
-  name: string;
-  properties: Property[];
-  attachedObject: Object;
+const PropertyVector2d = require('./property-vector2d');
+const PropertyFloat = require('./property-float');
 
-  public LocalPosition: PropertyVector2d;
-  public WorldPosition: PropertyVector2d;
-  public Rotation: PropertyFloat;
-
-  constructor(owner: Object) {
+class BehaviourTransform {
+  constructor(owner) {
     this.name = 'Transform';
     this.properties = [];
     this.attachedObject = owner;
@@ -30,17 +26,17 @@ export class BehaviourTransform implements Behaviour {
     this.properties.push(this.Rotation);
   }
 
-  init(): void {
-    
+  init(runtimeService) {
+
   }
 
-  update(): void {
+  update(runtimeService) {
     this.WorldPosition.X = this.LocalPosition.X;
     this.WorldPosition.Y = this.LocalPosition.Y;
     
-    let parentObject: Object = this.attachedObject.getParent();
+    let parentObject = this.attachedObject.getParent();
     if (parentObject) {
-      let parentTransform: BehaviourTransform = parentObject.getBehaviour<BehaviourTransform>('BehaviourTransform');
+      let parentTransform = parentObject.getBehaviour('BehaviourTransform');
       if (parentTransform) {
         this.WorldPosition.X = parentTransform.WorldPosition.X + this.LocalPosition.X;
         this.WorldPosition.Y = parentTransform.WorldPosition.Y + this.LocalPosition.Y;
@@ -48,12 +44,14 @@ export class BehaviourTransform implements Behaviour {
     }
   }
 
-  draw(): void {
+  draw(runtimeService) {
     
   }
 
-  getAttachedObject(): Object {
+  getAttachedObject() {
     return this.attachedObject;
   }
 
 }
+
+module.exports = BehaviourTransform;

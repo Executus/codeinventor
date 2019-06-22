@@ -103,7 +103,7 @@ export class RuntimeComponent implements OnInit {
       this.sceneTree = cloneDeep(objectTree);
 
       for (let i = 0; i < this.sceneTree.length; i++) {
-        this.sceneTree[i].init();
+        this.sceneTree[i].init(this.runtimeService);
       }
     }
   }
@@ -111,7 +111,7 @@ export class RuntimeComponent implements OnInit {
   private updateScene() {
     if (this.sceneTree) {
       for (let i = 0; i < this.sceneTree.length; i++) {
-        this.sceneTree[i].update();
+        this.sceneTree[i].update(this.runtimeService);
       }
     }
   }
@@ -123,7 +123,7 @@ export class RuntimeComponent implements OnInit {
 
     if (this.sceneTree) {
       for (let i = 0; i < this.sceneTree.length; i++) {
-        this.sceneTree[i].draw();
+        this.sceneTree[i].draw(this.runtimeService);
       }
     }
   }

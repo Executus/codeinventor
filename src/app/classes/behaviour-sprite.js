@@ -1,43 +1,40 @@
-import { Behaviour } from './behaviour';
-import { Property } from './property';
-import { Object } from './object';
-import { PropertyVector2d } from './property-vector2d';
-import { RuntimeService } from '../runtime/runtime.service';
-import { BehaviourTransform } from './behaviour-transform';
-import { PropertyFile } from './property-file';
-import { FILETYPE } from './file';
+'use strict';
+//import { Behaviour } from './behaviour';
+//import { Property } from './property';
+//import { Object } from './object';
+//import { PropertyVector2d } from './property-vector2d';
+//import { RuntimeService } from '../runtime/runtime.service';
+//import { BehaviourTransform } from './behaviour-transform';
+//import { PropertyFile } from './property-file';
+//import { FILETYPE } from './file';
 
-export class BehaviourSprite implements Behaviour {
-  name: string;
-  properties: Property[];
-  attachedObject: Object;
-  image: HTMLImageElement;
-  imageLoaded: boolean;
-  tex: WebGLTexture;
-  vertices = [];
-  positionBuffer: WebGLBuffer;
-  texcoordBuffer: WebGLBuffer;
+const PropertyVector2d = require('./property-vector2d');
+const PropertyFile = require('./property-file');
+const Constants = require('./constants');
 
-  public Size: PropertyVector2d;
-  public Texture: PropertyFile;
-
-  constructor(owner: Object, private runtimeService: RuntimeService) {
+class BehaviourSprite {
+  constructor(owner) {
     this.name = 'Sprite';
     this.properties = [];
     this.attachedObject = owner;
     this.image = null;
     this.imageLoaded = false;
 
+    this.tex = null;
+    this.vertices = [];
+    this.positionBuffer = null;
+    this.texcoordBuffer = null;
+
     this.Size = new PropertyVector2d('Size', 300, 300);
     this.properties.push(this.Size);
 
-    this.Texture = new PropertyFile('Texture', FILETYPE.Image);
+    this.Texture = new PropertyFile('Texture', Constants.FiletypeImage);
     this.properties.push(this.Texture);
   }
 
-  init(): void {
+  init(runtimeService) {
     let self = this;
-    let gl = this.runtimeService.getGlContext();
+    let gl = runtimeService.getGlContext();
 
     // Position buffer
     this.positionBuffer = gl.createBuffer();
@@ -86,8 +83,8 @@ export class BehaviourSprite implements Behaviour {
     });
   }
 
-  update(): void {
-    let transform: BehaviourTransform = this.attachedObject.getBehaviour<BehaviourTransform>('BehaviourTransform');
+  update(runtimeService) {
+    let transform = this.attachedObject.getBehaviour('BehaviourTransform');
     if (transform) {
       let posX = transform.WorldPosition.X;
       let posY = transform.WorldPosition.Y;
@@ -144,14 +141,14 @@ export class BehaviourSprite implements Behaviour {
     }
   }
 
-  draw(): void {
-    let gl = this.runtimeService.getGlContext();
+  draw(runtimeService) {
+    let gl = runtimeService.getGlContext();
 
     if (gl === null) {
       return;
     }
 
-    let programInfo = this.runtimeService.getShaderProgramInfo();
+    let programInfo = runtimeService.getShaderProgramInfo();
 
     gl.bindTexture(gl.TEXTURE_2D, this.tex);
 
@@ -182,7 +179,9 @@ export class BehaviourSprite implements Behaviour {
     gl.drawArrays(primitiveType, drawOffset, count);
   }
 
-  getAttachedObject(): Object {
+  getAttachedObject() {
     return this.attachedObject;
   }
 }
+
+module.exports = BehaviourSprite;
