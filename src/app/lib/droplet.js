@@ -62512,11 +62512,12 @@ hook('populate', 1, function() {
 
 Editor.prototype.resizeAceElement = function() {
   var width;
-  width = this.wrapperElement.clientWidth;
-  if (this.showPaletteInTextMode && this.paletteEnabled) {
-    width -= this.paletteWrapper.offsetWidth;
-  }
-  this.aceElement.style.width = width + "px";
+  //width = this.wrapperElement.clientWidth;
+  //if (this.showPaletteInTextMode && this.paletteEnabled) {
+   // width -= this.paletteWrapper.offsetWidth;
+  //}
+  //this.aceElement.style.width = width + "px";
+  this.aceElement.style.width = "1416px";
   //return this.aceElement.style.height = this.wrapperElement.clientHeight + "px";
   return this.aceElement.style.height = '100%';
 };
@@ -64101,8 +64102,8 @@ Editor.prototype.setValue = function(value) {
   var oldScrollTop, result;
   oldScrollTop = this.aceEditor.session.getScrollTop();
   this.setAceValue(value);
-  this.resizeTextMode();
-  this.aceEditor.session.setScrollTop(oldScrollTop);
+  //this.resizeTextMode();
+  //this.aceEditor.session.setScrollTop(oldScrollTop);
   if (this.currentlyUsingBlocks) {
     result = this.setValue_raw(value);
     if (result.success === false) {

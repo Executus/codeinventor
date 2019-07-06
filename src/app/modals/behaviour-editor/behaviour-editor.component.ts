@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import * as $ from '../../lib/jquery';
@@ -11,17 +11,17 @@ import * as palette from '../../lib/palette';
   templateUrl: './behaviour-editor.component.html',
   styleUrls: ['./behaviour-editor.component..scss']
 })
-export class BehaviourEditorComponent implements OnInit {
+export class BehaviourEditorComponent implements OnInit, OnDestroy {
 
   behaviourName: string;
   callbacks = {};
   pane;
   subscribers = [];
   mimeType = 'text/javascript';
+  dropletEditor;
 
   constructor(public modal: NgbActiveModal) {
     this.behaviourName = '';
-    this.pane = this.initialPaneState();
   }
 
   public init(behaviourName: string): void {
@@ -29,9 +29,10 @@ export class BehaviourEditorComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.pane = this.initialPaneState();
     var pane = $('.left').find('.pane').attr('id');
     var doc = {
-      data: 'export class ' + this.behaviourName + ' {\n  \n}'
+      data: this.initBehaviourCode()
     };
     var mpp = this.pane;
     //if (!doc.file) { doc.file = 'setdoc'; }
@@ -49,6 +50,14 @@ export class BehaviourEditorComponent implements OnInit {
     this.setPaneEditorData(pane, doc, filename, mode);
   }
 
+  ngOnDestroy() {
+    this.dropletEditor.aceEditor.destroy();
+    delete this.dropletEditor.aceEditor;
+    delete this.dropletEditor;
+    this.dropletEditor = null;
+    this.pane = null;
+  }
+
   initialPaneState() {
     return {
       editor: null,       // The ace editor instance.
@@ -61,6 +70,34 @@ export class BehaviourEditorComponent implements OnInit {
       links: null,        // Unused in this mode.
       running: false      // Unused in this mode.
     };
+  }
+
+  private initBehaviourCode(): string {
+    let code: string = 'class Behaviour' + this.behaviourName + ' {\n';
+    code += '\tconstructor(owner) {\n';
+    code += '\t\tthis.name = \'' + this.behaviourName + '\';\n';
+    code += '\t\tthis.properties = [];\n';
+    code += '\t\tthis.attachedObject = owner;\n';
+    code += '\t}\n\n';
+    code += '\tinit(runtimeService) {\n';
+    code += '\t\t// Code here will run once when the object is created.\n';
+    code += '\t\t\n';
+    code += '\t}\n\t\t\n';
+    code += '\tupdate(runtimeService) {\n';
+    code += '\t\t// Code here will run every frame (about 60 times every second).\n';
+    code += '\t\t\n';
+    code += '\t}\n\t\t\n';
+    code += '\tdraw(runtimeService) {\n';
+    code += '\t\t// Advanced use - rendering specific code. Runs every frame after update.\n';
+    code += '\t\t// Most people will not need to write any code here.\n';
+    code += '\t\t\n';
+    code += '\t}\n\t\t\n';
+    code += '\tgetAttachedObject() {\n';
+    code += '\t\treturn this.attachedObject;\n';
+    code += '\t}\n\n';
+    code += '}\n\n';
+    code += 'module.exports = Behaviour' + this.behaviourName + ';';
+    return code;
   }
 
   public getPaneEditorData() {
@@ -167,7 +204,7 @@ export class BehaviourEditorComponent implements OnInit {
 
     // Set up the main editor.
     //var dropletMode = dropletModeForMimeType(visibleMimeType);
-    var dropletEditor = paneState.dropletEditor =
+    this.dropletEditor = paneState.dropletEditor =
         new droplet.Editor(
             document.getElementById(id),
             {
@@ -180,61 +217,61 @@ export class BehaviourEditorComponent implements OnInit {
     //  dropletEditor.setFontFamily("Source Code Pro");
     //  dropletEditor.setFontSize(15);
     //});
-    dropletEditor.setPaletteWidth(400);
+    this.dropletEditor.setPaletteWidth(400);
     //if (!/^frame\./.test(window.location.hostname)) {
       // Blue nubby when inside pencilcode.
     //  dropletEditor.setTopNubbyStyle(0, '#1e90ff');
     //} else {
       // Gray nubby when framed.
-      dropletEditor.setTopNubbyStyle(0, '#dddddd');
+      this.dropletEditor.setTopNubbyStyle(0, '#dddddd');
     //}
     // Listen to parseerror event before setting up text.
-    dropletEditor.on('parseerror', function(e) {
+    this.dropletEditor.on('parseerror', function(e) {
       self.fireEvent('parseerror', [pane, e]);
     });
-    dropletEditor.setEditorState(useblocks);
-    dropletEditor.setValue(text);
+    this.dropletEditor.setEditorState(useblocks);
+    //this.dropletEditor.setValue(text);
 
     // show blocks in text editor view
     //if (state.studyCondition == 'hybrid') {
-      dropletEditor.showPaletteInTextMode = true; 
+      this.dropletEditor.showPaletteInTextMode = true; 
       // melt from blocks to text, but do so very quickly
-      dropletEditor.performMeltAnimation(1, 1);
+      this.dropletEditor.performMeltAnimation(1, 1);
     //}
 
-    dropletEditor.on('changepalette', function() {
+    this.dropletEditor.on('changepalette', function() {
       //$('.droplet-hover-div').tooltipster({position: 'right', interactive: true});
     });
 
 
     // bubble up droplet events to pencil code
-    dropletEditor.on('selectpalette', function(p) {
+    this.dropletEditor.on('selectpalette', function(p) {
       self.fireEvent('selectpalette', [pane, p]);
     });
-    dropletEditor.on('pickblock', function(p) {
+    this.dropletEditor.on('pickblock', function(p) {
       self.fireEvent('pickblock', [pane, p]);
     });
-    dropletEditor.on('block-drop', function(p) {
+    this.dropletEditor.on('block-drop', function(p) {
       self.fireEvent('block-drop', [pane, p]);
     });
 
-    dropletEditor.on('linehover', function(ev) {
+    this.dropletEditor.on('linehover', function(ev) {
       self.fireEvent('icehover', [pane, ev]);
     });
 
     //paneState.lastChangeTime = +(new Date);
 
-    dropletEditor.on('change', function() {
+    this.dropletEditor.on('change', function() {
       if (paneState.settingUp) return;
       paneState.lastChangeTime = +(new Date);
       self.fireEvent('dirty', [pane]);
       //if (hasSubscribers()) publish('update', [dropletEditor.getValue()]);
-      dropletEditor.clearLineMarks();
+      this.dropletEditor.clearLineMarks();
       self.fireEvent('changelines', [pane]);
       self.fireEvent('delta', [pane]);
     });
 
-    dropletEditor.on('toggledone', function() {
+    this.dropletEditor.on('toggledone', function() {
       //if (!$('.droplet-hover-div').hasClass('tooltipstered')) {
       //  $('.droplet-hover-div').tooltipster();
       //}
@@ -249,21 +286,21 @@ export class BehaviourEditorComponent implements OnInit {
 
     $('<div class="texttoggle">' +
       '<div class="slide"><div class="info"></div></div></div>').appendTo(
-        dropletEditor.paletteWrapper);
+        this.dropletEditor.paletteWrapper);
     $('<div class="blocktoggle">' +
       '<div class="slide"><div class="info"></div></div></div>').appendTo(
-        $(dropletEditor.wrapperElement).find('.ace_editor'));
+        $(this.dropletEditor.wrapperElement).find('.ace_editor'));
 
     var mainContainer = $('#' + id);
 
     //setupResizeHandler(mainContainer.parent(), dropletEditor);
-    var editor = paneState.editor = dropletEditor.aceEditor;
+    var editor = paneState.editor = this.dropletEditor.aceEditor;
     var um = editor.getSession().getUndoManager();
     //setPrimaryFocus();
 
     this.setupAceEditor(pane, mainContainer, editor,
       //modeForMimeType(editorMimeType(paneState)), text);
-      'javascript', '');
+      'ace/mode/javascript', text);
     var session = editor.getSession();
     session.on('change', function() {
       // Any editing that changes the line count ends the debugging session.
@@ -329,6 +366,7 @@ export class BehaviourEditorComponent implements OnInit {
     // Work around undesired scrolling bug -
     // repro: turn off split pane view, and linger over a file to force preload.
     $('#overflow').scrollLeft(0);
+    this.dropletEditor.setValue(text);
   }
 
   setupAceEditor(pane, elt, editor, mode, text) {
@@ -344,7 +382,7 @@ export class BehaviourEditorComponent implements OnInit {
   
     // Set up sensitivity to touch events - this makes it so
     // that a brief touch brings up the editor.
-    $(elt).find('.ace_content').on('touchstart', function(e) {
+    /*$(elt).find('.ace_content').on('touchstart', function(e) {
       // Unwrap jquery event.
       if (e.originalEvent) { e = e.originalEvent; }
       if (e.touches.length) {
@@ -378,7 +416,7 @@ export class BehaviourEditorComponent implements OnInit {
         $('body').focus();
         setTimeout(function() { editor.focus(); }, 0);
       }
-    });
+    });*/
   
     var lineArr = text.split('\n');
     var lines = lineArr.length;
@@ -457,7 +495,7 @@ export class BehaviourEditorComponent implements OnInit {
         }
       }
     }
-    editor.getSession().on('tokenizerUpdate', autoFold);
+    //editor.getSession().on('tokenizerUpdate', autoFold);
     if (long) {
       editor.gotoLine(0);
     } else {
