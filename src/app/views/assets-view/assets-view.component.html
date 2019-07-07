@@ -17,7 +17,7 @@
                 {{'Behaviour' + behaviour.name}}
               </div>
               <div class="col-md-1">
-                <button class="btn btn-light" *ngIf="!behaviour.isSystemBehaviour" title="Edit Behaviour">
+                <button class="btn btn-light" *ngIf="!behaviour.isSystemBehaviour" title="Edit Behaviour" (click)="onEditBehaviour(behaviour)">
                   <i class="fas fa-edit pointer"></i>
                 </button>
                 <button class="btn btn-light" *ngIf="behaviour.isSystemBehaviour" title="View Behaviour" (click)="onViewBehaviour(behaviour)">

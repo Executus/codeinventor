@@ -151,7 +151,7 @@ db.prototype.createBehaviourDef = function(script, name, system, cb) {
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_insert_behaviour_def($1, $2, $3)", [script, name, system], function (err, newBehaviourDefId) {
+    client.query("SELECT * FROM func_insert_behaviour_def($1, $2, $3)", [script, name, system], function (err, result) {
       if (err) {
         console.error("error running db function func_insert_behaviour_def", err);
         return cb(err);
@@ -159,7 +159,11 @@ db.prototype.createBehaviourDef = function(script, name, system, cb) {
 
       done();
 
-      return cb(null, newBehaviourDefId);
+      if (result && result.rowCount > 0) {
+        return cb(null, result.rows[0].func_insert_behaviour_def);
+      }
+
+      return cb(new Error("Unknown error - failed to create behaviour definition."));
     });
   });
 }
@@ -171,7 +175,7 @@ db.prototype.updateBehaviourDef = function(behaviourDefId, script, name, cb) {
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_update_behaviour_def($1, $2, $3)", [behaviourDefId, script, name], function (err, behaviourDefId) {
+    client.query("SELECT * FROM func_update_behaviour_def($1, $2, $3)", [behaviourDefId, script, name], function (err, result) {
       if (err) {
         console.error("error running db function func_update_behaviour_def", err);
         return cb(err);
@@ -179,7 +183,11 @@ db.prototype.updateBehaviourDef = function(behaviourDefId, script, name, cb) {
 
       done();
 
-      return cb(null, behaviourDefId);
+      if (result && result.rowCount > 0) {
+        return cb(null, result.rows[0].func_update_behaviour_def);
+      }
+
+      return cb(null);
     });
   });
 }
@@ -191,7 +199,7 @@ db.prototype.deleteBehaviourDef = function(behaviourDefId, cb) {
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_delete_behaviour_def($1)", [behaviourDefId], function (err, numRecordsDeleted) {
+    client.query("SELECT * FROM func_delete_behaviour_def($1)", [behaviourDefId], function (err, result) {
       if (err) {
         console.error("error running db function func_delete_behaviour_def", err);
         return cb(err);

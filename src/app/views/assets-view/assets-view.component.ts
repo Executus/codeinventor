@@ -51,4 +51,13 @@ export class AssetsViewComponent implements OnInit {
     this.openBehaviourEditor(behaviour.name, behaviour.script);
   }
 
+  onEditBehaviour(behaviour: BehaviourDef): void {
+    this.openBehaviourEditor(behaviour.name, behaviour.script).then(result => {
+      behaviour.script = result.data;
+      this.httpService.Put('/behaviours', { BehaviourDef: behaviour }).subscribe(res => {
+        
+      });
+    }, () => {});
+  }
+
 }
