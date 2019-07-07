@@ -41,8 +41,10 @@ export class BehaviourViewComponent implements OnInit, SelectObjectListener, Beh
       return behaviour.name;
     });
 
-    this.behavioursToAdd = this.behaviourService.getBehaviourDefs().filter(behaviour => {
-      return !objectBehaviours.includes(behaviour);
+    this.behavioursToAdd = this.behaviourService.getBehaviourDefs().filter(behaviourDef => {
+      return !objectBehaviours.includes(behaviourDef.name);
+    }).map(function(behaviourDef) {
+      return behaviourDef.name;
     });
   }
 

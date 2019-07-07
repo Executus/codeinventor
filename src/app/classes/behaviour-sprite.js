@@ -1,12 +1,4 @@
 'use strict';
-//import { Behaviour } from './behaviour';
-//import { Property } from './property';
-//import { Object } from './object';
-//import { PropertyVector2d } from './property-vector2d';
-//import { RuntimeService } from '../runtime/runtime.service';
-//import { BehaviourTransform } from './behaviour-transform';
-//import { PropertyFile } from './property-file';
-//import { FILETYPE } from './file';
 
 const PropertyVector2d = require('./property-vector2d');
 const PropertyFile = require('./property-file');
@@ -17,17 +9,20 @@ class BehaviourSprite {
     this.name = 'Sprite';
     this.properties = [];
     this.attachedObject = owner;
+
+    // Declare properties here.
+    this.Size = new PropertyVector2d('Size', 300, 300);
+    this.Texture = new PropertyFile('Texture', Constants.FiletypeImage);
     this.image = null;
     this.imageLoaded = false;
-
-    this.Size = new PropertyVector2d('Size', 300, 300);
+    
+    // Properties added to 'this.properties' will show up in the Editor.
     this.properties.push(this.Size);
-
-    this.Texture = new PropertyFile('Texture', Constants.FiletypeImage);
     this.properties.push(this.Texture);
   }
 
   init(runtimeService) {
+    // Code here will run once when the object is created.
     this.tex = null;
     this.vertices = [];
     this.positionBuffer = null;
@@ -84,6 +79,7 @@ class BehaviourSprite {
   }
 
   update(runtimeService) {
+    // Code here will run every frame (about 60 times every second).
     let transform = this.attachedObject.getBehaviour('BehaviourTransform');
     if (transform) {
       let posX = transform.WorldPosition.X;
@@ -142,6 +138,8 @@ class BehaviourSprite {
   }
 
   draw(runtimeService) {
+    // Advanced use - rendering specific code. Runs every frame after update.
+		// Most people will not need to write any code here.
     let gl = runtimeService.getGlContext();
 
     if (gl === null) {
@@ -157,7 +155,7 @@ class BehaviourSprite {
 
     // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
     let size = 2;               // 2 components per iteration
-    let type = gl.FLOAT;   // the data is 32bit floats
+    let type = gl.FLOAT;        // the data is 32bit floats
     let normalize = false;      // don't normalize the data
     let stride = 0;             // 0 = move forward size * sizeof(type) each iteration to get the next position
     let offset = 0;             // start at the beginning of the buffer

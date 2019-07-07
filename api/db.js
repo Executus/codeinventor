@@ -124,4 +124,84 @@ db.prototype.getFiles = function(type, cb) {
   });
 }
 
+db.prototype.getBehaviourDefs = function(cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_get_behaviour_defs()", [], function (err, result) {
+      if (err) {
+        console.error("error running db function func_get_behaviour_defs", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null, result.rows);
+    });
+  });
+}
+
+db.prototype.createBehaviourDef = function(script, name, system, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_insert_behaviour_def($1, $2, $3)", [script, name, system], function (err, newBehaviourDefId) {
+      if (err) {
+        console.error("error running db function func_insert_behaviour_def", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null, newBehaviourDefId);
+    });
+  });
+}
+
+db.prototype.updateBehaviourDef = function(behaviourDefId, script, name, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_update_behaviour_def($1, $2, $3)", [behaviourDefId, script, name], function (err, behaviourDefId) {
+      if (err) {
+        console.error("error running db function func_update_behaviour_def", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null, behaviourDefId);
+    });
+  });
+}
+
+db.prototype.deleteBehaviourDef = function(behaviourDefId, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_delete_behaviour_def($1)", [behaviourDefId], function (err, numRecordsDeleted) {
+      if (err) {
+        console.error("error running db function func_delete_behaviour_def", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null);
+    });
+  });
+}
+
 module.exports = new db();

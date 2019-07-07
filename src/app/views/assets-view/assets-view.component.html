@@ -7,7 +7,24 @@
             <button class="btn btn-light" (click)="onNewBehaviour()">
               <i class="fas fa-plus"></i>
             </button>
-            <label>New Behaviour</label>
+            <label class="pl-2">New Behaviour</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div *ngFor="let behaviour of behaviourService.getBehaviourDefs()" class="row m-0 pb-1">
+              <div class="col-md-5">
+                {{'Behaviour' + behaviour.name}}
+              </div>
+              <div class="col-md-1">
+                <button class="btn btn-light" *ngIf="!behaviour.isSystemBehaviour" title="Edit Behaviour">
+                  <i class="fas fa-edit pointer"></i>
+                </button>
+                <button class="btn btn-light" *ngIf="behaviour.isSystemBehaviour" title="View Behaviour" (click)="onViewBehaviour(behaviour)">
+                  <i class="fas fa-search pointer"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </ng-template>
