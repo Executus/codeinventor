@@ -14,6 +14,7 @@ import * as palette from '../../lib/palette';
 export class BehaviourEditorComponent implements OnInit, OnDestroy {
 
   behaviourName: string;
+  code: string;
   callbacks = {};
   pane;
   subscribers = [];
@@ -24,15 +25,20 @@ export class BehaviourEditorComponent implements OnInit, OnDestroy {
     this.behaviourName = '';
   }
 
-  public init(behaviourName: string): void {
+  public init(behaviourName: string, existingScript?: string): void {
     this.behaviourName = behaviourName;
+    if (existingScript) {
+      this.code = existingScript;
+    } else {
+      this.code = this.initBehaviourCode();
+    }
   }
 
   ngOnInit() {
     this.pane = this.initialPaneState();
     var pane = $('.left').find('.pane').attr('id');
     var doc = {
-      data: this.initBehaviourCode()
+      data: this.code
     };
     var mpp = this.pane;
     //if (!doc.file) { doc.file = 'setdoc'; }
