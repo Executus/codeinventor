@@ -3,15 +3,14 @@ import { Behaviour } from '../classes/behaviour';
 import { Object } from '../classes/object';
 import { RuntimeService } from '../runtime/runtime.service';
 import { HttpService } from './http.service';
-
-import * as BehaviourTransform from '../classes/behaviour-transform';
-import * as BehaviourSprite from '../classes/behaviour-sprite';
+import { ScriptService } from './script.service';
 
 export interface BehaviourDef {
   id: number;
   script: string;
   name: string;
-  isSystemBehaviour: boolean
+  isSystemBehaviour: boolean,
+  filename: string
 }
 
 @Injectable({
@@ -20,30 +19,28 @@ export interface BehaviourDef {
 export class BehaviourService {
 
   private behaviourDefinitions: BehaviourDef[] = [];
+  private behaviourFactory = {};
 
-  constructor(private runtimeService: RuntimeService, private httpService: HttpService) {
+  constructor(private runtimeService: RuntimeService, private httpService: HttpService, private scriptService: ScriptService) {
     this.httpService.Get('/behaviours').subscribe(res => {
       if (res.BehaviourDefs) {
         for (let i = 0; i < res.BehaviourDefs.length; i++) {
-          let id = res.BehaviourDefs[i].id;
-          let script = res.BehaviourDefs[i].script;
-          let name = res.BehaviourDefs[i].name;
-          let isSystem = res.BehaviourDefs[i].isSystemBehaviour;
-          this.registerBehaviourDef(id, script, name, isSystem);
+          this.registerBehaviourDef(res.BehaviourDefs[i]);
         }
       }
     });
   }
 
-  public registerBehaviourDef(behaviourDefId: number, script: string, name: string, isSystemBehaviour: boolean) {
+  public registerBehaviourDef(behaviourDef: BehaviourDef) {
     if (!this.behaviourDefinitions.map(function(def: BehaviourDef) {
-      return def.id;
-    }).includes(behaviourDefId)) {
-      this.behaviourDefinitions.push({
-        id: behaviourDefId,
-        script: script,
-        name: name,
-        isSystemBehaviour: isSystemBehaviour
+      return def.name;
+    }).includes(behaviourDef.name)) {
+      this.behaviourDefinitions.push(behaviourDef);
+
+      this.scriptService.loadScript(behaviourDef.name, 'http://localhost:3000/files/' + behaviourDef.filename + '.js').then((result) => {
+        this.behaviourFactory[behaviourDef.name] = result;
+      }, (reason) => {
+        console.log('Failed to load script: ' + reason);
       });
     }
   }
@@ -59,13 +56,10 @@ export class BehaviourService {
       return null;
     }
 
-    switch (behaviourDef) {
-      case 'Transform':
-        return new BehaviourTransform(object);
-      break;
-      case 'Sprite':
-        return new BehaviourSprite(object, this.runtimeService);
-      break;
+    try {
+      return eval('new Behaviour' + behaviourDef + '(object)');
+    } catch(e) {
+      console.log(e);
     }
 
     return null;

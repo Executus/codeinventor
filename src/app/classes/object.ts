@@ -1,9 +1,6 @@
 import { Behaviour } from './behaviour';
-//import { BehaviourTransform } from './behaviour-transform';
 import { BehaviourService } from '../services/behaviour.service';
 import { RuntimeService } from '../runtime/runtime.service';
-
-import * as BehaviourTransform from './behaviour-transform';
 
 export class Object {
 
@@ -18,7 +15,7 @@ export class Object {
 
   constructor(private behaviourService: BehaviourService) {
     this.name = 'New Object';
-    this.behaviours.push(new BehaviourTransform(this));
+    //this.behaviours.push(new BehaviourTransform(this));
   }
 
   public init(runtimeService: RuntimeService): void {

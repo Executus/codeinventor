@@ -35,12 +35,13 @@ export class AssetsViewComponent implements OnInit {
           id: -1,
           script: result.data,
           name: behaviourName,
-          isSystemBehaviour: false
+          isSystemBehaviour: false,
+          filename: ''
         };
   
         this.httpService.Post('/behaviours', { BehaviourDef: behaviour }).subscribe(res => {
           if (res.BehaviourDefId > -1) {
-            this.behaviourService.registerBehaviourDef(res.BehaviourDefId, behaviour.script, behaviour.name, behaviour.isSystemBehaviour);
+            this.behaviourService.registerBehaviourDef(res);
           }
         });
       }, () => {});

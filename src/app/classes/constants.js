@@ -1,5 +1,3 @@
-'use strict';
-
-module.exports = {
+var Constants = {
   FiletypeImage: 0
 };

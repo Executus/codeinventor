@@ -101,8 +101,7 @@ export class BehaviourEditorComponent implements OnInit, OnDestroy {
     code += '\tgetAttachedObject() {\n';
     code += '\t\treturn this.attachedObject;\n';
     code += '\t}\n\n';
-    code += '}\n\n';
-    code += 'module.exports = Behaviour' + this.behaviourName + ';';
+    code += '}';
     return code;
   }
 

@@ -8,12 +8,7 @@ INSERT INTO tbl_property_data_type (s_name) VALUES
 ('vector2d');
 
 INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified) VALUES
-('''use strict'';
-
-const PropertyVector2d = require(''./property-vector2d'');
-const PropertyFloat = require(''./property-float'');
-
-class BehaviourTransform {
+('class BehaviourTransform {
   constructor(owner) {
     this.name = ''Transform'';
     this.properties = [];
@@ -61,16 +56,8 @@ class BehaviourTransform {
     return this.attachedObject;
   }
 
-}
-
-module.exports = BehaviourTransform;', 'Transform', true, now(), now()),
-('''use strict'';
-
-const PropertyVector2d = require(''./property-vector2d'');
-const PropertyFile = require(''./property-file'');
-const Constants = require(''./constants'');
-
-class BehaviourSprite {
+}', 'Transform', true, now(), now()),
+('class BehaviourSprite {
   constructor(owner) {
     this.name = ''Sprite'';
     this.properties = [];
@@ -246,6 +233,4 @@ class BehaviourSprite {
   getAttachedObject() {
     return this.attachedObject;
   }
-}
-
-module.exports = BehaviourSprite;', 'Sprite', true, now(), now());
+}', 'Sprite', true, now(), now());

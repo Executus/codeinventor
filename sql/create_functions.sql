@@ -66,14 +66,14 @@ BEGIN
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
-CREATE OR REPLACE FUNCTION func_insert_behaviour_def(IN in_s_script TEXT, IN in_s_name TEXT, IN in_b_system BOOLEAN)
+CREATE OR REPLACE FUNCTION func_insert_behaviour_def(IN in_s_script TEXT, IN in_s_name TEXT, IN in_b_system BOOLEAN, IN in_u_filename UUID)
   RETURNS BIGINT AS
 $$
 DECLARE
   n_behaviour_def_id BIGINT;
 BEGIN
-  INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified)
-  VALUES (in_s_script, in_s_name, in_b_system, now(), now())
+  INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, u_filename, t_created, t_modified)
+  VALUES (in_s_script, in_s_name, in_b_system, in_u_filename, now(), now())
   RETURNING k_behaviour_def INTO n_behaviour_def_id;
   RETURN n_behaviour_def_id;
 END
@@ -84,24 +84,35 @@ CREATE OR REPLACE FUNCTION func_get_behaviour_defs()
     k_behaviour_def   BIGINT,
     s_script          TEXT,
     s_name            TEXT,
-    b_system          BOOLEAN
+    b_system          BOOLEAN,
+    u_filename        UUID
   ) AS
 $$
 BEGIN
   RETURN QUERY
-  SELECT bd.k_behaviour_def, bd.s_script, bd.s_name, bd.b_system
+  SELECT bd.k_behaviour_def, bd.s_script, bd.s_name, bd.b_system, bd.u_filename
   FROM tbl_behaviour_def AS bd;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
 CREATE OR REPLACE FUNCTION func_update_behaviour_def(IN in_n_behaviour_def_id BIGINT, IN in_s_script TEXT, IN in_s_name TEXT)
-  RETURNS BIGINT AS 
+  RETURNS TABLE(
+    k_behaviour_def   BIGINT,
+    s_script          TEXT,
+    s_name            TEXT,
+    b_system          BOOLEAN,
+    u_filename        UUID
+  ) AS
 $$
 BEGIN
   UPDATE tbl_behaviour_def
   SET (s_script, s_name, t_modified) = (in_s_script, in_s_name, now())
-  WHERE k_behaviour_def = in_n_behaviour_def_id;
-  RETURN in_n_behaviour_def_id;
+  WHERE tbl_behaviour_def.k_behaviour_def = in_n_behaviour_def_id;
+
+  RETURN QUERY
+  SELECT bd.k_behaviour_def, bd.s_script, bd.s_name, bd.b_system, bd.u_filename
+  FROM tbl_behaviour_def AS bd
+  WHERE bd.k_behaviour_def = in_n_behaviour_def_id;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 

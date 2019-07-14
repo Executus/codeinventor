@@ -16,6 +16,7 @@ CREATE TABLE tbl_behaviour_def
   k_behaviour_def               BIGSERIAL PRIMARY KEY,
   s_script                      TEXT NOT NULL,
   s_name                        TEXT NOT NULL,
+  u_filename                    UUID NOT NULL,
   b_system                      BOOLEAN NOT NULL,
   t_created                     TIMESTAMP NOT NULL,
   t_modified                    TIMESTAMP NOT NULL

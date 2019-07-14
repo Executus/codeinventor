@@ -21,7 +21,9 @@
               { "glob": "favicon.ico", "input": "src/", "output": "/" },
               { "glob": "*.js", "input": "src/app/lib/ace/", "output": "/" },
               { "glob": "*.js", "input": "src/app/lib/", "output": "/" },
-              { "glob": "*.css", "input": "src/app/lib/", "output": "/" }
+              { "glob": "*.css", "input": "src/app/lib/", "output": "/" },
+              { "glob": "property*.js", "input":"src/app/classes/", "output":"/" },
+              { "glob": "constants.js", "input":"src/app/classes/", "output":"/" }
             ],
             "styles": [
               "src/styles..scss"
@@ -81,7 +83,9 @@
               { "glob": "favicon.ico", "input": "src/", "output": "/" },
               { "glob": "*.js", "input": "src/app/lib/ace/", "output": "/" },
               { "glob": "*.js", "input": "src/app/lib/", "output": "/" },
-              { "glob": "*.css", "input": "src/app/lib/", "output": "/" }
+              { "glob": "*.css", "input": "src/app/lib/", "output": "/" },
+              { "glob": "property*.js", "input":"src/app/classes/", "output":"/" },
+              { "glob": "constants.js", "input":"src/app/classes/", "output":"/" }
             ]
           }
         },

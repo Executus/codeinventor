@@ -144,14 +144,14 @@ db.prototype.getBehaviourDefs = function(cb) {
   });
 }
 
-db.prototype.createBehaviourDef = function(script, name, system, cb) {
+db.prototype.createBehaviourDef = function(script, name, system, filename, cb) {
   this.pool.connect(function (err, client, done) {
     if (err) {
       console.error("error fetching client from pool", err);
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_insert_behaviour_def($1, $2, $3)", [script, name, system], function (err, result) {
+    client.query("SELECT * FROM func_insert_behaviour_def($1, $2, $3, $4)", [script, name, system, filename], function (err, result) {
       if (err) {
         console.error("error running db function func_insert_behaviour_def", err);
         return cb(err);
@@ -184,7 +184,7 @@ db.prototype.updateBehaviourDef = function(behaviourDefId, script, name, cb) {
       done();
 
       if (result && result.rowCount > 0) {
-        return cb(null, result.rows[0].func_update_behaviour_def);
+        return cb(null, result.rows[0]);
       }
 
       return cb(null);
