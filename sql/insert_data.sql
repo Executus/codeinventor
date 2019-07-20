@@ -15,14 +15,19 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified
     this.attachedObject = owner;
 
     // Declare properties here.
-    this.WorldPosition = new PropertyVector2d();
-    this.LocalPosition = new PropertyVector2d(''Position'', 0.0, 0.0);
-    let scale = new PropertyVector2d(''Scale'', 1.0, 1.0);
-    this.Rotation = new PropertyFloat(''Rotation'', 0.0);
+    this.WorldXPosition = new PropertyFloat();
+    this.WorldYPosition = new PropertyFloat();
+    this.LocalXPosition = new PropertyFloat(''X Position (pixels)'', 0.0);
+    this.LocalYPosition = new PropertyFloat(''Y Position (pixels)'', 0.0);
+    this.ScaleX = new PropertyFloat(''X Scale (multiplier)'', 1.0);
+    this.ScaleY = new PropertyFloat(''Y Scale (multiplier)'', 1.0);
+    this.Rotation = new PropertyFloat(''Rotation (degrees)'', 0.0);
 
     // Properties added to ''this.properties'' will show up in the Editor.
-    this.properties.push(this.LocalPosition);
-    this.properties.push(scale);
+    this.properties.push(this.LocalXPosition);
+    this.properties.push(this.LocalYPosition);
+    this.properties.push(this.ScaleX);
+    this.properties.push(this.ScaleY);
     this.properties.push(this.Rotation);
   }
 
@@ -33,15 +38,15 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified
 
   update(runtimeService) {
     // Code here will run every frame (about 60 times every second).
-    this.WorldPosition.X = this.LocalPosition.X;
-    this.WorldPosition.Y = this.LocalPosition.Y;
+    this.WorldXPosition.Value = this.LocalXPosition.Value;
+    this.WorldYPosition.Value = this.LocalYPosition.Value;
     
     let parentObject = this.attachedObject.getParent();
     if (parentObject) {
       let parentTransform = parentObject.getBehaviour(''BehaviourTransform'');
       if (parentTransform) {
-        this.WorldPosition.X = parentTransform.WorldPosition.X + this.LocalPosition.X;
-        this.WorldPosition.Y = parentTransform.WorldPosition.Y + this.LocalPosition.Y;
+        this.WorldXPosition.Value = parentTransform.WorldXPosition.Value + this.LocalXPosition.Value;
+        this.WorldYPosition.Value = parentTransform.WorldYPosition.Value + this.LocalYPosition.Value;
       }
     }
   }
@@ -64,13 +69,15 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified
     this.attachedObject = owner;
 
     // Declare properties here.
-    this.Size = new PropertyVector2d(''Size'', 300, 300);
+    this.Width = new PropertyFloat(''Width (pixels)'', 300);
+    this.Height = new PropertyFloat(''Height (pixels)'', 300);
     this.Texture = new PropertyFile(''Texture'', Constants.FiletypeImage);
     this.image = null;
     this.imageLoaded = false;
     
     // Properties added to ''this.properties'' will show up in the Editor.
-    this.properties.push(this.Size);
+    this.properties.push(this.Width);
+    this.properties.push(this.Height);
     this.properties.push(this.Texture);
   }
 
@@ -135,22 +142,22 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified
     // Code here will run every frame (about 60 times every second).
     let transform = this.attachedObject.getBehaviour(''BehaviourTransform'');
     if (transform) {
-      let posX = transform.WorldPosition.X;
-      let posY = transform.WorldPosition.Y;
+      let posX = transform.WorldXPosition.Value;
+      let posY = transform.WorldYPosition.Value;
 
       // Apply size
-      let vert1x = -(this.Size.X / 2); let vert1y = -(this.Size.Y / 2);     // Top left vertex
-      let vert2x = -(this.Size.X / 2); let vert2y =  (this.Size.Y / 2);     // Bottom left vertex
-      let vert3x =  (this.Size.X / 2); let vert3y =  (this.Size.Y / 2);     // Bottom right vertex
+      let vert1x = -(this.Width.Value / 2); let vert1y = -(this.Height.Value / 2);     // Top left vertex
+      let vert2x = -(this.Width.Value / 2); let vert2y =  (this.Height.Value / 2);     // Bottom left vertex
+      let vert3x =  (this.Width.Value / 2); let vert3y =  (this.Height.Value / 2);     // Bottom right vertex
 
-      let vert4x =  (this.Size.X / 2); let vert4y =  (this.Size.Y / 2);     // Bottom right vertex
-      let vert5x =  (this.Size.X / 2); let vert5y = -(this.Size.Y / 2);     // Top right vertex
-      let vert6x = -(this.Size.X / 2); let vert6y = -(this.Size.Y / 2);     // Top left vertex
+      let vert4x =  (this.Width.Value / 2); let vert4y =  (this.Height.Value / 2);     // Bottom right vertex
+      let vert5x =  (this.Width.Value / 2); let vert5y = -(this.Height.Value / 2);     // Top right vertex
+      let vert6x = -(this.Width.Value / 2); let vert6y = -(this.Height.Value / 2);     // Top left vertex
 
       // Apply rotation
       let rot = transform.Rotation.Value;
       if (rot != 0.0) {
-        let tanTheta = (this.Size.Y / 2) / (this.Size.X / 2);
+        let tanTheta = (this.Height.Value / 2) / (this.Width.Value / 2);
         let theta = Math.atan(tanTheta);
 
         // Convert to degrees
