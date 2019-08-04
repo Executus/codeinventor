@@ -277,3 +277,43 @@ db.prototype.getBehaviourDef = function(behaviourDefId, cb) {
     });
   });
 }
+
+db.prototype.getBehaviourDefProperties = function(behaviourDefId, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_get_behaviour_def_properties($1)", [behaviourDefId], function (err, result) {
+      if (err) {
+        console.error("error running db function func_get_behaviour_def_properties", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null, result.rows);
+    });
+  });
+}
+
+db.prototype.deleteBehaviourDefProperty = function(behaviourDefPropId, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_delete_behaviour_def_property($1)", [behaviourDefPropId], function (err, result) {
+      if (err) {
+        console.error("error running db function func_delete_behaviour_def_property", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null);
+    });
+  });
+}

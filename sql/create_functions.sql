@@ -173,3 +173,32 @@ BEGIN
   WHERE bd.k_behaviour_def = in_k_behaviour_def;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_get_behaviour_def_properties(IN in_k_behaviour_def BIGINT)
+  RETURNS TABLE(
+    k_behaviour_def_property    BIGINT,
+    s_name                      TEXT,
+    k_behaviour_def             BIGINT,
+    k_property_data_type        INTEGER
+  ) AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT bdp.k_behaviour_def_property, bdp.s_name, bdp.k_behaviour_def, bdp.k_property_data_type
+  FROM tbl_behaviour_def_property AS bdp
+  WHERE bdp.k_behaviour_def = in_k_behaviour_def;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_delete_behaviour_def_property(IN in_k_behaviour_def_property BIGINT)
+  RETURNS INTEGER AS
+$$
+DECLARE
+  n_records_deleted   INTEGER;
+BEGIN
+  DELETE FROM tbl_behaviour_def_property
+  WHERE k_behaviour_def_property = in_k_behaviour_def_property;
+  GET DIAGNOSTICS n_records_deleted = ROW_COUNT;
+  RETURN n_records_deleted;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;

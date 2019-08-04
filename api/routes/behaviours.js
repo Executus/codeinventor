@@ -23,13 +23,13 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
   let def = req.body.BehaviourDef;
   if (def) {
-    BehaviourUtility.createBehaviourDef(def, function(err, newBehaviourDefId) {
+    BehaviourUtility.createBehaviourDef(def, function(err, newBehaviourDef) {
       if (err) {
         return res.status(500).send(err);
       }
 
       let data = {
-        BehaviourDefId: newBehaviourDefId
+        BehaviourDef: newBehaviourDef
       };
 
       return res.status(200).send(data);

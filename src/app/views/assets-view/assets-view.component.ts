@@ -41,8 +41,8 @@ export class AssetsViewComponent implements OnInit {
         };
   
         this.httpService.Post('/behaviours', { BehaviourDef: behaviour }).subscribe(res => {
-          if (res.BehaviourDefId > -1) {
-            this.behaviourService.registerBehaviourDef(res);
+          if (res.BehaviourDef.id > -1) {
+            this.behaviourService.registerBehaviourDef(res.BehaviourDef);
           }
         });
       }, () => {});
