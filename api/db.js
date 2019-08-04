@@ -213,3 +213,67 @@ db.prototype.deleteBehaviourDef = function(behaviourDefId, cb) {
 }
 
 module.exports = new db();
+
+db.prototype.createBehaviourDefProperty = function(name, behaviourDefId, dataType, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_insert_behaviour_def_property($1, $2, $3)", [name, behaviourDefId, dataType], function (err, result) {
+      if (err) {
+        console.error("error running db function func_insert_behaviour_def_property", err);
+        return cb(err);
+      }
+
+      done();
+
+      if (result && result.rowCount > 0) {
+        return cb(null, result.rows[0].func_insert_behaviour_def_property);
+      }
+
+      return cb(new Error("Unknown error - failed to create behaviour definition property."));
+    });
+  });
+}
+
+db.prototype.getPropertyDataTypes = function(cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_get_property_data_types()", [], function (err, result) {
+      if (err) {
+        console.error("error running db function func_get_property_data_types", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null, result.rows);
+    });
+  });
+}
+
+db.prototype.getBehaviourDef = function(behaviourDefId, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_get_behaviour_def($1)", [behaviourDefId], function (err, result) {
+      if (err) {
+        console.error("error running db function func_get_behaviour_def", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null, result.rows);
+    });
+  });
+}

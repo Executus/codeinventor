@@ -45,6 +45,15 @@ export class BehaviourService {
     }
   }
 
+  public unregisterBehaviourDef(behaviourDef: BehaviourDef) {
+    for (let i = 0; i < this.behaviourDefinitions.length; i++) {
+      if (behaviourDef.id === this.behaviourDefinitions[i].id) {
+        this.behaviourDefinitions.splice(i, 1);
+        break;
+      }
+    }
+  }
+
   public getBehaviourDefs(): BehaviourDef[] {
     return this.behaviourDefinitions;
   }

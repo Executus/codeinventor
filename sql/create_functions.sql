@@ -122,9 +122,54 @@ $$
 DECLARE
   n_records_deleted   INTEGER;
 BEGIN
+  DELETE FROM tbl_behaviour_def_property
+  WHERE k_behaviour_def = in_n_behaviour_def_id;
   DELETE FROM tbl_behaviour_def
   WHERE k_behaviour_def = in_n_behaviour_def_id;
   GET DIAGNOSTICS n_records_deleted = ROW_COUNT;
   RETURN n_records_deleted;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_insert_behaviour_def_property(IN in_s_name TEXT, IN in_k_behaviour_def BIGINT, IN in_k_property_data_type INTEGER)
+  RETURNS BIGINT AS
+$$
+DECLARE
+  n_behaviour_def_property_id BIGINT;
+BEGIN
+  INSERT INTO tbl_behaviour_def_property (s_name, k_behaviour_def, k_property_data_type, t_created, t_modified)
+  VALUES (in_s_name, in_k_behaviour_def, in_k_property_data_type, now(), now())
+  RETURNING k_behaviour_def_property INTO n_behaviour_def_property_id;
+  RETURN n_behaviour_def_property_id;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_get_property_data_types()
+  RETURNS TABLE(
+    k_property_data_type   INTEGER,
+    s_name                 TEXT
+  ) AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT pdt.k_property_data_type, pdt.s_name
+  FROM tbl_property_data_type AS pdt;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_get_behaviour_def(IN in_k_behaviour_def BIGINT)
+  RETURNS TABLE(
+    k_behaviour_def   BIGINT,
+    s_script          TEXT,
+    s_name            TEXT,
+    b_system          BOOLEAN,
+    u_filename        UUID
+  ) AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT bd.k_behaviour_def, bd.s_script, bd.s_name, bd.b_system, bd.u_filename
+  FROM tbl_behaviour_def AS bd
+  WHERE bd.k_behaviour_def = in_k_behaviour_def;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;

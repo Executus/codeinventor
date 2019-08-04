@@ -1,11 +1,10 @@
 INSERT INTO tbl_property_data_type (s_name) VALUES
-('integer'),
-('float'),
-('string'),
-('boolean'),
-('timestamp'),
-('file'),
-('vector2d');
+('PropertyInteger'),
+('PropertyFloat'),
+('PropertyString'),
+('PropertyBoolean'),
+('PropertyDate'),
+('PropertyFile');
 
 INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified) VALUES
 ('class BehaviourTransform {
@@ -15,13 +14,13 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified
     this.attachedObject = owner;
 
     // Declare properties here.
-    this.WorldXPosition = new PropertyFloat();
-    this.WorldYPosition = new PropertyFloat();
     this.LocalXPosition = new PropertyFloat(''X Position (pixels)'', 0.0);
     this.LocalYPosition = new PropertyFloat(''Y Position (pixels)'', 0.0);
     this.ScaleX = new PropertyFloat(''X Scale (multiplier)'', 1.0);
     this.ScaleY = new PropertyFloat(''Y Scale (multiplier)'', 1.0);
     this.Rotation = new PropertyFloat(''Rotation (degrees)'', 0.0);
+    this.WorldXPosition = 0.0;
+    this.WorldYPosition = 0.0;
 
     // Properties added to ''this.properties'' will show up in the Editor.
     this.properties.push(this.LocalXPosition);
@@ -38,15 +37,15 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified
 
   update(runtimeService) {
     // Code here will run every frame (about 60 times every second).
-    this.WorldXPosition.Value = this.LocalXPosition.Value;
-    this.WorldYPosition.Value = this.LocalYPosition.Value;
+    this.WorldXPosition = this.LocalXPosition.Value;
+    this.WorldYPosition = this.LocalYPosition.Value;
     
     let parentObject = this.attachedObject.getParent();
     if (parentObject) {
       let parentTransform = parentObject.getBehaviour(''BehaviourTransform'');
       if (parentTransform) {
-        this.WorldXPosition.Value = parentTransform.WorldXPosition.Value + this.LocalXPosition.Value;
-        this.WorldYPosition.Value = parentTransform.WorldYPosition.Value + this.LocalYPosition.Value;
+        this.WorldXPosition = parentTransform.WorldXPosition + this.LocalXPosition.Value;
+        this.WorldYPosition = parentTransform.WorldYPosition + this.LocalYPosition.Value;
       }
     }
   }
@@ -142,8 +141,8 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified
     // Code here will run every frame (about 60 times every second).
     let transform = this.attachedObject.getBehaviour(''BehaviourTransform'');
     if (transform) {
-      let posX = transform.WorldXPosition.Value;
-      let posY = transform.WorldYPosition.Value;
+      let posX = transform.WorldXPosition;
+      let posY = transform.WorldYPosition;
 
       // Apply size
       let vert1x = -(this.Width.Value / 2); let vert1y = -(this.Height.Value / 2);     // Top left vertex
@@ -156,7 +155,7 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified
 
       // Apply rotation
       let rot = transform.Rotation.Value;
-      if (rot != 0.0) {
+      if (rot !== 0.0) {
         let tanTheta = (this.Height.Value / 2) / (this.Width.Value / 2);
         let theta = Math.atan(tanTheta);
 

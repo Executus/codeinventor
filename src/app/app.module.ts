@@ -27,6 +27,7 @@ import { RuntimeComponent } from './runtime/runtime.component';
 import { FileSelectModalComponent } from './modals/file-select-modal/file-select-modal.component';
 import { BehaviourEditorComponent } from './modals/behaviour-editor/behaviour-editor.component';
 import { NewBehaviourNameModalComponent } from './modals/new-behaviour-name-modal/new-behaviour-name-modal.component';
+import { DeleteBehaviourModalComponent } from './modals/delete-behaviour-modal/delete-behaviour-modal.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { NewBehaviourNameModalComponent } from './modals/new-behaviour-name-moda
     RuntimeComponent,
     FileSelectModalComponent,
     BehaviourEditorComponent,
-    NewBehaviourNameModalComponent
+    NewBehaviourNameModalComponent,
+    DeleteBehaviourModalComponent
   ],
   imports: [
     BrowserModule,
@@ -64,7 +66,8 @@ import { NewBehaviourNameModalComponent } from './modals/new-behaviour-name-moda
     DeleteObjectModalComponent,
     FileSelectModalComponent,
     BehaviourEditorComponent,
-    NewBehaviourNameModalComponent
+    NewBehaviourNameModalComponent,
+    DeleteBehaviourModalComponent
   ]
 })
 export class AppModule { }

@@ -83,7 +83,11 @@ export class BehaviourEditorComponent implements OnInit, OnDestroy {
     code += '\tconstructor(owner) {\n';
     code += '\t\tthis.name = \'' + this.behaviourName + '\';\n';
     code += '\t\tthis.properties = [];\n';
-    code += '\t\tthis.attachedObject = owner;\n';
+    code += '\t\tthis.attachedObject = owner;\n\n';
+    code += '\t\t// Declare properties here. Example:\n';
+    code += '\t\t// this.MyNumber = new PropertyFloat(\'MyNumber\', 0.0);\n\n';
+    code += '\t\t// Properties added to \'this.properties\' will appear in the Editor. Example:\n';
+    code += '\t\t// this.properties.push(this.MyNumber);\n\n';
     code += '\t}\n\n';
     code += '\tinit(runtimeService) {\n';
     code += '\t\t// Code here will run once when the object is created.\n';

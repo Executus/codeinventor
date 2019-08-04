@@ -4,6 +4,7 @@ import { BehaviourEditorComponent } from '../../modals/behaviour-editor/behaviou
 import { NewBehaviourNameModalComponent } from '../../modals/new-behaviour-name-modal/new-behaviour-name-modal.component';
 import { BehaviourService, BehaviourDef } from '../../services/behaviour.service';
 import { HttpService } from '../../services/http.service';
+import { DeleteBehaviourModalComponent } from '../../modals/delete-behaviour-modal/delete-behaviour-modal.component';
 
 @Component({
   selector: 'app-assets-view',
@@ -59,6 +60,25 @@ export class AssetsViewComponent implements OnInit {
         
       });
     }, () => {});
+  }
+
+  onDeleteBehaviour(behaviour: BehaviourDef): void {
+    // Display modal to warn user of delete
+    let modal: NgbModalRef = this.modalService.open(DeleteBehaviourModalComponent);
+    let modalComponent: DeleteBehaviourModalComponent = modal.componentInstance as DeleteBehaviourModalComponent;
+    if (modalComponent) {
+      modalComponent.setBehaviourName(behaviour.name);
+    }
+    modal.result.then(result => {
+      if (result === 'delete') {
+        // Perform the delete
+        this.httpService.Delete('/behaviours/' + behaviour.id).subscribe(res => {
+          if (res.result === 'success') {
+            this.behaviourService.unregisterBehaviourDef(behaviour);
+          }
+        });
+      }
+    });
   }
 
 }
