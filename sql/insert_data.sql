@@ -1,3 +1,8 @@
+DO $$
+DECLARE
+tranform_id INTEGER;
+sprite_id INTEGER;
+BEGIN
 INSERT INTO tbl_property_data_type (s_name) VALUES
 ('PropertyInteger'),
 ('PropertyFloat'),
@@ -6,7 +11,7 @@ INSERT INTO tbl_property_data_type (s_name) VALUES
 ('PropertyDate'),
 ('PropertyFile');
 
-INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified) VALUES
+INSERT INTO tbl_behaviour_def (s_script, s_name, u_filename, b_system, t_created, t_modified) VALUES
 ('class BehaviourTransform {
   constructor(owner) {
     this.name = ''Transform'';
@@ -60,7 +65,9 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified
     return this.attachedObject;
   }
 
-}', 'Transform', true, now(), now()),
+}', 'Transform', '57637465-8ecf-4520-8e31-ae9f571ed112', true, now(), now()) RETURNING k_behaviour_def INTO tranform_id;
+
+INSERT INTO tbl_behaviour_def (s_script, s_name, u_filename, b_system, t_created, t_modified) VALUES
 ('class BehaviourSprite {
   constructor(owner) {
     this.name = ''Sprite'';
@@ -239,4 +246,61 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, t_created, t_modified
   getAttachedObject() {
     return this.attachedObject;
   }
-}', 'Sprite', true, now(), now());
+}', 'Sprite', '589aa95b-a962-4722-bee7-43d3860506c8', true, now(), now()) RETURNING k_behaviour_def INTO sprite_id;
+
+INSERT INTO tbl_behaviour_def_property (s_name, k_behaviour_def, k_property_data_type, t_created, t_modified) VALUES
+('X Position (pixels)', tranform_id, (
+    SELECT k_property_data_type
+    FROM tbl_property_data_type
+    WHERE s_name = 'PropertyFloat'
+  ), now(), now());
+
+INSERT INTO tbl_behaviour_def_property (s_name, k_behaviour_def, k_property_data_type, t_created, t_modified) VALUES
+('Y Position (pixels)', tranform_id, (
+    SELECT k_property_data_type
+    FROM tbl_property_data_type
+    WHERE s_name = 'PropertyFloat'
+  ), now(), now());
+
+INSERT INTO tbl_behaviour_def_property (s_name, k_behaviour_def, k_property_data_type, t_created, t_modified) VALUES
+('X Scale (multiplier)', tranform_id, (
+    SELECT k_property_data_type
+    FROM tbl_property_data_type
+    WHERE s_name = 'PropertyFloat'
+  ), now(), now());
+
+INSERT INTO tbl_behaviour_def_property (s_name, k_behaviour_def, k_property_data_type, t_created, t_modified) VALUES
+('Y Scale (multiplier)', tranform_id, (
+    SELECT k_property_data_type
+    FROM tbl_property_data_type
+    WHERE s_name = 'PropertyFloat'
+  ), now(), now());
+
+INSERT INTO tbl_behaviour_def_property (s_name, k_behaviour_def, k_property_data_type, t_created, t_modified) VALUES
+('Rotation (degrees)', tranform_id, (
+    SELECT k_property_data_type
+    FROM tbl_property_data_type
+    WHERE s_name = 'PropertyFloat'
+  ), now(), now());
+
+INSERT INTO tbl_behaviour_def_property (s_name, k_behaviour_def, k_property_data_type, t_created, t_modified) VALUES
+('Width (pixels)', sprite_id, (
+    SELECT k_property_data_type
+    FROM tbl_property_data_type
+    WHERE s_name = 'PropertyFloat'
+  ), now(), now());
+
+INSERT INTO tbl_behaviour_def_property (s_name, k_behaviour_def, k_property_data_type, t_created, t_modified) VALUES
+('Height (pixels)', sprite_id, (
+    SELECT k_property_data_type
+    FROM tbl_property_data_type
+    WHERE s_name = 'PropertyFloat'
+  ), now(), now());
+
+INSERT INTO tbl_behaviour_def_property (s_name, k_behaviour_def, k_property_data_type, t_created, t_modified) VALUES
+('Texture', sprite_id, (
+    SELECT k_property_data_type
+    FROM tbl_property_data_type
+    WHERE s_name = 'PropertyFile'
+  ), now(), now());
+END $$;

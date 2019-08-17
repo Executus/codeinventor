@@ -126,7 +126,7 @@ export class Object {
     }
   }
 
-  public addBehaviour(behaviourDef: string): void {
+  public addBehaviour(behaviourDef: string): Behaviour {
     for (let i = 0; i < this.behaviours.length; i++) {
       if (this.behaviours[i].constructor['name'] === behaviourDef) {
         return;
@@ -136,6 +136,8 @@ export class Object {
     let newBehaviour = this.behaviourService.createBehaviour(behaviourDef, this);
     if (newBehaviour) {
       this.behaviours.push(newBehaviour);
+      return newBehaviour;
     }
+    return null;
   }
 }

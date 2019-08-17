@@ -1,6 +1,6 @@
 class PropertyFile {
   constructor(name, fileType) {
-    this.type = 'file';
+    this.type = 'PropertyFile';
 
     this.name = name || '';
     this.FileType = fileType;

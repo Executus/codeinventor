@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ObjectService, SelectObjectListener, BehavioursChangedListener } from '../../services/object.service';
-import { BehaviourService } from '../../services/behaviour.service'
+import { BehaviourService, BehaviourDef } from '../../services/behaviour.service'
 import { Object } from '../../classes/object';
 import { Behaviour } from '../../classes/behaviour';
 
@@ -11,7 +11,7 @@ import { Behaviour } from '../../classes/behaviour';
 })
 export class BehaviourViewComponent implements OnInit, SelectObjectListener, BehavioursChangedListener {
 
-  private behavioursToAdd: string[] = [];
+  private behavioursToAdd: BehaviourDef[] = [];
   private showAddBehaviourList: boolean = false;
   private selectedObject: Object = null;
 
@@ -31,7 +31,7 @@ export class BehaviourViewComponent implements OnInit, SelectObjectListener, Beh
     this.showAddBehaviourList = !this.showAddBehaviourList;
   }
 
-  private onChooseBehaviour(behaviourDef: string): void {
+  private onChooseBehaviour(behaviourDef: BehaviourDef): void {
     this.objectService.addObjectBehaviour(behaviourDef);
     this.showAddBehaviourList = false;
   }
@@ -43,8 +43,6 @@ export class BehaviourViewComponent implements OnInit, SelectObjectListener, Beh
 
     this.behavioursToAdd = this.behaviourService.getBehaviourDefs().filter(behaviourDef => {
       return !objectBehaviours.includes(behaviourDef.name);
-    }).map(function(behaviourDef) {
-      return behaviourDef.name;
     });
   }
 

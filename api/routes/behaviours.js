@@ -87,4 +87,27 @@ router.delete('/:behaviourdefid', function(req, res, next) {
   }
 });
 
+/* Create new behaviour instance */
+router.post('/instance', function(req, res, next) {
+  let instance = req.body.BehaviourInstance;
+  if (instance) {
+    BehaviourUtility.createBehaviourInstance(instance, function(err, newBehaviourInstance) {
+      if (err) {
+        return res.status(500).send(err);
+      }
+
+      let data = {
+        BehaviourInstance: newBehaviourInstance
+      };
+
+      return res.status(200).send(data);
+    });
+  } else {
+    let data = {
+      error: 'Bad request - BehaviourInstance not found in body.'
+    }
+    return res.status(400).send(data);
+  }
+});
+
 module.exports = router;

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { ObjectTreeComponent }  from '../object-tree/object-tree.component';
 import { Object }  from '../classes/object';
 import { Behaviour } from '../classes/behaviour';
+import { BehaviourDef } from '../services/behaviour.service';
+import { HttpService } from './http.service';
 
 export interface BehavioursChangedListener {
   onObjectBehavioursChanged(behaviours: Behaviour[]): void;
@@ -21,7 +23,7 @@ export class ObjectService {
   private selectObjectListeners: SelectObjectListener[] = [];
   private behavioursChangedListeners: BehavioursChangedListener[] = [];
 
-  constructor() { }
+  constructor(private httpService: HttpService) { }
 
   public registerObjectTree(tree: ObjectTreeComponent): void {
     if (this.objectTree === null) {
@@ -96,9 +98,32 @@ export class ObjectService {
     }
   }
 
-  public addObjectBehaviour(behaviourDef: string): void {
+  public addObjectBehaviour(behaviourDef: BehaviourDef): void {
     if (this.selectedObject) {
-      this.selectedObject.addBehaviour(behaviourDef);
+      let newBehaviour: Behaviour = this.selectedObject.addBehaviour(behaviourDef.name);
+      if (newBehaviour) {
+        let propertyInstances = {};
+        newBehaviour.properties.forEach(prop => {
+          propertyInstances[prop.name] = prop;
+          behaviourDef.properties.forEach(propDef => {
+            if (propDef.propertyName === prop.name) {
+              propertyInstances[prop.name].propertyDefId = propDef.propertyDefId;
+            }
+          });
+        });
+
+        let req = {
+          BehaviourInstance: {
+            objectId: this.selectedObject.getId(),
+            behaviourDefId: behaviourDef.id,
+            properties: propertyInstances
+          }
+        }
+
+        this.httpService.Post('/behaviours/instance', req).subscribe(res => {
+
+        });
+      }
       this.behavioursChangedListeners.forEach(listener => {
         listener.onObjectBehavioursChanged(this.selectedObject.getBehaviours());
       });

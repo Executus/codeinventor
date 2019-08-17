@@ -5,12 +5,19 @@ import { RuntimeService } from '../runtime/runtime.service';
 import { HttpService } from './http.service';
 import { ScriptService } from './script.service';
 
+export interface PropertyDef {
+  propertyDefId: number,
+  propertyName: string,
+  propertyType: number
+}
+
 export interface BehaviourDef {
   id: number;
   script: string;
   name: string;
   isSystemBehaviour: boolean,
-  filename: string
+  filename: string,
+  properties: PropertyDef[]
 }
 
 @Injectable({

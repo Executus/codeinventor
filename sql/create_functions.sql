@@ -202,3 +202,58 @@ BEGIN
   RETURN n_records_deleted;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_insert_behaviour_instance(IN in_k_object BIGINT, IN in_k_behaviour_def BIGINT)
+  RETURNS BIGINT AS
+$$
+DECLARE
+  n_behaviour_instance_id BIGINT;
+BEGIN
+  INSERT INTO tbl_behaviour_instance (k_object, k_behaviour_def, t_created, t_modified)
+  VALUES (in_k_object, in_k_behaviour_def, now(), now())
+  RETURNING k_behaviour_instance INTO n_behaviour_instance_id;
+  RETURN n_behaviour_instance_id;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_delete_behaviour_instance(IN in_k_behaviour_instance BIGINT)
+  RETURNS INTEGER AS
+$$
+DECLARE
+  n_records_deleted   INTEGER;
+BEGIN
+  DELETE FROM tbl_behaviour_instance
+  WHERE k_behaviour_instance = in_k_behaviour_instance;
+  GET DIAGNOSTICS n_records_deleted = ROW_COUNT;
+  RETURN n_records_deleted;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_insert_behaviour_instance_prop(IN in_k_behaviour_instance BIGINT, IN in_k_behaviour_def_property BIGINT, IN in_n_value INTEGER DEFAULT NULL,
+                                                               IN in_r_value REAL DEFAULT NULL, IN in_s_value TEXT DEFAULT NULL, IN in_b_value BOOLEAN DEFAULT NULL,
+                                                               IN in_t_value TIMESTAMP DEFAULT NULL, IN in_x_value BYTEA DEFAULT NULL)
+  RETURNS BIGINT AS
+$$
+DECLARE
+  n_behaviour_instance_prop_id BIGINT;
+BEGIN
+  INSERT INTO tbl_behaviour_instance_property (k_behaviour_instance, k_behaviour_def_property, n_value, r_value, s_value, b_value, 
+                                               t_value, x_value, t_created, t_modified)
+  VALUES (in_k_behaviour_instance, in_k_behaviour_def_property, in_n_value, in_r_value, in_s_value, in_b_value, in_t_value, in_x_value, now(), now())
+  RETURNING k_behaviour_instance_property INTO n_behaviour_instance_prop_id;
+  RETURN n_behaviour_instance_prop_id;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_delete_behaviour_instance_prop(IN in_k_behaviour_instance_property BIGINT)
+  RETURNS INTEGER AS
+$$
+DECLARE
+  n_records_deleted   INTEGER;
+BEGIN
+  DELETE FROM tbl_behaviour_instance_property
+  WHERE k_behaviour_instance_property = in_k_behaviour_instance_property;
+  GET DIAGNOSTICS n_records_deleted = ROW_COUNT;
+  RETURN n_records_deleted;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;

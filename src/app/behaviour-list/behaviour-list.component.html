@@ -14,16 +14,10 @@
       </div>
       <div class="col-md-7">
         <span [ngSwitch]="property.type">
-          <span *ngSwitchCase="'float'">
+          <span *ngSwitchCase="'PropertyFloat'">
             <input class="form-control float-input" type="number" step="0.01" [(ngModel)]="property.Value">
           </span>
-          <span *ngSwitchCase="'vector2d'">
-            <h6>X</h6>
-            <input class="form-control float-input" type="number" step="0.01" [(ngModel)]="property.X">
-            <h6>Y</h6>
-            <input class="form-control float-input" type="number" step="0.01" [(ngModel)]="property.Y">
-          </span>
-          <span *ngSwitchCase="'file'">
+          <span *ngSwitchCase="'PropertyFile'">
             <button class="btn btn-sm btn-light file-btn ml-2" (click)="onChooseFile(property)">
               <i class="far fa-image" *ngIf="!property.Value"></i>
               <img *ngIf="property.Value" [src]="'http://localhost:3000/files/' + property.Value.filename">

@@ -37,36 +37,53 @@ BehaviourUtility.prototype.getBehaviourDefs = function(cb) {
     let behaviourDefs = [];
 
     async.each(records, function(record, next){
-      let filename = config.BASE_FILE_DIR + 'tmp/' + record.u_filename + '.js';
-      fs.access(filename, fs.F_OK, (err) => {
+      let properties = [];
+      db.getBehaviourDefProperties(record['k_behaviour_def'], function(err, propertyDefs) {
         if (err) {
-          fs.writeFile(filename, record.s_script, 'utf8', function(err2) {
-            if (err2) {
-              return next(err2);
-            }
+          return next(err);
+        }
 
+        for (let i = 0; i < propertyDefs.length; i++) {
+          properties.push({
+            propertyDefId: propertyDefs[i]['k_behaviour_def_property'],
+            propertyType: propertyDefs[i]['k_property_data_type'],
+            propertyName: propertyDefs[i]['s_name']
+          });
+        }
+
+        let filename = config.BASE_FILE_DIR + 'tmp/' + record.u_filename + '.js';
+        fs.access(filename, fs.F_OK, (err) => {
+          if (err) {
+            fs.writeFile(filename, record.s_script, 'utf8', function(err2) {
+              if (err2) {
+                return next(err2);
+              }
+
+              behaviourDefs.push({
+                id: record.k_behaviour_def,
+                name: record.s_name,
+                script: record.s_script,
+                isSystemBehaviour: record.b_system,
+                filename: record.u_filename,
+                properties: properties
+              });
+    
+              return next();
+            });
+          } else {
             behaviourDefs.push({
               id: record.k_behaviour_def,
               name: record.s_name,
               script: record.s_script,
               isSystemBehaviour: record.b_system,
-              filename: record.u_filename
+              filename: record.u_filename,
+              properties: properties
             });
-  
-            return next();
-          });
-        } else {
-          behaviourDefs.push({
-            id: record.k_behaviour_def,
-            name: record.s_name,
-            script: record.s_script,
-            isSystemBehaviour: record.b_system,
-            filename: record.u_filename
-          });
 
-          return next();
-        }
-      })
+            return next();
+          }
+        })
+      });
     }, function(err) {
       if (err) {
         return cb(err);
@@ -89,7 +106,7 @@ BehaviourUtility.prototype.createBehaviourDef = function(behaviourDef, cb) {
       return cb(err);
     }
 
-    self.createPropertyDefs(newBehaviourDefId, script, function(err) {
+    self.createPropertyDefs(newBehaviourDefId, script, function(err, newPropertyDefs) {
       if (err) {
         return cb(err);
       }
@@ -104,7 +121,8 @@ BehaviourUtility.prototype.createBehaviourDef = function(behaviourDef, cb) {
           script: script,
           name: name,
           isSystem: isSystem,
-          filename: filename
+          filename: filename,
+          properties: newPropertyDefs
         }
   
         return cb(null, newBehaviourDef);
@@ -244,6 +262,7 @@ BehaviourUtility.prototype.parseScriptForProperties = function(script) {
 
 BehaviourUtility.prototype.createPropertyDefs = function(behaviourDefId, script, cb) {
   let properties = this.parseScriptForProperties(script);
+  let addedPropertyDefs = [];
 
   async.each(this.propertyTypes, function(propertyType, nextTypeCb) {
     async.each(properties[propertyType.name], function(property, nextPropCb) {
@@ -251,16 +270,27 @@ BehaviourUtility.prototype.createPropertyDefs = function(behaviourDefId, script,
         if (err) {
           return nextPropCb(err);
         }
+        addedPropertyDefs.push({
+          propertyDefId: newPropertyDefId,
+          propertyType: propertyType.id,
+          propertyName: properties[propertyType.name]
+        });
         nextPropCb();
       });
     }, nextTypeCb);
-  }, cb);
+  }, function(err) {
+    if (err) {
+      return cb(err);
+    }
+    return cb(null, addedPropertyDefs);
+  });
 };
 
 BehaviourUtility.prototype.updatePropertyDefs = function(behaviourDefId, script, cb) {
   let self = this;
   let properties = this.parseScriptForProperties(script);
   let existingPropertyMap = {};
+  let updatedProperties = [];
 
   db.getBehaviourDefProperties(behaviourDefId, function(err, results) {
     if (err) {
@@ -268,30 +298,55 @@ BehaviourUtility.prototype.updatePropertyDefs = function(behaviourDefId, script,
     }
 
     async.series([
+      // Get a list of existing property defs in database
       function(mapExistingPropertiesCb) {
         async.each(results, function(result, next) {
           existingPropertyMap[result.s_name] = result.k_behaviour_def_property;
           next();
         }, mapExistingPropertiesCb);
       },
+      // Add new properties that came through the request, removing from the existing list
       function(addNewPropertiesCb) {
         async.eachOf(properties, function(propertyTypeValues, propertyType, nextPropertyTypeCb) {
           async.each(propertyTypeValues, function(val, valueCb) {
             if (existingPropertyMap.hasOwnProperty(val)) {
+              updatedProperties.push({
+                propertyDefId: existingPropertyMap[val],
+                propertyType: this.propertyTypeIdMap[propertyType],
+                propertyName: val
+              });
               delete existingPropertyMap[val];
               return valueCb();
             } else {
-              db.createBehaviourDefProperty(val, behaviourDefId, self.propertyTypeIdMap[propertyType], valueCb);
+              db.createBehaviourDefProperty(val, behaviourDefId, self.propertyTypeIdMap[propertyType], function(err, newBehaviourDefProp) {
+                if (err) {
+                  return valueCb(err);
+                }
+
+                updatedProperties.push({
+                  propertyDefId: newBehaviourDefProp['k_behaviour_def_property'],
+                  propertyType: newBehaviourDefProp['k_property_data_type'],
+                  propertyName: newBehaviourDefProp['s_name']
+                });
+                return valueCb();
+              });
             }
           }, nextPropertyTypeCb);
         }, addNewPropertiesCb);
       },
+      // Anything left in the existing list did not come through the request so delete them
       function(removeOldPropertiesCb) {
         async.each(existingPropertyMap, function(oldPropertyId, next){
           db.deleteBehaviourDefProperty(oldPropertyId, next);
         }, removeOldPropertiesCb);
       }
-    ], cb);
+    ], function(err) {
+      if (err) {
+        return cb(err);
+      }
+
+      return cb(null, updatedProperties);
+    });
   });
 }
 
@@ -306,7 +361,7 @@ BehaviourUtility.prototype.updateBehaviourDef = function(behaviourDef, cb) {
       return cb(err);
     }
 
-    self.updatePropertyDefs(behaviourDefId, script, function(err) {
+    self.updatePropertyDefs(behaviourDefId, script, function(err, propertyDefs) {
       if (err) {
         return cb(err);
       }
@@ -316,7 +371,8 @@ BehaviourUtility.prototype.updateBehaviourDef = function(behaviourDef, cb) {
         name: result.s_name,
         script: result.s_script,
         isSystemBehaviour: result.b_system,
-        filename: result.u_filename
+        filename: result.u_filename,
+        properties: propertyDefs
       };
   
       fs.writeFile(config.BASE_FILE_DIR + 'tmp/' + updatedDef.filename + '.js', updatedDef.script, 'utf8', function(err) {
@@ -355,6 +411,64 @@ BehaviourUtility.prototype.deleteBehaviourDef = function(behaviourDefId, cb) {
     } else {
       return cb(new Error("Could not find behaviour definition in database."));
     }
+  });
+};
+
+BehaviourUtility.prototype.createBehaviourInstance = function(behaviourInstance, cb) {
+  let objectId = behaviourInstance.objectId;
+  let behaviourDefId = behaviourInstance.behaviourDefId;
+  let properties = behaviourInstance.properties;
+  let propertyInstances = [];
+
+  db.createBehaviourInstance(objectId, behaviourDefId, function(err, newBehaviourInstanceId) {
+    if (err) {
+      return cb(err);
+    }
+
+    async.eachOf(properties, function(value, key, next) {
+      let propertyDefId = value.propertyDefId;
+      let intVal = null;
+      let floatVal = null;
+      let stringVal = null;
+      let boolVal = null;
+      let timeVal = null;
+      let byteVal = null;
+
+      let propertyValue = null;
+
+      switch (value.type) {
+        case 'PropertyFloat':
+        floatVal = value.Value;
+        propertyValue = value.Value;
+        break;
+      }
+
+      db.createBehaviourInstanceProp(newBehaviourInstanceId, propertyDefId, intVal, floatVal, stringVal, boolVal, timeVal, byteVal, function(err, newPropInstanceId) {
+        if (err) {
+          return next(err);
+        }
+
+        propertyInstances.push({
+          propertyInstanceId: newPropInstanceId,
+          propertyDefinitionId: propertyDefId,
+          propertyValue: propertyValue
+        });
+        return next();
+      });
+    }, function(err) {
+      if (err) {
+        return cb(err);
+      }
+
+      let behaviourInstance = {
+        instanceId: newBehaviourInstanceId,
+        objectId: objectId,
+        definitionId: behaviourDefId,
+        propertyInstances: propertyInstances
+      };
+
+      return cb(null, behaviourInstance);
+    });
   });
 };
 

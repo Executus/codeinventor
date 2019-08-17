@@ -317,3 +317,91 @@ db.prototype.deleteBehaviourDefProperty = function(behaviourDefPropId, cb) {
     });
   });
 }
+
+db.prototype.createBehaviourInstance = function(objectId, behaviourDefId, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_insert_behaviour_instance($1, $2)", [objectId, behaviourDefId], function (err, result) {
+      if (err) {
+        console.error("error running db function func_insert_behaviour_instance", err);
+        return cb(err);
+      }
+
+      done();
+
+      if (result && result.rowCount > 0) {
+        return cb(null, result.rows[0].func_insert_behaviour_instance);
+      }
+
+      return cb(new Error("Unknown error - failed to create behaviour instance."));
+    });
+  });
+}
+
+db.prototype.deleteBehaviourInstance = function(behaviourInstanceId, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_delete_behaviour_instance($1)", [behaviourInstanceId], function (err, result) {
+      if (err) {
+        console.error("error running db function func_delete_behaviour_instance", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null);
+    });
+  });
+}
+
+db.prototype.createBehaviourInstanceProp = function(behaviourInstanceId, behaviourDefPropId, intVal, floatVal, stringVal, boolVal, timeVal, byteVal, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_insert_behaviour_instance_prop($1, $2, $3, $4, $5, $6, $7, $8)", [behaviourInstanceId, behaviourDefPropId, intVal, floatVal, stringVal, boolVal, timeVal, byteVal], function (err, result) {
+      if (err) {
+        console.error("error running db function func_insert_behaviour_instance_prop", err);
+        return cb(err);
+      }
+
+      done();
+
+      if (result && result.rowCount > 0) {
+        return cb(null, result.rows[0].func_insert_behaviour_instance_prop);
+      }
+
+      return cb(new Error("Unknown error - failed to create behaviour instance property."));
+    });
+  });
+}
+
+db.prototype.deleteBehaviourInstanceProp = function(behaviourInstancePropId, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_delete_behaviour_instance_prop($1)", [behaviourInstancePropId], function (err, result) {
+      if (err) {
+        console.error("error running db function func_delete_behaviour_instance_prop", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null);
+    });
+  });
+}
