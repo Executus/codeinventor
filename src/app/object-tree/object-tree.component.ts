@@ -33,6 +33,7 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
 
   public createNewEmptyObject(parent: Object): void {
     let obj: Object = new Object(this.behaviourService);
+    obj.upToDate = true;
 
     if (parent === null) {
       this.treeData.push(obj);

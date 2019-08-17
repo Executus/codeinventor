@@ -47,26 +47,35 @@ export class ObjectService {
 
   public setSelectedObject(object: Object): void {
     this.selectedObject = object;
-    this.httpService.Get('/behaviours/instance/' + object.getId()).subscribe(res => {
-      res.BehaviourInstances.forEach(behaviourInstance => {
-        let behaviourDef: Behaviour = object.addBehaviour(behaviourInstance.name);
-        behaviourInstance.propertyInstances.forEach(propertyInstance => {
-          behaviourDef.properties.forEach(property => {
-            if (property.name === propertyInstance.propertyName) {
-              switch (propertyInstance.propertyType) {
-                case 'PropertyFloat':
-                property.Value = propertyInstance.propertyValue;
-                break;
+
+    if (object && object.upToDate === false) {
+      this.httpService.Get('/behaviours/instance/' + object.getId()).subscribe(res => {
+        res.BehaviourInstances.forEach(behaviourInstance => {
+          let behaviourDef: Behaviour = object.addBehaviour(behaviourInstance.name);
+          behaviourInstance.propertyInstances.forEach(propertyInstance => {
+            behaviourDef.properties.forEach(property => {
+              if (property.name === propertyInstance.propertyName) {
+                switch (propertyInstance.propertyType) {
+                  case 'PropertyFloat':
+                  property.Value = propertyInstance.propertyValue;
+                  break;
+                }
               }
-            }
+            });
           });
         });
+
+        object.upToDate = true;
+        
+        this.selectObjectListeners.forEach(listener => {
+          listener.onObjectSelected(this.selectedObject);
+        });
       });
-      
+    } else {
       this.selectObjectListeners.forEach(listener => {
         listener.onObjectSelected(this.selectedObject);
-      })
-    });
+      });
+    }
   }
 
   public getSelectedObject(): Object {

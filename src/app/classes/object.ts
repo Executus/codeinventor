@@ -13,6 +13,8 @@ export class Object {
   private editing: boolean = false;
   private behaviours: Behaviour[] = [];
 
+  public upToDate: boolean = false;
+
   constructor(private behaviourService: BehaviourService) {
     this.name = 'New Object';
     //this.behaviours.push(new BehaviourTransform(this));
