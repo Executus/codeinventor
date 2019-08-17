@@ -4,7 +4,7 @@ import { RuntimeService } from '../runtime/runtime.service';
 
 export interface Behaviour {
   name: string;
-  properties: Property[];
+  properties;
   attachedObject: Object;
 
   init(runtimeService: RuntimeService): void;

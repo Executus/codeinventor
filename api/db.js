@@ -405,3 +405,67 @@ db.prototype.deleteBehaviourInstanceProp = function(behaviourInstancePropId, cb)
     });
   });
 }
+
+db.prototype.getBehaviourInstances = function(objectId, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_get_behaviour_instances($1)", [objectId], function (err, result) {
+      if (err) {
+        console.error("error running db function func_get_behaviour_instances", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null, result.rows);
+    });
+  });
+}
+
+db.prototype.getBehaviourInstanceProperties = function(behaviourInstanceId, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_get_behaviour_instance_properties($1)", [behaviourInstanceId], function (err, result) {
+      if (err) {
+        console.error("error running db function func_get_behaviour_instance_properties", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null, result.rows);
+    });
+  });
+}
+
+db.prototype.getPropertyType = function(propertyDefId, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_get_property_type($1)", [propertyDefId], function (err, result) {
+      if (err) {
+        console.error("error running db function func_get_property_type", err);
+        return cb(err);
+      }
+
+      done();
+
+      if (result && result.rowCount > 0) {
+        return cb(null, result.rows[0].func_get_property_type);
+      }
+
+      return cb(new Error("Unknown error - failed to get property type."));
+    });
+  });
+}

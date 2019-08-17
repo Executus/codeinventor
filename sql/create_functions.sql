@@ -257,3 +257,64 @@ BEGIN
   RETURN n_records_deleted;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_get_behaviour_instances(IN in_k_object BIGINT)
+  RETURNS TABLE(
+    k_behaviour_instance   BIGINT,
+    k_object               BIGINT,
+    k_behaviour_def        BIGINT,
+    s_name                 TEXT
+  ) AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT bi.k_behaviour_instance, bi.k_object, bi.k_behaviour_def, bd.s_name
+  FROM tbl_behaviour_instance AS bi
+  INNER JOIN tbl_behaviour_def bd
+  ON bd.k_behaviour_def = bi.k_behaviour_def
+  WHERE bi.k_object = in_k_object;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_get_behaviour_instance_properties(IN in_k_behaviour_instance BIGINT)
+  RETURNS TABLE(
+    k_behaviour_instance_property BIGINT,
+    k_behaviour_instance          BIGINT,
+    k_behaviour_def_property      BIGINT,
+    s_name                        TEXT,
+    s_type                        TEXT,
+    n_value                       INTEGER,
+    r_value                       REAL,
+    s_value                       TEXT,
+    b_value                       BOOLEAN,
+    t_value                       TIMESTAMP,
+    x_value                       BYTEA
+  ) AS
+$$
+BEGIN
+  RETURN QUERY
+  SELECT bip.k_behaviour_instance_property, bip.k_behaviour_instance, bip.k_behaviour_def_property, bdp.s_name, pdt.s_name AS s_type,
+         bip.n_value, bip.r_value, bip.s_value, bip.b_value, bip.t_value, bip.x_value
+  FROM tbl_behaviour_instance_property AS bip
+  INNER JOIN tbl_behaviour_def_property bdp
+  ON bdp.k_behaviour_def_property = bip.k_behaviour_def_property
+  INNER JOIN tbl_property_data_type pdt
+  ON pdt.k_property_data_type = bdp.k_property_data_type
+  WHERE bip.k_behaviour_instance = in_k_behaviour_instance;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_get_property_type(IN in_k_behaviour_def_property BIGINT)
+  RETURNS TEXT AS
+$$
+DECLARE
+  s_property_type  TEXT;
+BEGIN
+  SELECT pdt.s_name INTO s_property_type
+  FROM tbl_behaviour_def_property AS bdp
+  INNER JOIN tbl_property_data_type pdt
+  ON pdt.k_property_data_type = bdp.k_property_data_type
+  WHERE bdp.k_behaviour_def_property = in_k_behaviour_def_property;
+  RETURN s_property_type;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;

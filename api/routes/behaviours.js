@@ -110,4 +110,19 @@ router.post('/instance', function(req, res, next) {
   }
 });
 
+/* Get behaviour instances */
+router.get('/instance/:objectid', function(req, res, next) {
+  let objId = req.params.objectid;
+  BehaviourUtility.getBehaviourInstances(objId, function(err, behaviourInstances) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+
+    let data = {
+      BehaviourInstances: behaviourInstances
+    }
+    return res.status(200).send(data);
+  });
+});
+
 module.exports = router;

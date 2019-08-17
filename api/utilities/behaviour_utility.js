@@ -472,4 +472,71 @@ BehaviourUtility.prototype.createBehaviourInstance = function(behaviourInstance,
   });
 };
 
+BehaviourUtility.prototype.getBehaviourInstances = function(objectId, cb) {
+  db.getBehaviourInstances(objectId, function(err, behaviours) {
+    if (err) {
+      return cb(err);
+    }
+
+    let behaviourInstances = [];
+
+    async.each(behaviours, function(behaviour, next) {
+      let behaviourInstanceId = behaviour['k_behaviour_instance'];
+      let propertyInstances = [];
+
+      db.getBehaviourInstanceProperties(behaviourInstanceId, function(err, properties) {
+        if (err) {
+          return next(err);
+        }
+
+        async.each(properties, function(property, nextProp) {
+          let propertyDefId = property['k_behaviour_def_property'];
+
+          db.getPropertyType(propertyDefId, function(err, propertyType) {
+            if (err) {
+              return nextProp(err);
+            }
+
+            let propertyValue = null;
+  
+            switch (propertyType) {
+              case 'PropertyFloat':
+              propertyValue = property['r_value'];
+              break;
+            }
+            
+            propertyInstances.push({
+              propertyInstanceId: property['k_behaviour_instance_property'],
+              propertyDefinitionId: property['k_behaviour_def_property'],
+              propertyValue: propertyValue,
+              propertyName: property['s_name'],
+              propertyType: property['s_type']
+            });
+            return nextProp();
+          });
+        }, function(err) {
+          if (err) {
+            return next(err);
+          }
+
+          behaviourInstances.push({
+            instanceId: behaviour['k_behaviour_instance'],
+            objectId: behaviour['k_object'],
+            definitionId: behaviour['k_behaviour_def'],
+            name: behaviour['s_name'],
+            propertyInstances: propertyInstances
+          });
+          return next();
+        })
+      });
+    }, function(err) {
+      if (err) {
+        return cb(err);
+      }
+
+      return cb(null, behaviourInstances);
+    });
+  });
+};
+
 module.exports = new BehaviourUtility();
