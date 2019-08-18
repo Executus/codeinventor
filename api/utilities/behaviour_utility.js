@@ -539,4 +539,43 @@ BehaviourUtility.prototype.getBehaviourInstances = function(objectId, cb) {
   });
 };
 
+BehaviourUtility.prototype.updatePropertyInstance = function(propertyInstance, cb) {
+  let propertyInstanceId = propertyInstance.propertyInstanceId;
+  let intVal = null;
+  let floatVal = null;
+  let stringVal = null;
+  let boolVal = null;
+  let timeVal = null;
+  let byteVal = null;
+
+  let propertyValue = null;
+
+  switch (propertyInstance.propertyType) {
+    case 'PropertyFloat':
+    floatVal = propertyInstance.propertyValue;
+    propertyValue = propertyInstance.propertyValue;
+    break;
+  }
+
+  db.updateBehaviourInstanceProp(propertyInstanceId, intVal, floatVal, stringVal, boolVal, timeVal, byteVal, function(err, result) {
+    if (err) {
+      return cb(err);
+    }
+
+    let updatedPropInstance = {
+      propertyInstanceId: result[0]['k_behaviour_instance_property'],
+      propertyDefinitionId: result[0]['k_behaviour_def_property'],
+      propertyValue: propertyValue,
+      propertyName: result[0]['s_name'],
+      propertyType: result[0]['s_type']
+    };
+
+    return cb(null, updatedPropInstance);
+  });
+};
+
+BehaviourUtility.prototype.deleteBehaviourInstance = function(behaviourInstanceId, cb) {
+  db.deleteBehaviourInstance(behaviourInstanceId, cb);
+};
+
 module.exports = new BehaviourUtility();

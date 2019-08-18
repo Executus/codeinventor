@@ -6,6 +6,7 @@ export interface Behaviour {
   name: string;
   properties;
   attachedObject: Object;
+  instanceId: number;
 
   init(runtimeService: RuntimeService): void;
   update(runtimeService: RuntimeService): void;

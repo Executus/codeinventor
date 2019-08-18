@@ -469,3 +469,23 @@ db.prototype.getPropertyType = function(propertyDefId, cb) {
     });
   });
 }
+
+db.prototype.updateBehaviourInstanceProp = function(propertyInstanceId, intVal, floatVal, stringVal, boolVal, timeVal, byteVal, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_update_behaviour_instance_property($1, $2, $3, $4, $5, $6, $7)", [propertyInstanceId, intVal, floatVal, stringVal, boolVal, timeVal, byteVal], function (err, result) {
+      if (err) {
+        console.error("error running db function func_update_behaviour_instance_property", err);
+        return cb(err);
+      }
+
+      done();
+
+      return cb(null, result.rows);
+    });
+  });
+}

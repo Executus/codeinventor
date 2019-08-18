@@ -7,6 +7,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { FileSelectModalComponent } from '../modals/file-select-modal/file-select-modal.component';
 import { PropertyFile } from '../classes/property-file';
 import { File } from '../classes/file';
+import { HttpService } from '../services/http.service';
 
 @Component({
   selector: 'app-behaviour-list',
@@ -17,7 +18,7 @@ export class BehaviourListComponent implements OnInit, OnDestroy, SelectObjectLi
 
   private selectedObject: Object = null;
 
-  constructor(private objectService: ObjectService, private modalService: NgbModal) {
+  constructor(private objectService: ObjectService, private modalService: NgbModal, private httpService: HttpService) {
     this.objectService.registerSelectObjectListener(this);
   }
 
@@ -32,8 +33,8 @@ export class BehaviourListComponent implements OnInit, OnDestroy, SelectObjectLi
     this.selectedObject = object;
   }
 
-  onRemoveBehaviour(index: number): void {
-    this.objectService.removeObjectBehaviour(index);
+  onRemoveBehaviour(index: number, behaviour: Behaviour): void {
+    this.objectService.removeObjectBehaviour(index, behaviour);
   }
 
   onChooseFile(property: PropertyFile): void {
@@ -47,5 +48,25 @@ export class BehaviourListComponent implements OnInit, OnDestroy, SelectObjectLi
         property.Value = result;
       }
     }, () => {});
+  }
+
+  onPropertyBlur(behaviour, property): void {
+    let req = {
+      PropertyInstance: {
+        propertyInstanceId: property.instanceId,
+        propertyType: property.type,
+        propertyValue: null
+      }
+    }
+
+    switch (property.type) {
+      case 'PropertyFloat':
+      req.PropertyInstance.propertyValue = property.Value;
+      break;
+    }
+
+    this.httpService.Put('/behaviours/instance', req).subscribe(res => {
+
+    });
   }
 }

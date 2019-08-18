@@ -222,6 +222,9 @@ $$
 DECLARE
   n_records_deleted   INTEGER;
 BEGIN
+  DELETE FROM tbl_behaviour_instance_property
+  WHERE k_behaviour_instance = in_k_behaviour_instance;
+
   DELETE FROM tbl_behaviour_instance
   WHERE k_behaviour_instance = in_k_behaviour_instance;
   GET DIAGNOSTICS n_records_deleted = ROW_COUNT;
@@ -316,5 +319,40 @@ BEGIN
   ON pdt.k_property_data_type = bdp.k_property_data_type
   WHERE bdp.k_behaviour_def_property = in_k_behaviour_def_property;
   RETURN s_property_type;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_update_behaviour_instance_property(IN in_k_behaviour_instance_property BIGINT, IN in_n_value INTEGER DEFAULT NULL,
+                                                        IN in_r_value REAL DEFAULT NULL, IN in_s_value TEXT DEFAULT NULL, IN in_b_value BOOLEAN DEFAULT NULL,
+                                                        IN in_t_value TIMESTAMP DEFAULT NULL, IN in_x_value BYTEA DEFAULT NULL)
+  RETURNS TABLE(
+    k_behaviour_instance_property BIGINT,
+    k_behaviour_instance          BIGINT,
+    k_behaviour_def_property      BIGINT,
+    s_name                        TEXT,
+    s_type                        TEXT,
+    n_value                       INTEGER,
+    r_value                       REAL,
+    s_value                       TEXT,
+    b_value                       BOOLEAN,
+    t_value                       TIMESTAMP,
+    x_value                       BYTEA
+  ) AS
+$$
+BEGIN
+  UPDATE tbl_behaviour_instance_property
+  SET (n_value, r_value, s_value, b_value, t_value, x_value, t_modified) = 
+  (in_n_value, in_r_value, in_s_value, in_b_value, in_t_value, in_x_value, now())
+  WHERE tbl_behaviour_instance_property.k_behaviour_instance_property = in_k_behaviour_instance_property;
+
+  RETURN QUERY
+  SELECT bip.k_behaviour_instance_property, bip.k_behaviour_instance, bip.k_behaviour_def_property, bdp.s_name, pdt.s_name AS s_type,
+         bip.n_value, bip.r_value, bip.s_value, bip.b_value, bip.t_value, bip.x_value
+  FROM tbl_behaviour_instance_property AS bip
+  INNER JOIN tbl_behaviour_def_property bdp
+  ON bdp.k_behaviour_def_property = bip.k_behaviour_def_property
+  INNER JOIN tbl_property_data_type pdt
+  ON pdt.k_property_data_type = bdp.k_property_data_type
+  WHERE bip.k_behaviour_instance_property = in_k_behaviour_instance_property;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;

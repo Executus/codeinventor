@@ -5,7 +5,7 @@
         <h4>{{behaviour.name}}</h4>
       </div>
       <div class="col-md-1">
-        <i class="fas fa-times-circle pointer" (click)="onRemoveBehaviour(i)"></i>
+        <i class="fas fa-times-circle pointer" (click)="onRemoveBehaviour(i, behaviour)"></i>
       </div>
     </div>
     <div *ngFor="let property of behaviour.properties" class="row property-row">
@@ -15,7 +15,7 @@
       <div class="col-md-7">
         <span [ngSwitch]="property.type">
           <span *ngSwitchCase="'PropertyFloat'">
-            <input class="form-control float-input" type="number" step="0.01" [(ngModel)]="property.Value">
+            <input class="form-control float-input" type="number" step="0.01" [(ngModel)]="property.Value" (blur)="onPropertyBlur(behaviour, property)">
           </span>
           <span *ngSwitchCase="'PropertyFile'">
             <button class="btn btn-sm btn-light file-btn ml-2" (click)="onChooseFile(property)">

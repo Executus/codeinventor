@@ -51,10 +51,12 @@ export class ObjectService {
     if (object && object.upToDate === false) {
       this.httpService.Get('/behaviours/instance/' + object.getId()).subscribe(res => {
         res.BehaviourInstances.forEach(behaviourInstance => {
-          let behaviourDef: Behaviour = object.addBehaviour(behaviourInstance.name);
+          let behaviour: Behaviour = object.addBehaviour(behaviourInstance.name);
+          behaviour.instanceId = behaviourInstance.instanceId;
           behaviourInstance.propertyInstances.forEach(propertyInstance => {
-            behaviourDef.properties.forEach(property => {
+            behaviour.properties.forEach(property => {
               if (property.name === propertyInstance.propertyName) {
+                property.instanceId = propertyInstance.propertyInstanceId;
                 switch (propertyInstance.propertyType) {
                   case 'PropertyFloat':
                   property.Value = propertyInstance.propertyValue;
@@ -115,11 +117,14 @@ export class ObjectService {
     }
   }
 
-  public removeObjectBehaviour(index: number): void {
+  public removeObjectBehaviour(index: number, behaviour: Behaviour): void {
     if (this.selectedObject) {
+      let behaviourInstanceId = behaviour.instanceId;
       this.selectedObject.removeBehaviour(index);
-      this.behavioursChangedListeners.forEach(listener => {
-        listener.onObjectBehavioursChanged(this.selectedObject.getBehaviours());
+      this.httpService.Delete('/behaviours/instance/' + behaviourInstanceId).subscribe(res => {
+        this.behavioursChangedListeners.forEach(listener => {
+          listener.onObjectBehavioursChanged(this.selectedObject.getBehaviours());
+        });
       });
     }
   }
@@ -147,7 +152,14 @@ export class ObjectService {
         }
 
         this.httpService.Post('/behaviours/instance', req).subscribe(res => {
-
+          newBehaviour.instanceId = res.BehaviourInstance.instanceId;
+          res.BehaviourInstance.propertyInstances.forEach(propInstance => {
+            newBehaviour.properties.forEach(prop => {
+              if (propInstance.propertyDefinitionId === prop.propertyDefId) {
+                prop.instanceId = propInstance.propertyInstanceId;
+              }
+            });
+          });
         });
       }
       this.behavioursChangedListeners.forEach(listener => {

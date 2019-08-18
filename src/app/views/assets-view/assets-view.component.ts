@@ -37,7 +37,8 @@ export class AssetsViewComponent implements OnInit {
           script: result.data,
           name: behaviourName,
           isSystemBehaviour: false,
-          filename: ''
+          filename: '',
+          properties: []
         };
   
         this.httpService.Post('/behaviours', { BehaviourDef: behaviour }).subscribe(res => {

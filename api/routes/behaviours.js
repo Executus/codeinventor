@@ -125,4 +125,49 @@ router.get('/instance/:objectid', function(req, res, next) {
   });
 });
 
+/* Update a property instance */
+router.put('/instance', function(req, res, next) {
+  let propInstance = req.body.PropertyInstance;
+  if (propInstance) {
+    BehaviourUtility.updatePropertyInstance(propInstance, function(err, propertyInstance) {
+      if (err) {
+        return res.status(500).send(err);
+      }
+
+      let data = {
+        result: 'success',
+        PropertyInstance: propertyInstance
+      }
+      return res.status(200).send(data);
+    });
+  } else {
+    let data = {
+      error: 'Bad request - PropertyInstance not found in body.'
+    }
+    return res.status(400).send(data);
+  }
+});
+
+/* Delete a behaviour instance */
+router.delete('/instance/:id', function(req, res, next) {
+  let instanceId = req.params.id;
+  if (instanceId) {
+    BehaviourUtility.deleteBehaviourInstance(instanceId, function(err) {
+      if (err) {
+        return res.status(500).send(err);
+      }
+  
+      let data = {
+        result: 'success'
+      }
+      return res.status(200).send(data);
+    });
+  } else {
+    let data = {
+      error: 'Bad request - id parameter not found in query string.'
+    }
+    return res.status(400).send(data);
+  }
+});
+
 module.exports = router;
