@@ -69,7 +69,7 @@ CREATE TABLE tbl_behaviour_instance_property
   s_value                       TEXT,
   b_value                       BOOLEAN,
   t_value                       TIMESTAMP,
-  x_value                       BYTEA,
+  k_file                        INTEGER REFERENCES tbl_file(k_file),
   t_created                     TIMESTAMP NOT NULL,
   t_modified                    TIMESTAMP NOT NULL
 )

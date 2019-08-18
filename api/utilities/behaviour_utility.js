@@ -161,6 +161,26 @@ BehaviourUtility.prototype.parseScriptForProperties = function(script) {
     return false;
   }
 
+  let addOrResetBufferMultipleChars = function(ref, char, expectedBuff, expectedChars) {
+    if (ref.buff === expectedBuff) {
+      let foundChar = false;
+      for (let i = 0; i < expectedChars.length; i++) {
+        if (char === expectedChars[i]) {
+          ref.buff += char;
+          foundChar = true;
+          break;
+        }
+      }
+
+      if (!foundChar) {
+        ref.buff = '';
+      }
+      
+      return true;
+    }
+    return false;
+  }
+
   // Iterate through each character in the script
   for (let i = 0; i < script.length; i++) {
     let c = script.charAt(i);
@@ -240,8 +260,10 @@ BehaviourUtility.prototype.parseScriptForProperties = function(script) {
     if (addOrResetBuffer(refObj, c, 'new Prope', 'r') === true) { continue; }
     if (addOrResetBuffer(refObj, c, 'new Proper', 't') === true) { continue; }
     if (addOrResetBuffer(refObj, c, 'new Propert', 'y') === true) { continue; }
-    if (addOrResetBuffer(refObj, c, 'new Property', 'F') === true) { continue; }
-    if (addOrResetBuffer(refObj, c, 'new PropertyF', 'l') === true) { continue; }
+
+    if (addOrResetBufferMultipleChars(refObj, c, 'new Property', ['F', 'S', 'I', 'B', 'D']) === true) { continue; }
+    if (addOrResetBufferMultipleChars(refObj, c, 'new PropertyF', ['l', 'i']) === true) { continue; }
+
     if (addOrResetBuffer(refObj, c, 'new PropertyFl', 'o') === true) { continue; }
     if (addOrResetBuffer(refObj, c, 'new PropertyFlo', 'a') === true) { continue; }
     if (addOrResetBuffer(refObj, c, 'new PropertyFloa', 't') === true) {
@@ -251,6 +273,83 @@ BehaviourUtility.prototype.parseScriptForProperties = function(script) {
         let nameEndIdx = script.indexOf('\'', nameStartIdx + 1);
         let name = script.substring(nameStartIdx, nameEndIdx);
         properties['PropertyFloat'].push(name);
+        refObj.buff = '';
+        continue;
+      }
+    }
+
+    if (addOrResetBuffer(refObj, c, 'new PropertyFi', 'l') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyFil', 'e') === true) {
+      if (refObj.buff === 'new PropertyFile') {
+        // Found a PropertyFile
+        let nameStartIdx = i + 3;
+        let nameEndIdx = script.indexOf('\'', nameStartIdx + 1);
+        let name = script.substring(nameStartIdx, nameEndIdx);
+        properties['PropertyFile'].push(name);
+        refObj.buff = '';
+        continue;
+      }
+    }
+
+    if (addOrResetBuffer(refObj, c, 'new PropertyS', 't') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertySt', 'r') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyStr', 'i') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyStri', 'n') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyStrin', 'g') === true) {
+      if (refObj.buff === 'new PropertyString') {
+        // Found a PropertyString
+        let nameStartIdx = i + 3;
+        let nameEndIdx = script.indexOf('\'', nameStartIdx + 1);
+        let name = script.substring(nameStartIdx, nameEndIdx);
+        properties['PropertyString'].push(name);
+        refObj.buff = '';
+        continue;
+      }
+    }
+
+    if (addOrResetBuffer(refObj, c, 'new PropertyI', 'n') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyIn', 't') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyInt', 'e') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyInte', 'g') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyInteg', 'e') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyIntege', 'r') === true) {
+      if (refObj.buff === 'new PropertyInteger') {
+        // Found a PropertyInteger
+        let nameStartIdx = i + 3;
+        let nameEndIdx = script.indexOf('\'', nameStartIdx + 1);
+        let name = script.substring(nameStartIdx, nameEndIdx);
+        properties['PropertyInteger'].push(name);
+        refObj.buff = '';
+        continue;
+      }
+    }
+
+    if (addOrResetBuffer(refObj, c, 'new PropertyB', 'o') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyBo', 'o') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyBoo', 'l') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyBool', 'e') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyBoole', 'a') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyBoolea', 'n') === true) {
+      if (refObj.buff === 'new PropertyBoolean') {
+        // Found a PropertyBoolean
+        let nameStartIdx = i + 3;
+        let nameEndIdx = script.indexOf('\'', nameStartIdx + 1);
+        let name = script.substring(nameStartIdx, nameEndIdx);
+        properties['PropertyBoolean'].push(name);
+        refObj.buff = '';
+        continue;
+      }
+    }
+
+    if (addOrResetBuffer(refObj, c, 'new PropertyD', 'a') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyDa', 't') === true) { continue; }
+    if (addOrResetBuffer(refObj, c, 'new PropertyDat', 'e') === true) {
+      if (refObj.buff === 'new PropertyDate') {
+        // Found a PropertyDate
+        let nameStartIdx = i + 3;
+        let nameEndIdx = script.indexOf('\'', nameStartIdx + 1);
+        let name = script.substring(nameStartIdx, nameEndIdx);
+        properties['PropertyDate'].push(name);
         refObj.buff = '';
         continue;
       }
@@ -273,7 +372,7 @@ BehaviourUtility.prototype.createPropertyDefs = function(behaviourDefId, script,
         addedPropertyDefs.push({
           propertyDefId: newPropertyDefId,
           propertyType: propertyType.id,
-          propertyName: properties[propertyType.name]
+          propertyName: property
         });
         nextPropCb();
       });
@@ -432,18 +531,20 @@ BehaviourUtility.prototype.createBehaviourInstance = function(behaviourInstance,
       let stringVal = null;
       let boolVal = null;
       let timeVal = null;
-      let byteVal = null;
-
-      let propertyValue = null;
+      let fileVal = null;
 
       switch (value.type) {
-        case 'PropertyFloat':
-        floatVal = value.Value;
-        propertyValue = value.Value;
-        break;
+        case 'PropertyFloat': floatVal = value.Value; break;
+        case 'PropertyFile': fileVal = value.Value; break;
+        case 'PropertyInteger': intVal = value.Value; break;
+        case 'PropertyString': stringVal = value.Value; break;
+        case 'PropertyBoolean': boolVal = value.Value; break;
+        case 'PropertyDate': timeVal = value.Value; break;
       }
 
-      db.createBehaviourInstanceProp(newBehaviourInstanceId, propertyDefId, intVal, floatVal, stringVal, boolVal, timeVal, byteVal, function(err, newPropInstanceId) {
+      let propertyValue = value.Value;
+
+      db.createBehaviourInstanceProp(newBehaviourInstanceId, propertyDefId, intVal, floatVal, stringVal, boolVal, timeVal, fileVal, function(err, newPropInstanceId) {
         if (err) {
           return next(err);
         }
@@ -500,9 +601,12 @@ BehaviourUtility.prototype.getBehaviourInstances = function(objectId, cb) {
             let propertyValue = null;
   
             switch (propertyType) {
-              case 'PropertyFloat':
-              propertyValue = property['r_value'];
-              break;
+              case 'PropertyFloat': propertyValue = property['r_value']; break;
+              case 'PropertyFile': propertyValue = property['k_file']; break;
+              case 'PropertyInteger': propertyValue = property['n_value']; break;
+              case 'PropertyString': propertyValue = property['s_value']; break;
+              case 'PropertyBoolean': propertyValue = property['b_value']; break;
+              case 'PropertyDate': propertyValue = property['t_value']; break;
             }
             
             propertyInstances.push({
@@ -510,7 +614,8 @@ BehaviourUtility.prototype.getBehaviourInstances = function(objectId, cb) {
               propertyDefinitionId: property['k_behaviour_def_property'],
               propertyValue: propertyValue,
               propertyName: property['s_name'],
-              propertyType: property['s_type']
+              propertyType: property['s_type'],
+              filename: property['u_filename']
             });
             return nextProp();
           });
@@ -546,18 +651,20 @@ BehaviourUtility.prototype.updatePropertyInstance = function(propertyInstance, c
   let stringVal = null;
   let boolVal = null;
   let timeVal = null;
-  let byteVal = null;
-
-  let propertyValue = null;
+  let fileVal = null;
 
   switch (propertyInstance.propertyType) {
-    case 'PropertyFloat':
-    floatVal = propertyInstance.propertyValue;
-    propertyValue = propertyInstance.propertyValue;
-    break;
+    case 'PropertyFloat': floatVal = propertyInstance.propertyValue; break;
+    case 'PropertyFile': fileVal = propertyInstance.propertyValue; break;
+    case 'PropertyInteger': intVal = propertyInstance.propertyValue; break;
+    case 'PropertyString': stringVal = propertyInstance.propertyValue; break;
+    case 'PropertyBoolean': boolVal = propertyInstance.propertyValue; break;
+    case 'PropertyDate': timeVal = propertyInstance.propertyValue; break;
   }
 
-  db.updateBehaviourInstanceProp(propertyInstanceId, intVal, floatVal, stringVal, boolVal, timeVal, byteVal, function(err, result) {
+  let propertyValue = propertyInstance.propertyValue;
+
+  db.updateBehaviourInstanceProp(propertyInstanceId, intVal, floatVal, stringVal, boolVal, timeVal, fileVal, function(err, result) {
     if (err) {
       return cb(err);
     }

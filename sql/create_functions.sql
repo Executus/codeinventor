@@ -122,8 +122,19 @@ $$
 DECLARE
   n_records_deleted   INTEGER;
 BEGIN
+  DELETE FROM tbl_behaviour_instance_property
+  WHERE k_behaviour_instance IN (
+    SELECT k_behaviour_instance
+    FROM tbl_behaviour_instance
+    WHERE k_behaviour_def = in_n_behaviour_def_id
+  );
+
+  DELETE FROM tbl_behaviour_instance
+  WHERE k_behaviour_def = in_n_behaviour_def_id;
+
   DELETE FROM tbl_behaviour_def_property
   WHERE k_behaviour_def = in_n_behaviour_def_id;
+
   DELETE FROM tbl_behaviour_def
   WHERE k_behaviour_def = in_n_behaviour_def_id;
   GET DIAGNOSTICS n_records_deleted = ROW_COUNT;
@@ -196,6 +207,9 @@ $$
 DECLARE
   n_records_deleted   INTEGER;
 BEGIN
+  DELETE FROM tbl_behaviour_instance_property
+  WHERE k_behaviour_def_property = in_k_behaviour_def_property;
+
   DELETE FROM tbl_behaviour_def_property
   WHERE k_behaviour_def_property = in_k_behaviour_def_property;
   GET DIAGNOSTICS n_records_deleted = ROW_COUNT;
@@ -234,15 +248,15 @@ $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
 CREATE OR REPLACE FUNCTION func_insert_behaviour_instance_prop(IN in_k_behaviour_instance BIGINT, IN in_k_behaviour_def_property BIGINT, IN in_n_value INTEGER DEFAULT NULL,
                                                                IN in_r_value REAL DEFAULT NULL, IN in_s_value TEXT DEFAULT NULL, IN in_b_value BOOLEAN DEFAULT NULL,
-                                                               IN in_t_value TIMESTAMP DEFAULT NULL, IN in_x_value BYTEA DEFAULT NULL)
+                                                               IN in_t_value TIMESTAMP DEFAULT NULL, IN in_k_file INTEGER DEFAULT NULL)
   RETURNS BIGINT AS
 $$
 DECLARE
   n_behaviour_instance_prop_id BIGINT;
 BEGIN
   INSERT INTO tbl_behaviour_instance_property (k_behaviour_instance, k_behaviour_def_property, n_value, r_value, s_value, b_value, 
-                                               t_value, x_value, t_created, t_modified)
-  VALUES (in_k_behaviour_instance, in_k_behaviour_def_property, in_n_value, in_r_value, in_s_value, in_b_value, in_t_value, in_x_value, now(), now())
+                                               t_value, k_file, t_created, t_modified)
+  VALUES (in_k_behaviour_instance, in_k_behaviour_def_property, in_n_value, in_r_value, in_s_value, in_b_value, in_t_value, in_k_file, now(), now())
   RETURNING k_behaviour_instance_property INTO n_behaviour_instance_prop_id;
   RETURN n_behaviour_instance_prop_id;
 END
@@ -291,18 +305,21 @@ CREATE OR REPLACE FUNCTION func_get_behaviour_instance_properties(IN in_k_behavi
     s_value                       TEXT,
     b_value                       BOOLEAN,
     t_value                       TIMESTAMP,
-    x_value                       BYTEA
+    k_file                        INTEGER,
+    u_filename                    UUID
   ) AS
 $$
 BEGIN
   RETURN QUERY
   SELECT bip.k_behaviour_instance_property, bip.k_behaviour_instance, bip.k_behaviour_def_property, bdp.s_name, pdt.s_name AS s_type,
-         bip.n_value, bip.r_value, bip.s_value, bip.b_value, bip.t_value, bip.x_value
+         bip.n_value, bip.r_value, bip.s_value, bip.b_value, bip.t_value, bip.k_file, f.u_filename
   FROM tbl_behaviour_instance_property AS bip
   INNER JOIN tbl_behaviour_def_property bdp
   ON bdp.k_behaviour_def_property = bip.k_behaviour_def_property
   INNER JOIN tbl_property_data_type pdt
   ON pdt.k_property_data_type = bdp.k_property_data_type
+  LEFT OUTER JOIN tbl_file f
+  ON f.k_file = bip.k_file
   WHERE bip.k_behaviour_instance = in_k_behaviour_instance;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
@@ -324,7 +341,7 @@ $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
 CREATE OR REPLACE FUNCTION func_update_behaviour_instance_property(IN in_k_behaviour_instance_property BIGINT, IN in_n_value INTEGER DEFAULT NULL,
                                                         IN in_r_value REAL DEFAULT NULL, IN in_s_value TEXT DEFAULT NULL, IN in_b_value BOOLEAN DEFAULT NULL,
-                                                        IN in_t_value TIMESTAMP DEFAULT NULL, IN in_x_value BYTEA DEFAULT NULL)
+                                                        IN in_t_value TIMESTAMP DEFAULT NULL, IN in_k_file INTEGER DEFAULT NULL)
   RETURNS TABLE(
     k_behaviour_instance_property BIGINT,
     k_behaviour_instance          BIGINT,
@@ -336,18 +353,18 @@ CREATE OR REPLACE FUNCTION func_update_behaviour_instance_property(IN in_k_behav
     s_value                       TEXT,
     b_value                       BOOLEAN,
     t_value                       TIMESTAMP,
-    x_value                       BYTEA
+    k_file                        INTEGER
   ) AS
 $$
 BEGIN
   UPDATE tbl_behaviour_instance_property
-  SET (n_value, r_value, s_value, b_value, t_value, x_value, t_modified) = 
-  (in_n_value, in_r_value, in_s_value, in_b_value, in_t_value, in_x_value, now())
+  SET (n_value, r_value, s_value, b_value, t_value, k_file, t_modified) = 
+  (in_n_value, in_r_value, in_s_value, in_b_value, in_t_value, in_k_file, now())
   WHERE tbl_behaviour_instance_property.k_behaviour_instance_property = in_k_behaviour_instance_property;
 
   RETURN QUERY
   SELECT bip.k_behaviour_instance_property, bip.k_behaviour_instance, bip.k_behaviour_def_property, bdp.s_name, pdt.s_name AS s_type,
-         bip.n_value, bip.r_value, bip.s_value, bip.b_value, bip.t_value, bip.x_value
+         bip.n_value, bip.r_value, bip.s_value, bip.b_value, bip.t_value, bip.k_file
   FROM tbl_behaviour_instance_property AS bip
   INNER JOIN tbl_behaviour_def_property bdp
   ON bdp.k_behaviour_def_property = bip.k_behaviour_def_property

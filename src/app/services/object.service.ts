@@ -57,10 +57,9 @@ export class ObjectService {
             behaviour.properties.forEach(property => {
               if (property.name === propertyInstance.propertyName) {
                 property.instanceId = propertyInstance.propertyInstanceId;
-                switch (propertyInstance.propertyType) {
-                  case 'PropertyFloat':
-                  property.Value = propertyInstance.propertyValue;
-                  break;
+                property.Value = propertyInstance.propertyValue;
+                if (propertyInstance.propertyType === 'PropertyFile') {
+                  property.filename = propertyInstance.filename;
                 }
               }
             });

@@ -45,7 +45,20 @@ export class BehaviourListComponent implements OnInit, OnDestroy, SelectObjectLi
     }
     modal.result.then((result: File) => {
       if (result) {
-        property.Value = result;
+        property.Value = result.id;
+        property.filename = result.filename;
+
+        let req = {
+          PropertyInstance: {
+            propertyInstanceId: property.instanceId,
+            propertyType: property.type,
+            propertyValue: property.Value
+          }
+        }
+    
+        this.httpService.Put('/behaviours/instance', req).subscribe(res => {
+    
+        });
       }
     }, () => {});
   }
@@ -55,14 +68,8 @@ export class BehaviourListComponent implements OnInit, OnDestroy, SelectObjectLi
       PropertyInstance: {
         propertyInstanceId: property.instanceId,
         propertyType: property.type,
-        propertyValue: null
+        propertyValue: property.Value
       }
-    }
-
-    switch (property.type) {
-      case 'PropertyFloat':
-      req.PropertyInstance.propertyValue = property.Value;
-      break;
     }
 
     this.httpService.Put('/behaviours/instance', req).subscribe(res => {

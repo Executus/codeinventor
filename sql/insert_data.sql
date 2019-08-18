@@ -137,7 +137,7 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, u_filename, b_system, t_created
     
     this.image = new Image();
     this.image.crossOrigin = "";
-    this.image.src = ''http://localhost:3000/files/'' + this.Texture.Value.filename;
+    this.image.src = ''http://localhost:3000/files/'' + this.Texture.filename;
     this.image.addEventListener(''load'', function() {
       gl.bindTexture(gl.TEXTURE_2D, self.tex);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self.image);

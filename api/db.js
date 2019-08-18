@@ -362,14 +362,14 @@ db.prototype.deleteBehaviourInstance = function(behaviourInstanceId, cb) {
   });
 }
 
-db.prototype.createBehaviourInstanceProp = function(behaviourInstanceId, behaviourDefPropId, intVal, floatVal, stringVal, boolVal, timeVal, byteVal, cb) {
+db.prototype.createBehaviourInstanceProp = function(behaviourInstanceId, behaviourDefPropId, intVal, floatVal, stringVal, boolVal, timeVal, fileVal, cb) {
   this.pool.connect(function (err, client, done) {
     if (err) {
       console.error("error fetching client from pool", err);
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_insert_behaviour_instance_prop($1, $2, $3, $4, $5, $6, $7, $8)", [behaviourInstanceId, behaviourDefPropId, intVal, floatVal, stringVal, boolVal, timeVal, byteVal], function (err, result) {
+    client.query("SELECT * FROM func_insert_behaviour_instance_prop($1, $2, $3, $4, $5, $6, $7, $8)", [behaviourInstanceId, behaviourDefPropId, intVal, floatVal, stringVal, boolVal, timeVal, fileVal], function (err, result) {
       if (err) {
         console.error("error running db function func_insert_behaviour_instance_prop", err);
         return cb(err);
@@ -470,14 +470,14 @@ db.prototype.getPropertyType = function(propertyDefId, cb) {
   });
 }
 
-db.prototype.updateBehaviourInstanceProp = function(propertyInstanceId, intVal, floatVal, stringVal, boolVal, timeVal, byteVal, cb) {
+db.prototype.updateBehaviourInstanceProp = function(propertyInstanceId, intVal, floatVal, stringVal, boolVal, timeVal, fileVal, cb) {
   this.pool.connect(function (err, client, done) {
     if (err) {
       console.error("error fetching client from pool", err);
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_update_behaviour_instance_property($1, $2, $3, $4, $5, $6, $7)", [propertyInstanceId, intVal, floatVal, stringVal, boolVal, timeVal, byteVal], function (err, result) {
+    client.query("SELECT * FROM func_update_behaviour_instance_property($1, $2, $3, $4, $5, $6, $7)", [propertyInstanceId, intVal, floatVal, stringVal, boolVal, timeVal, fileVal], function (err, result) {
       if (err) {
         console.error("error running db function func_update_behaviour_instance_property", err);
         return cb(err);
