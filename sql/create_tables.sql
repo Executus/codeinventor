@@ -59,6 +59,19 @@ WITH (
   OIDS=FALSE
 );
 
+CREATE TABLE tbl_file
+(
+  k_file                        SERIAL PRIMARY KEY,
+  n_type                        INTEGER NOT NULL,
+  x_data                        BYTEA NOT NULL,
+  u_filename                    UUID NOT NULL,
+  t_created                     TIMESTAMP NOT NULL,
+  t_modified                    TIMESTAMP NOT NULL
+)
+WITH (
+  OIDS=FALSE
+);
+
 CREATE TABLE tbl_behaviour_instance_property
 (
   k_behaviour_instance_property BIGSERIAL PRIMARY KEY,
@@ -70,19 +83,6 @@ CREATE TABLE tbl_behaviour_instance_property
   b_value                       BOOLEAN,
   t_value                       TIMESTAMP,
   k_file                        INTEGER REFERENCES tbl_file(k_file),
-  t_created                     TIMESTAMP NOT NULL,
-  t_modified                    TIMESTAMP NOT NULL
-)
-WITH (
-  OIDS=FALSE
-);
-
-CREATE TABLE tbl_file
-(
-  k_file                        SERIAL PRIMARY KEY,
-  n_type                        INTEGER NOT NULL,
-  x_data                        BYTEA NOT NULL,
-  u_filename                    UUID NOT NULL,
   t_created                     TIMESTAMP NOT NULL,
   t_modified                    TIMESTAMP NOT NULL
 )
