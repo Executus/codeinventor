@@ -56,4 +56,8 @@ export class BehaviourViewComponent implements OnInit, SelectObjectListener, Beh
   onObjectBehavioursChanged(behaviours: Behaviour[]): void {
     this.updateBehavioursBtn(behaviours);
   }
+
+  onClickOutsideDropdown(ev: Event) {
+    this.showAddBehaviourList = false;
+  }
 }

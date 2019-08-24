@@ -1,12 +1,7 @@
 .toolbar-view {
-  background-color: #413c3c;
+  background-color: #CCD8E2;
   position: absolute;
   top: 0;
   height: 50px;
-
-  .transform-btns {
-    .btn {
-      margin: 5px 2px;
-    }
-  }
+  border-bottom: 1px solid #888;
 }

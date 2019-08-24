@@ -1,4 +1,19 @@
 .behaviour-list {
+  padding: 10px;
+  max-height: 730px;
+  overflow: auto;
+
+  .behaviour-panel {
+    border: 2px solid white;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+
+  .fa-times-circle {
+    color: #A82A36;
+  }
+
   .property-row {
     margin-bottom: 6px;
 
@@ -12,20 +27,25 @@
       width: 70px;
       display: inline-block;
     }
+
+    .bool-input {
+      width: 20px;
+      height: 20px;
+    }
   }
   
   .file-btn {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
     padding: 0;
 
     i {
-      font-size: 24px;
+      font-size: 44px;
     }
 
     img {
-      width: 48px;
-      height: 48px;
+      width: 78px;
+      height: 78px;
     }
   }
 }

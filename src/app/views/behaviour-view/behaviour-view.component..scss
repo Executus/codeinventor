@@ -1,7 +1,9 @@
 .behaviour-view {
-  background-color: #b63d3d;
+  background-color: #AEC7E2;
   width: 100%;
   height: 100%;
+  border-left: 1px solid #888;
+  color: #333;
 
   .add-behaviour-panel {
     position: absolute;
@@ -11,6 +13,9 @@
     background-color: white;
     border-radius: 5px;
     text-align: left;
+    z-index: 100;
+    border: 1px solid #777;
+    box-shadow: 1px 1px 3px #777;
 
     ul {
       margin:0;

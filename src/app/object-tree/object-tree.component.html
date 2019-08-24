@@ -1,11 +1,11 @@
 <ng-template #treeList let-treeData>
   <div *ngFor="let object of treeData">
-    <div class="row" (click)="onSelectObject(object)" [ngClass]="{'selected': selectedObject === object}"
+    <div class="row m-0 pointer" (click)="onSelectObject(object)" [ngClass]="{'selected': selectedObject === object}"
          [ngStyle]="{'padding-left': (object.nestedLevel * 10) + 'px'}">
       <div class="col-md-1">
         <i *ngIf="object.children.length > 0" class="fas pointer" [ngClass]="{'fa-caret-right': !object.expanded, 'fa-caret-down': object.expanded}" (click)="onExpandObject(object, $event)"></i>
       </div>
-      <div class="col-md-9">
+      <div class="col-md-8">
         <span [hidden]="object.editing">{{object.getName()}}</span>
         <input appFocusOnShow *ngIf="object.editing" (blur)="onEditNameBlur(object)" type="text" class="form-control" [(ngModel)]="object.name">
       </div>

@@ -1,10 +1,10 @@
 <div class="object-view">
-  <div class="row">
-    <div class="col-md-12 text-center">
+  <div class="row m-0">
+    <div class="col-md-12 text-center p-2">
       <h3>Object Tree</h3>
     </div>
   </div>
-  <div class="row new-object-btn-row">
+  <div class="row new-object-btn-row m-0">
     <div class="col-md-12">
       <button class="btn btn-primary" (click)="onNewEmptyObject()">
         <i class="fas fa-plus"></i>
@@ -12,17 +12,15 @@
       <label>New Empty Object</label>
     </div>
   </div>
-  <div class="row new-object-btn-row">
+  <!--<div class="row new-object-btn-row">
     <div class="col-md-12">
       <button class="btn btn-primary" (click)="onNewObjectFromClass()">
         <i class="far fa-plus-square"></i>
       </button>
       <label>New Object from Class...</label>
     </div>
-  </div>
-  <div class="row m-0">
-    <div class="col-md-12 object-tree-container">
-      <app-object-tree></app-object-tree>
-    </div>
+  </div>-->
+  <div class="object-tree-container">
+    <app-object-tree></app-object-tree>
   </div>
 </div>

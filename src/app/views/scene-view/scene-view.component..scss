@@ -1,5 +1,15 @@
 .scene-view {
-  background-color: #b6aa44;
+  background-color: #384149;
   width: 100%;
   height: 100%;
+  
+  .transform-btns {
+    .btn {
+      margin: 5px 2px;
+
+      &[disabled] {
+        cursor: not-allowed;
+      }
+    }
+  }
 }

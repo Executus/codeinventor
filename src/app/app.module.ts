@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularFileUploaderModule } from 'angular-file-uploader';
+import { ClickOutsideModule } from 'ng-click-outside';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -53,7 +54,8 @@ import { DeleteBehaviourModalComponent } from './modals/delete-behaviour-modal/d
     FormsModule,
     NgbModule,
     HttpClientModule,
-    AngularFileUploaderModule
+    AngularFileUploaderModule,
+    ClickOutsideModule
   ],
   providers: [
     ObjectService,
