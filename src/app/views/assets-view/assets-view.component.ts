@@ -5,6 +5,7 @@ import { NewBehaviourNameModalComponent } from '../../modals/new-behaviour-name-
 import { BehaviourService, BehaviourDef } from '../../services/behaviour.service';
 import { HttpService } from '../../services/http.service';
 import { DeleteBehaviourModalComponent } from '../../modals/delete-behaviour-modal/delete-behaviour-modal.component';
+import { FILETYPE } from '../../classes/file';
 
 @Component({
   selector: 'app-assets-view',
@@ -13,9 +14,46 @@ import { DeleteBehaviourModalComponent } from '../../modals/delete-behaviour-mod
 })
 export class AssetsViewComponent implements OnInit {
 
-  constructor(private modalService: NgbModal, private behaviourService: BehaviourService, private httpService: HttpService) { }
+  private files = [];
+  private file = null;
+
+  constructor(private modalService: NgbModal, private behaviourService: BehaviourService, private httpService: HttpService) {
+    this.getFiles();
+  }
 
   ngOnInit() {
+  }
+
+  getFiles() {
+    this.httpService.Post('/files', { FileType: FILETYPE.Image }).subscribe(res => {
+      this.files = [];
+
+      for (let i = 0; i < res.Files.length; i++) {
+        if (i % 4 === 0) {
+          this.files.push({
+            files: []
+          })
+        }
+
+        this.files[this.files.length - 1].files.push({
+          id: res.Files[i].id,
+          filename: res.Files[i].name
+        });
+      }
+    });
+  }
+
+  handleFileInput(files: FileList) {
+    this.file = files.item(0);
+  }
+
+  onSubmitFile() {
+    const formData: FormData = new FormData();
+    formData.append('file', this.file, this.file.name);
+    this.httpService.Post('/file-upload', formData).subscribe(res => {
+      this.file = null;
+      this.getFiles();
+    });
   }
 
   private openBehaviourEditor(name: string, existingCode?: string): Promise<any> {

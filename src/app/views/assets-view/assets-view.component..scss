@@ -4,3 +4,14 @@
   height: 100%;
   color: white;
 }
+
+.sprite-gallery {
+  padding: 20px;
+  overflow: auto;
+  height: 200px;
+  flex: 0 0 95%;
+
+  .card-deck {
+    margin-bottom: 20px;
+  }
+}

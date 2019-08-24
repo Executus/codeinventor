@@ -9,6 +9,7 @@ const cors = require('cors');
 const ObjectsRoute = require('./routes/objects');
 const FilesRoute = require('./routes/files');
 const BehavioursRoute = require('./routes/behaviours');
+const FileUploadRoute = require('./routes/file-upload');
 
 let app = express();
 
@@ -26,5 +27,6 @@ app.use(cors(corsOptions));
 app.use('/objects', ObjectsRoute);
 app.use('/files', FilesRoute);
 app.use('/behaviours', BehavioursRoute);
+app.use('/file-upload', FileUploadRoute);
 
 module.exports = app;

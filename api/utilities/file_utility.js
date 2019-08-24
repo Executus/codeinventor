@@ -3,6 +3,7 @@
 const db = require('../db');
 const fs = require('fs');
 const async = require('async');
+const uuidv1 = require('uuid/v1');
 
 const config = require('../config');
 
@@ -51,5 +52,16 @@ FileUtility.prototype.getFiles = function(type, cb) {
     }
   });
 }
+
+FileUtility.prototype.uploadFile = function(fileData, cb) {
+  let filename = uuidv1();
+  db.insertFile(0, fileData, filename, function(err, fileId) {
+    if (err) {
+      return cb(err);
+    }
+
+    return cb(null, fileId);
+  });
+};
 
 module.exports = new FileUtility();

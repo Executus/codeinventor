@@ -489,3 +489,27 @@ db.prototype.updateBehaviourInstanceProp = function(propertyInstanceId, intVal, 
     });
   });
 }
+
+db.prototype.insertFile = function(type, data, filename, cb) {
+  this.pool.connect(function (err, client, done) {
+    if (err) {
+      console.error("error fetching client from pool", err);
+      return cb(err);
+    }
+
+    client.query("SELECT * FROM func_insert_file($1, $2, $3)", [type, data, filename], function (err, result) {
+      if (err) {
+        console.error("error running db function func_insert_file", err);
+        return cb(err);
+      }
+
+      done();
+
+      if (result && result.rowCount > 0) {
+        return cb(null, result.rows[0].func_insert_file);
+      }
+
+      return cb(new Error("Unknown error - failed to create behaviour instance."));
+    });
+  });
+}

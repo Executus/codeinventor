@@ -41,7 +41,22 @@
     </ngb-tab>
     <ngb-tab title="Sprites">
       <ng-template ngbTabContent>
-        
+        <div class="row">
+          <div class="col-md-12 p-4 form-group">
+            <label class="pl-2" for="file">Upload Sprite</label>
+            <input type="file" id="file" name="file" (change)="handleFileInput($event.target.files)" ([ngModel])="file">
+            <button class="btn btn-default" [disabled]="!file" (click)="onSubmitFile()">Submit</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 sprite-gallery">
+            <div *ngFor="let row of files" class="card-deck">
+              <div *ngFor="let file of row.files" class="card">
+                <img [src]="'http://localhost:3000/files/' + file.filename" class="card-img-top">
+              </div>
+            </div>
+          </div>
+        </div>
       </ng-template>
     </ngb-tab>
     <ngb-tab title="Audio">

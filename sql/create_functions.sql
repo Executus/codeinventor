@@ -373,3 +373,16 @@ BEGIN
   WHERE bip.k_behaviour_instance_property = in_k_behaviour_instance_property;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
+
+CREATE OR REPLACE FUNCTION func_insert_file(IN in_n_type INTEGER, IN in_x_data BYTEA, IN in_u_filename UUID)
+  RETURNS BIGINT AS
+$$
+DECLARE
+  n_file_id BIGINT;
+BEGIN
+  INSERT INTO tbl_file (n_type, x_data, u_filename, t_created, t_modified)
+  VALUES (in_n_type, in_x_data, in_u_filename, now(), now())
+  RETURNING k_file INTO n_file_id;
+  RETURN n_file_id;
+END
+$$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
