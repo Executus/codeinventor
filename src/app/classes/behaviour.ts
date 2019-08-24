@@ -11,5 +11,7 @@ export interface Behaviour {
   init(runtimeService: RuntimeService): void;
   update(runtimeService: RuntimeService): void;
   draw(runtimeService: RuntimeService): void;
+  onKeyDown(key);
+  onKeyUp(key);
   getAttachedObject(): Object;
 }

@@ -8,6 +8,7 @@ export class RuntimeService {
   private isRuntime: boolean
   private gl: WebGLRenderingContext;
   private programInfo;
+  private keyboardListeners = [];
 
   constructor() {
     this.isRuntime = false;
@@ -40,5 +41,13 @@ export class RuntimeService {
 
   public getShaderProgramInfo() {
     return this.programInfo;
+  }
+
+  public registerKeyboardListener(object) {
+    this.keyboardListeners.push(object);
+  }
+
+  public getKeyboardListeners() {
+    return this.keyboardListeners;
   }
 }

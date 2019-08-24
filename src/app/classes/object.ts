@@ -50,6 +50,18 @@ export class Object {
     }
   }
 
+  public onKeyDown(key) {
+    for (let i = 0; i < this.behaviours.length; i++) {
+      this.behaviours[i].onKeyDown(key);
+    }
+  }
+
+  public onKeyUp(key) {
+    for (let i = 0; i < this.behaviours.length; i++) {
+      this.behaviours[i].onKeyUp(key);
+    }
+  }
+
   public getId(): number {
     return this.id;
   }

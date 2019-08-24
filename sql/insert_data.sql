@@ -2,6 +2,7 @@ DO $$
 DECLARE
 tranform_id INTEGER;
 sprite_id INTEGER;
+keyboard_id INTEGER;
 BEGIN
 INSERT INTO tbl_property_data_type (s_name) VALUES
 ('PropertyInteger'),
@@ -54,6 +55,18 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, u_filename, b_system, t_created
       }
     }
   }
+
+  onKeyDown(key) {
+		// Code here will run when a keyboard ''key'' is pressed down.
+		// A BehaviourKeyboard must be attached to the object.
+		
+	}
+
+  onKeyUp(key) {
+		// Code here will run when a keyboard ''key'' is released.
+		// A BehaviourKeyboard must be attached to the object.
+		
+	}
 
   draw(runtimeService) {
     // Advanced use - rendering specific code. Runs every frame after update.
@@ -203,6 +216,18 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, u_filename, b_system, t_created
     }
   }
 
+  onKeyDown(key) {
+		// Code here will run when a keyboard ''key'' is pressed down.
+		// A BehaviourKeyboard must be attached to the object.
+		
+	}
+
+  onKeyUp(key) {
+		// Code here will run when a keyboard ''key'' is released.
+		// A BehaviourKeyboard must be attached to the object.
+		
+	}
+
   draw(runtimeService) {
     // Advanced use - rendering specific code. Runs every frame after update.
 		// Most people will not need to write any code here.
@@ -247,6 +272,50 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, u_filename, b_system, t_created
     return this.attachedObject;
   }
 }', 'Sprite', '589aa95b-a962-4722-bee7-43d3860506c8', true, now(), now()) RETURNING k_behaviour_def INTO sprite_id;
+
+INSERT INTO tbl_behaviour_def (s_script, s_name, u_filename, b_system, t_created, t_modified) VALUES
+('class BehaviourKeyboard {
+  constructor(owner) {
+    this.name = ''Keyboard'';
+    this.properties = [];
+    this.attachedObject = owner;
+
+    // Declare properties here.
+
+    // Properties added to ''this.properties'' will show up in the Editor.
+  }
+
+  init(runtimeService) {
+    // Code here will run once when the object is created.
+    runtimeService.registerKeyboardListener(this.attachedObject);
+  }
+
+  update(runtimeService) {
+    // Code here will run every frame (about 60 times every second).
+  }
+
+  onKeyDown(key) {
+		// Code here will run when a keyboard ''key'' is pressed down.
+		// A BehaviourKeyboard must be attached to the object.
+		
+	}
+
+  onKeyUp(key) {
+		// Code here will run when a keyboard ''key'' is released.
+		// A BehaviourKeyboard must be attached to the object.
+		
+	}
+
+  draw(runtimeService) {
+    // Advanced use - rendering specific code. Runs every frame after update.
+    // Most people will not need to write any code here.
+  }
+
+  getAttachedObject() {
+    return this.attachedObject;
+  }
+
+}', 'Keyboard', '76791e7e-f2ea-4eee-9a93-a9e3421b5182', true, now(), now()) RETURNING k_behaviour_def INTO keyboard_id;
 
 INSERT INTO tbl_behaviour_def_property (s_name, k_behaviour_def, k_property_data_type, t_created, t_modified) VALUES
 ('X Position (pixels)', tranform_id, (

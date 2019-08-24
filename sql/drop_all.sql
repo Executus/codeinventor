@@ -20,13 +20,13 @@ DROP FUNCTION func_insert_behaviour_def_property(IN in_s_name TEXT, IN in_k_beha
 DROP FUNCTION func_insert_behaviour_instance(IN in_k_object BIGINT, IN in_k_behaviour_def BIGINT);
 DROP FUNCTION func_insert_behaviour_instance_prop(IN in_k_behaviour_instance BIGINT, IN in_k_behaviour_def_property BIGINT, IN in_n_value INTEGER,
                                                                IN in_r_value REAL, IN in_s_value TEXT, IN in_b_value BOOLEAN,
-                                                               IN in_t_value TIMESTAMP, IN in_x_value BYTEA);
+                                                               IN in_t_value TIMESTAMP, IN in_k_file INTEGER);
 DROP FUNCTION func_insert_file(IN in_n_type INTEGER, IN in_x_data BYTEA, IN in_u_filename UUID);
 DROP FUNCTION func_update_object(IN in_n_object_id BIGINT, IN in_s_name TEXT);
 DROP FUNCTION func_update_behaviour_def(IN in_n_behaviour_def_id BIGINT, IN in_s_script TEXT, IN in_s_name TEXT);
-DROP FUNCTION func_update_behaviour_instance_property(IN in_k_behaviour_instance_property BIGINT, IN in_n_value INTEGER DEFAULT NULL,
-                                                        IN in_r_value REAL DEFAULT NULL, IN in_s_value TEXT DEFAULT NULL, IN in_b_value BOOLEAN DEFAULT NULL,
-                                                        IN in_t_value TIMESTAMP DEFAULT NULL, IN in_k_file INTEGER DEFAULT NULL);
+DROP FUNCTION func_update_behaviour_instance_property(IN in_k_behaviour_instance_property BIGINT, IN in_n_value INTEGER,
+                                                        IN in_r_value REAL, IN in_s_value TEXT, IN in_b_value BOOLEAN,
+                                                        IN in_t_value TIMESTAMP, IN in_k_file INTEGER);
 
 DROP TABLE tbl_behaviour_instance_property;
 DROP TABLE tbl_behaviour_instance;

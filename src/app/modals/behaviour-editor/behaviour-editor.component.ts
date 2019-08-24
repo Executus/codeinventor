@@ -97,6 +97,16 @@ export class BehaviourEditorComponent implements OnInit, OnDestroy {
     code += '\t\t// Code here will run every frame (about 60 times every second).\n';
     code += '\t\t\n';
     code += '\t}\n\t\t\n';
+    code += '\tonKeyDown(key) {\n';
+    code += '\t\t// Code here will run when a keyboard \'key\' is pressed down.\n';
+    code += '\t\t// A BehaviourKeyboard must be attached to the object.\n';
+    code += '\t\t\n';
+    code += '\t}\n\t\t\n';
+    code += '\tonKeyUp(key) {\n';
+    code += '\t\t// Code here will run when a keyboard \'key\' is released.\n';
+    code += '\t\t// A BehaviourKeyboard must be attached to the object.\n';
+    code += '\t\t\n';
+    code += '\t}\n\t\t\n';
     code += '\tdraw(runtimeService) {\n';
     code += '\t\t// Advanced use - rendering specific code. Runs every frame after update.\n';
     code += '\t\t// Most people will not need to write any code here.\n';

@@ -85,6 +85,7 @@ export class RuntimeComponent implements OnInit, OnDestroy {
     this.runtimeService.setShaderProgramInfo(this.programInfo);
 
     this.initScene();
+    this.initInput();
 
     this.intervalId = setInterval(function(context) {
       context.mainLoop();
@@ -100,6 +101,27 @@ export class RuntimeComponent implements OnInit, OnDestroy {
       this.updateScene();
       this.drawScene();
     }
+  }
+
+  private initInput() {
+    let self = this;
+    document.addEventListener('keydown', function(ev) {
+      let key = ev.key || ev.keyCode;
+
+      let keyboardListeners = self.runtimeService.getKeyboardListeners();
+      keyboardListeners.forEach(obj => {
+        obj.onKeyDown(key);
+      })
+    });
+
+    document.addEventListener('keyup', function(ev) {
+      let key = ev.key || ev.keyCode;
+
+      let keyboardListeners = self.runtimeService.getKeyboardListeners();
+      keyboardListeners.forEach(obj => {
+        obj.onKeyUp(key);
+      })
+    });
   }
 
   private initScene() {
