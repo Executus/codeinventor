@@ -2,16 +2,16 @@
   <ngb-tabset>
     <ngb-tab title="Behaviours">
       <ng-template ngbTabContent>
-        <div class="row">
-          <div class="col-md-12 p-4">
+        <div class="row m-0">
+          <div class="col-md-12 p-3">
             <button class="btn btn-light" (click)="onNewBehaviour()">
               <i class="fas fa-plus"></i>
             </button>
             <label class="pl-2">New Behaviour</label>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-12">
+        <div class="row m-0">
+          <div class="col-md-12 behaviour-def-list p-0">
             <div *ngFor="let behaviour of behaviourService.getBehaviourDefs()" class="row m-0 pb-1">
               <div class="col-md-5">
                 {{'Behaviour' + behaviour.name}}
@@ -34,21 +34,21 @@
         </div>
       </ng-template>
     </ngb-tab>
-    <ngb-tab title="Classes">
+    <!--<ngb-tab title="Classes">
       <ng-template ngbTabContent>
         
       </ng-template>
-    </ngb-tab>
+    </ngb-tab>-->
     <ngb-tab title="Sprites">
       <ng-template ngbTabContent>
-        <div class="row">
-          <div class="col-md-12 p-4 form-group">
-            <label class="pl-2" for="file">Upload Sprite</label>
-            <input type="file" id="file" name="file" (change)="handleFileInput($event.target.files)" ([ngModel])="file">
+        <div class="row m-0">
+          <div class="col-md-12 p-2">
+            <label class="pl-2" for="file">Upload Sprite: </label>
+            <input type="file" id="file" name="file" (change)="handleFileInput($event.target.files)" ([ngModel])="file" class="ml-4">
             <button class="btn btn-default" [disabled]="!file" (click)="onSubmitFile()">Submit</button>
           </div>
         </div>
-        <div class="row">
+        <div class="row m-0">
           <div class="col-md-12 sprite-gallery">
             <div *ngFor="let row of files" class="card-deck">
               <div *ngFor="let file of row.files" class="card">
@@ -59,10 +59,10 @@
         </div>
       </ng-template>
     </ngb-tab>
-    <ngb-tab title="Audio">
+    <!--<ngb-tab title="Audio">
       <ng-template ngbTabContent>
         
       </ng-template>
-    </ngb-tab>
+    </ngb-tab>-->
   </ngb-tabset>
 </div>

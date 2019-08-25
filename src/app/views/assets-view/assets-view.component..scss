@@ -9,10 +9,15 @@
 .sprite-gallery {
   padding: 20px;
   overflow: auto;
-  height: 200px;
+  height: 230px;
   flex: 0 0 95%;
 
   .card-deck {
     margin-bottom: 20px;
   }
+}
+
+.behaviour-def-list {
+  max-height: 230px;
+  overflow: auto;
 }

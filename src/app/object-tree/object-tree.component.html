@@ -2,18 +2,16 @@
   <div *ngFor="let object of treeData">
     <div class="row m-0 pointer" (click)="onSelectObject(object)" [ngClass]="{'selected': selectedObject === object}"
          [ngStyle]="{'padding-left': (object.nestedLevel * 10) + 'px'}">
-      <div class="col-md-1">
-        <i *ngIf="object.children.length > 0" class="fas pointer" [ngClass]="{'fa-caret-right': !object.expanded, 'fa-caret-down': object.expanded}" (click)="onExpandObject(object, $event)"></i>
+      <div class="col-md-1 pointer" (click)="onExpandObject(object, $event)">
+        <i *ngIf="object.children.length > 0" class="fas pointer" [ngClass]="{'fa-caret-right': !object.expanded, 'fa-caret-down': object.expanded}"></i>
       </div>
-      <div class="col-md-8">
+      <div class="col-md-8 pointer">
         <span [hidden]="object.editing">{{object.getName()}}</span>
         <input appFocusOnShow *ngIf="object.editing" (blur)="onEditNameBlur(object)" type="text" class="form-control" [(ngModel)]="object.name">
       </div>
-      <div class="col-md-1">
-        <i class="fas fa-edit pointer" (click)="editName(object, $event)"></i>
-      </div>
-      <div class="col-md-1">
-        <i class="fas fa-times-circle pointer" (click)="removeObject(object, $event)"></i>
+      <div class="col-md-2 pointer p-0">
+        <i class="fas fa-times-circle pointer float-right" (click)="removeObject(object, $event)"></i>
+        <i class="fas fa-edit pointer float-right mr-1" (click)="editName(object, $event)"></i>
       </div>
     </div>
     <div *ngIf="object.children.length > 0" [hidden]="!object.expanded">

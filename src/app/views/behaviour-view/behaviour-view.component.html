@@ -11,7 +11,7 @@
   </div>
   <div *ngIf="objectService.getSelectedObject() && behavioursToAdd.length" class="row mt-3">
     <div class="col-md-12 text-center">
-      <button id="add-behave-btn" class="btn btn-primary" (click)="onAddBehaviour()">Add Behaviour</button>
+      <button id="add-behave-btn" class="btn btn-light" (click)="onAddBehaviour()">Add Behaviour</button>
       <div *ngIf="showAddBehaviourList" class="add-behaviour-panel" (clickOutside)="onClickOutsideDropdown($event)" [exclude]="'#add-behave-btn'">
         <ul>
           <li *ngFor="let item of behavioursToAdd" (click)="onChooseBehaviour(item)">{{item.name}}</li>
