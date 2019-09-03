@@ -14,8 +14,8 @@ const FileUploadRoute = require('./routes/file-upload');
 let app = express();
 
 const corsOptions = {
-  origin: ['http://localhost:4200'],
-  default: 'http://localhost:4200',
+  origin: ['http://localhost:4200', 'https://hopper.une.edu.au'],
+  default: 'https://hopper.une.edu.au',
   optionsSuccessStatus: 200
 }
 

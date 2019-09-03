@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  hostname: 'https://hopper.une.edu.au/codeinventor/api'
 };
