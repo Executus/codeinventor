@@ -58,6 +58,8 @@ export class BehaviourEditorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.dropletEditor.aceEditor.destroy();
+    this.dropletEditor.aceEditor.container.remove();
+    $('.droplet-drag-cover').remove();
     delete this.dropletEditor.aceEditor;
     delete this.dropletEditor;
     this.dropletEditor = null;
@@ -395,7 +397,7 @@ export class BehaviourEditorComponent implements OnInit, OnDestroy {
     editor.setBehavioursEnabled(false);
     editor.setHighlightActiveLine(false);
     editor.getSession().setFoldStyle('markbeginend');
-    editor.getSession().setUseWrapMode(true);
+    //editor.getSession().setUseWrapMode(true);
     editor.getSession().setTabSize(2);
     editor.getSession().setMode(mode);
   

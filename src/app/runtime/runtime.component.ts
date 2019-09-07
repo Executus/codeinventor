@@ -47,6 +47,7 @@ export class RuntimeComponent implements OnInit, OnDestroy {
     void main() {
       //gl_FragColor = vec4(1, 1, 1, 1);
       gl_FragColor = texture2D(u_texture, v_texcoord);
+      gl_FragColor.rgb *= gl_FragColor.a;
     }
   `;
 
@@ -54,7 +55,9 @@ export class RuntimeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     let canvas: HTMLCanvasElement = document.querySelector('#glCanvas');
-    this.gl = canvas.getContext('webgl');
+    this.gl = canvas.getContext('webgl', {
+      alpha: false
+    });
 
     if (this.gl === null) {
       alert('Unable to intialise WebGL. Your browser may not support it.');
@@ -147,6 +150,8 @@ export class RuntimeComponent implements OnInit, OnDestroy {
   private drawScene() {
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+    this.gl.enable(this.gl.BLEND);
+    this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
     this.gl.useProgram(this.programInfo.program);
 
     if (this.sceneTree) {
