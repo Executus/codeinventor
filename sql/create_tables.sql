@@ -4,6 +4,7 @@ CREATE TABLE tbl_object
   k_parent                      BIGINT REFERENCES tbl_object(k_object) ON DELETE CASCADE,
   s_name                        TEXT,
   n_nested_level                INTEGER NOT NULL,
+  s_app_id                      TEXT NOT NULL,
   t_created                     TIMESTAMP NOT NULL,
   t_modified                    TIMESTAMP NOT NULL
 )
@@ -18,6 +19,7 @@ CREATE TABLE tbl_behaviour_def
   s_name                        TEXT NOT NULL,
   u_filename                    UUID NOT NULL,
   b_system                      BOOLEAN NOT NULL,
+  s_app_id                      TEXT,
   t_created                     TIMESTAMP NOT NULL,
   t_modified                    TIMESTAMP NOT NULL
 )
@@ -65,6 +67,7 @@ CREATE TABLE tbl_file
   n_type                        INTEGER NOT NULL,
   x_data                        BYTEA NOT NULL,
   u_filename                    UUID NOT NULL,
+  s_app_id                      TEXT,
   t_created                     TIMESTAMP NOT NULL,
   t_modified                    TIMESTAMP NOT NULL
 )

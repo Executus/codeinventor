@@ -17,11 +17,10 @@ export class AssetsViewComponent implements OnInit {
   private files = [];
   private file = null;
 
-  constructor(private modalService: NgbModal, private behaviourService: BehaviourService, private httpService: HttpService) {
-    this.getFiles();
-  }
+  constructor(private modalService: NgbModal, private behaviourService: BehaviourService, private httpService: HttpService) {}
 
   ngOnInit() {
+    this.getFiles();
   }
 
   getFiles() {

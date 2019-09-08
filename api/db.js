@@ -16,14 +16,14 @@ function db() {
   this.pool = new pg.Pool(this.pgConfig);
 }
 
-db.prototype.insertObject = function(parentId, name, nestedLevel, cb) {
+db.prototype.insertObject = function(parentId, name, nestedLevel, appId, cb) {
   this.pool.connect(function (err, client, done) {
     if (err) {
       console.error("error fetching client from pool", err);
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_insert_object($1, $2, $3)", [parentId, name, nestedLevel], function (err, recordSet) {
+    client.query("SELECT * FROM func_insert_object($1, $2, $3, $4)", [parentId, name, nestedLevel, appId], function (err, recordSet) {
       if (err) {
         console.error("error running db function func_insert_object", err);
         return cb(err);
@@ -40,14 +40,14 @@ db.prototype.insertObject = function(parentId, name, nestedLevel, cb) {
   });
 }
 
-db.prototype.getObjects = function(cb) {
+db.prototype.getObjects = function(appId, cb) {
   this.pool.connect(function (err, client, done) {
     if (err) {
       console.error("error fetching client from pool", err);
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_get_objects()", [], function (err, recordSet) {
+    client.query("SELECT * FROM func_get_objects($1)", [appId], function (err, recordSet) {
       if (err) {
         console.error("error running db function func_get_objects", err);
         return cb(err);
@@ -104,14 +104,14 @@ db.prototype.deleteObjects = function(objectId, cb) {
   });
 }
 
-db.prototype.getFiles = function(type, cb) {
+db.prototype.getFiles = function(type, appId, cb) {
   this.pool.connect(function (err, client, done) {
     if (err) {
       console.error("error fetching client from pool", err);
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_get_files($1)", [type], function (err, fileRecords) {
+    client.query("SELECT * FROM func_get_files($1, $2)", [type, appId], function (err, fileRecords) {
       if (err) {
         console.error("error running db function func_get_files", err);
         return cb(err);
@@ -124,14 +124,14 @@ db.prototype.getFiles = function(type, cb) {
   });
 }
 
-db.prototype.getBehaviourDefs = function(cb) {
+db.prototype.getBehaviourDefs = function(appId, cb) {
   this.pool.connect(function (err, client, done) {
     if (err) {
       console.error("error fetching client from pool", err);
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_get_behaviour_defs()", [], function (err, result) {
+    client.query("SELECT * FROM func_get_behaviour_defs($1)", [appId], function (err, result) {
       if (err) {
         console.error("error running db function func_get_behaviour_defs", err);
         return cb(err);
@@ -144,14 +144,14 @@ db.prototype.getBehaviourDefs = function(cb) {
   });
 }
 
-db.prototype.createBehaviourDef = function(script, name, system, filename, cb) {
+db.prototype.createBehaviourDef = function(script, name, system, filename, appId, cb) {
   this.pool.connect(function (err, client, done) {
     if (err) {
       console.error("error fetching client from pool", err);
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_insert_behaviour_def($1, $2, $3, $4)", [script, name, system, filename], function (err, result) {
+    client.query("SELECT * FROM func_insert_behaviour_def($1, $2, $3, $4, $5)", [script, name, system, filename, appId], function (err, result) {
       if (err) {
         console.error("error running db function func_insert_behaviour_def", err);
         return cb(err);
@@ -490,14 +490,14 @@ db.prototype.updateBehaviourInstanceProp = function(propertyInstanceId, intVal, 
   });
 }
 
-db.prototype.insertFile = function(type, data, filename, cb) {
+db.prototype.insertFile = function(type, data, filename, appId, cb) {
   this.pool.connect(function (err, client, done) {
     if (err) {
       console.error("error fetching client from pool", err);
       return cb(err);
     }
 
-    client.query("SELECT * FROM func_insert_file($1, $2, $3)", [type, data, filename], function (err, result) {
+    client.query("SELECT * FROM func_insert_file($1, $2, $3, $4)", [type, data, filename, appId], function (err, result) {
       if (err) {
         console.error("error running db function func_insert_file", err);
         return cb(err);

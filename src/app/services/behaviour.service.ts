@@ -28,7 +28,9 @@ export class BehaviourService {
   private behaviourDefinitions: BehaviourDef[] = [];
   private behaviourFactory = {};
 
-  constructor(private runtimeService: RuntimeService, private httpService: HttpService, private scriptService: ScriptService) {
+  constructor(private runtimeService: RuntimeService, private httpService: HttpService, private scriptService: ScriptService) {}
+
+  public init(): void {
     this.httpService.Get('/behaviours').subscribe(res => {
       if (res.BehaviourDefs) {
         for (let i = 0; i < res.BehaviourDefs.length; i++) {

@@ -6,8 +6,8 @@ const ObjectTree = require('../data_objects/object_tree');
 
 function ObjectUtility() {}
 
-ObjectUtility.prototype.getObjects = function(cb) {
-  db.getObjects(function (err, recordSet) {
+ObjectUtility.prototype.getObjects = function(appid, cb) {
+  db.getObjects(appid, function (err, recordSet) {
     if (err) {
       return cb(err);
     }
@@ -29,12 +29,12 @@ ObjectUtility.prototype.getObject = function(objId, cb) {
 
 }
 
-ObjectUtility.prototype.createObject = function(obj, cb) {
+ObjectUtility.prototype.createObject = function(appid, obj, cb) {
   let parent = obj.parent;
   let name = obj.name;
   let nestedLevel = obj.nestedLevel;
 
-  db.insertObject(parent, name, nestedLevel, function (err, objId) {
+  db.insertObject(parent, name, nestedLevel, appid, function (err, objId) {
     if (err) {
       return cb(err);
     }

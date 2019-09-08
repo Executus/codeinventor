@@ -7,7 +7,10 @@ let ObjectUtility = require('../utilities/object_utility');
 
 /* Get all objects */
 router.get('/', function(req, res, next) {
-  ObjectUtility.getObjects(function(err, objects) {
+  let appid = req.query.appid;
+  console.log('appid: ' + appid);
+
+  ObjectUtility.getObjects(appid, function(err, objects) {
     if (err) {
       return res.status(500).send(err);
     }
@@ -33,8 +36,11 @@ router.get('/:objectid', function(req, res, next) {
 /* Create new object */
 router.post('/', function(req, res, next) {
   let obj = req.body.Object;
+  let appid = req.query.appid;
+  console.log('appid: ' + appid);
+
   if (obj) {
-    ObjectUtility.createObject(obj, function(err, object) {
+    ObjectUtility.createObject(appid, obj, function(err, object) {
       if (err) {
         return res.status(500).send(err);
       }

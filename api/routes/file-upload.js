@@ -10,9 +10,12 @@ let FileUtility = require('../utilities/file_utility');
 
 /* Upload file */
 router.post('/', upload.single('file'), function(req, res, next) {
+  let appid = req.query.appid;
+  console.log('appid: ' + appid);
+
   const fileData = '\\x' + req.file.buffer.toString('hex');
 
-  FileUtility.uploadFile(fileData, function(err, fileId) {
+  FileUtility.uploadFile(appid, fileData, function(err, fileId) {
     if (err) {
       return res.status(500).send(err);
     }

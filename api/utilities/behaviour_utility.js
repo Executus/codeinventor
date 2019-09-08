@@ -28,8 +28,8 @@ function BehaviourUtility() {
   });
 }
 
-BehaviourUtility.prototype.getBehaviourDefs = function(cb) {
-  db.getBehaviourDefs(function(err, records) {
+BehaviourUtility.prototype.getBehaviourDefs = function(appid, cb) {
+  db.getBehaviourDefs(appid, function(err, records) {
     if (err) {
       return cb(err);
     }
@@ -94,14 +94,14 @@ BehaviourUtility.prototype.getBehaviourDefs = function(cb) {
   });
 };
 
-BehaviourUtility.prototype.createBehaviourDef = function(behaviourDef, cb) {
+BehaviourUtility.prototype.createBehaviourDef = function(appid, behaviourDef, cb) {
   let script = behaviourDef.script;
   let name = behaviourDef.name;
   let isSystem = behaviourDef.isSystemBehaviour;
   let filename = uuidv1();
 
   let self = this;
-  db.createBehaviourDef(script, name, isSystem, filename, function(err, newBehaviourDefId) {
+  db.createBehaviourDef(script, name, isSystem, filename, appid, function(err, newBehaviourDefId) {
     if (err) {
       return cb(err);
     }

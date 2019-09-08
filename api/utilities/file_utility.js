@@ -9,8 +9,8 @@ const config = require('../config');
 
 function FileUtility() {}
 
-FileUtility.prototype.getFiles = function(type, cb) {
-  db.getFiles(type, function (err, fileRecords) {
+FileUtility.prototype.getFiles = function(appid, type, cb) {
+  db.getFiles(type, appid, function (err, fileRecords) {
     if (err) {
       return cb(err);
     }
@@ -53,9 +53,9 @@ FileUtility.prototype.getFiles = function(type, cb) {
   });
 }
 
-FileUtility.prototype.uploadFile = function(fileData, cb) {
+FileUtility.prototype.uploadFile = function(appid, fileData, cb) {
   let filename = uuidv1();
-  db.insertFile(0, fileData, filename, function(err, fileId) {
+  db.insertFile(0, fileData, filename, appid, function(err, fileId) {
     if (err) {
       return cb(err);
     }

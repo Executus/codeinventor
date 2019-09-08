@@ -1,17 +1,17 @@
-CREATE OR REPLACE FUNCTION func_insert_object(IN in_n_parent_id BIGINT, IN in_s_name TEXT, IN in_n_nested_level INTEGER)
+CREATE OR REPLACE FUNCTION func_insert_object(IN in_n_parent_id BIGINT, IN in_s_name TEXT, IN in_n_nested_level INTEGER, IN in_s_app_id TEXT)
   RETURNS BIGINT AS
 $$
 DECLARE
   n_object_id BIGINT;
 BEGIN
-  INSERT INTO tbl_object (k_parent, s_name, n_nested_level, t_created, t_modified)
-  VALUES (in_n_parent_id, in_s_name, in_n_nested_level, now(), now())
+  INSERT INTO tbl_object (k_parent, s_name, n_nested_level, s_app_id, t_created, t_modified)
+  VALUES (in_n_parent_id, in_s_name, in_n_nested_level, in_s_app_id, now(), now())
   RETURNING k_object INTO n_object_id;
   RETURN n_object_id;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
-CREATE OR REPLACE FUNCTION func_get_objects()
+CREATE OR REPLACE FUNCTION func_get_objects(IN in_s_app_id TEXT)
   RETURNS TABLE(
     k_object        BIGINT,
     k_parent        BIGINT,
@@ -22,7 +22,8 @@ $$
 BEGIN
   RETURN QUERY
   SELECT o.k_object, o.k_parent, o.s_name, o.n_nested_level
-  FROM tbl_object AS o;
+  FROM tbl_object AS o
+  WHERE o.s_app_id = in_s_app_id;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
@@ -50,7 +51,7 @@ BEGIN
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
-CREATE OR REPLACE FUNCTION func_get_files(IN in_n_type INTEGER)
+CREATE OR REPLACE FUNCTION func_get_files(IN in_n_type INTEGER, IN in_s_app_id TEXT)
   RETURNS TABLE(
     k_file          INTEGER,
     n_type          INTEGER,
@@ -62,24 +63,27 @@ BEGIN
   RETURN QUERY
   SELECT f.k_file, f.n_type, f.x_data, f.u_filename
   FROM tbl_file AS f
-  WHERE f.n_type = in_n_type;
+  WHERE f.n_type = in_n_type
+  AND f.s_app_id = in_s_app_id
+  OR f.s_app_id IS NULL;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
-CREATE OR REPLACE FUNCTION func_insert_behaviour_def(IN in_s_script TEXT, IN in_s_name TEXT, IN in_b_system BOOLEAN, IN in_u_filename UUID)
+CREATE OR REPLACE FUNCTION func_insert_behaviour_def(IN in_s_script TEXT, IN in_s_name TEXT, IN in_b_system BOOLEAN, IN in_u_filename UUID, 
+                                                     IN in_s_app_id TEXT)
   RETURNS BIGINT AS
 $$
 DECLARE
   n_behaviour_def_id BIGINT;
 BEGIN
-  INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, u_filename, t_created, t_modified)
-  VALUES (in_s_script, in_s_name, in_b_system, in_u_filename, now(), now())
+  INSERT INTO tbl_behaviour_def (s_script, s_name, b_system, u_filename, s_app_id, t_created, t_modified)
+  VALUES (in_s_script, in_s_name, in_b_system, in_u_filename, in_s_app_id, now(), now())
   RETURNING k_behaviour_def INTO n_behaviour_def_id;
   RETURN n_behaviour_def_id;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
-CREATE OR REPLACE FUNCTION func_get_behaviour_defs()
+CREATE OR REPLACE FUNCTION func_get_behaviour_defs(IN in_s_app_id TEXT)
   RETURNS TABLE(
     k_behaviour_def   BIGINT,
     s_script          TEXT,
@@ -91,7 +95,9 @@ $$
 BEGIN
   RETURN QUERY
   SELECT bd.k_behaviour_def, bd.s_script, bd.s_name, bd.b_system, bd.u_filename
-  FROM tbl_behaviour_def AS bd;
+  FROM tbl_behaviour_def AS bd
+  WHERE bd.s_app_id = in_s_app_id
+  OR bd.s_app_id IS NULL;
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
@@ -374,14 +380,14 @@ BEGIN
 END
 $$ LANGUAGE plpgsql VOLATILE NOT LEAKPROOF;
 
-CREATE OR REPLACE FUNCTION func_insert_file(IN in_n_type INTEGER, IN in_x_data BYTEA, IN in_u_filename UUID)
+CREATE OR REPLACE FUNCTION func_insert_file(IN in_n_type INTEGER, IN in_x_data BYTEA, IN in_u_filename UUID, IN in_s_app_id TEXT)
   RETURNS BIGINT AS
 $$
 DECLARE
   n_file_id BIGINT;
 BEGIN
-  INSERT INTO tbl_file (n_type, x_data, u_filename, t_created, t_modified)
-  VALUES (in_n_type, in_x_data, in_u_filename, now(), now())
+  INSERT INTO tbl_file (n_type, x_data, u_filename, s_app_id, t_created, t_modified)
+  VALUES (in_n_type, in_x_data, in_u_filename, in_s_app_id, now(), now())
   RETURNING k_file INTO n_file_id;
   RETURN n_file_id;
 END

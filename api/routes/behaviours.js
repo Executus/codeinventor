@@ -7,7 +7,10 @@ let BehaviourUtility = require('../utilities/behaviour_utility');
 
 /* Get all behavior definitions */
 router.get('/', function(req, res, next) {
-  BehaviourUtility.getBehaviourDefs(function(err, behaviourDefs) {
+  let appid = req.query.appid;
+  console.log('appid: ' + appid);
+
+  BehaviourUtility.getBehaviourDefs(appid, function(err, behaviourDefs) {
     if (err) {
       return res.status(500).send(err);
     }
@@ -22,8 +25,11 @@ router.get('/', function(req, res, next) {
 /* Create new behaviour definition */
 router.post('/', function(req, res, next) {
   let def = req.body.BehaviourDef;
+  let appid = req.query.appid;
+  console.log('appid: ' + appid);
+
   if (def) {
-    BehaviourUtility.createBehaviourDef(def, function(err, newBehaviourDef) {
+    BehaviourUtility.createBehaviourDef(appid, def, function(err, newBehaviourDef) {
       if (err) {
         return res.status(500).send(err);
       }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RuntimeService } from '../../runtime/runtime.service';
+import { HttpService } from '../../services/http.service';
 
 @Component({
   selector: 'app-toolbar-view',
@@ -8,7 +9,7 @@ import { RuntimeService } from '../../runtime/runtime.service';
 })
 export class ToolbarViewComponent implements OnInit {
 
-  constructor(private runtime: RuntimeService) { }
+  constructor(private runtime: RuntimeService, private httpService: HttpService) { }
 
   ngOnInit() {
   }
