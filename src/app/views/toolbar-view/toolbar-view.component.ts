@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RuntimeService } from '../../runtime/runtime.service';
 import { HttpService } from '../../services/http.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-toolbar-view',
@@ -20,5 +21,13 @@ export class ToolbarViewComponent implements OnInit {
 
   private onStopClicked(): void {
     this.runtime.stopRuntime();
+  }
+
+  getQuestionHoverText(): string {
+    let text = "To return to this project go to (write down this URL):\n\n";
+    text += environment.hostname + "/" + this.httpService.getAppId() + "\n\n";
+    text += "To start a new project go to:\n\n";
+    text += environment.hostname + "/";
+    return text;
   }
 }
