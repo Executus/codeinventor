@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RuntimeService } from './runtime/runtime.service';
 import { ActivatedRoute } from '@angular/router';
@@ -13,12 +14,13 @@ export class AppComponent implements OnInit {
   title = 'app';
 
   constructor(private runtime: RuntimeService, private route: ActivatedRoute, private httpService: HttpService,
-              private behaviourService: BehaviourService) {}
+              private behaviourService: BehaviourService, private location: Location) {}
 
   ngOnInit() {
     let appId = this.route.snapshot.paramMap.get('appid');
     if (!appId) {
       appId = (Math.random() + 1).toString(36).substring(7);
+      this.location.replaceState('/' + appId);
     }
     this.httpService.setAppId(appId);
     this.behaviourService.init();
