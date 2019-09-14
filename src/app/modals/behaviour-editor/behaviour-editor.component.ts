@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { BehaviourService, BehaviourDef } from '../../services/behaviour.service';
+import { HttpService } from '../../services/http.service';
 
 import * as $ from '../../lib/jquery';
 import * as droplet from '../../lib/droplet';
@@ -14,21 +16,25 @@ import * as palette from '../../lib/palette';
 export class BehaviourEditorComponent implements OnInit, OnDestroy {
 
   behaviourName: string;
+  behaviourDef: BehaviourDef;
   code: string;
   callbacks = {};
   pane;
   subscribers = [];
   mimeType = 'text/javascript';
   dropletEditor;
+  saving: boolean = false;
 
-  constructor(public modal: NgbActiveModal) {
+  constructor(public modal: NgbActiveModal, private behaviourService: BehaviourService, private httpService: HttpService) {
     this.behaviourName = '';
+    this.behaviourDef = null;
   }
 
-  public init(behaviourName: string, existingScript?: string): void {
+  public init(behaviourName: string, behaviourDef?: BehaviourDef): void {
     this.behaviourName = behaviourName;
-    if (existingScript) {
-      this.code = existingScript;
+    if (behaviourDef) {
+      this.code = behaviourDef.script;
+      this.behaviourDef = behaviourDef;
     } else {
       this.code = this.initBehaviourCode();
     }
@@ -64,6 +70,38 @@ export class BehaviourEditorComponent implements OnInit, OnDestroy {
     delete this.dropletEditor;
     this.dropletEditor = null;
     this.pane = null;
+  }
+
+  onSave(result) {
+    if (this.saving) {
+      return;
+    }
+    
+    if (this.behaviourDef === null) {
+      let behaviour: BehaviourDef = {
+        id: -1,
+        script: result.data,
+        name: this.behaviourName,
+        isSystemBehaviour: false,
+        filename: '',
+        properties: []
+      };
+  
+      this.saving = true;
+      this.httpService.Post('/behaviours', { BehaviourDef: behaviour }).subscribe(res => {
+        this.saving = false;
+        if (res.BehaviourDef.id > -1) {
+          this.behaviourService.registerBehaviourDef(res.BehaviourDef);
+          this.behaviourDef = res.BehaviourDef;
+        }
+      });
+    } else {
+      this.behaviourDef.script = result.data;
+      this.saving = true;
+      this.httpService.Put('/behaviours', { BehaviourDef: this.behaviourDef }).subscribe(res => {
+        this.saving = false;
+      });
+    }
   }
 
   initialPaneState() {

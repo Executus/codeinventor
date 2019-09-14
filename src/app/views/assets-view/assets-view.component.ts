@@ -55,10 +55,10 @@ export class AssetsViewComponent implements OnInit {
     });
   }
 
-  private openBehaviourEditor(name: string, existingCode?: string): Promise<any> {
+  private openBehaviourEditor(name: string, behaviourDef?: BehaviourDef): Promise<any> {
     let modal: NgbModalRef = this.modalService.open(BehaviourEditorComponent, { windowClass: 'behav-editor-modal' });
     let modalComponent: BehaviourEditorComponent = modal.componentInstance as BehaviourEditorComponent;
-    modalComponent.init(name, existingCode);
+    modalComponent.init(name, behaviourDef);
     return modal.result;
   }
 
@@ -68,36 +68,16 @@ export class AssetsViewComponent implements OnInit {
     
     modal.result.then(name => {
       let behaviourName = name;
-      this.openBehaviourEditor(name).then(result => {
-        let behaviour: BehaviourDef = {
-          id: -1,
-          script: result.data,
-          name: behaviourName,
-          isSystemBehaviour: false,
-          filename: '',
-          properties: []
-        };
-  
-        this.httpService.Post('/behaviours', { BehaviourDef: behaviour }).subscribe(res => {
-          if (res.BehaviourDef.id > -1) {
-            this.behaviourService.registerBehaviourDef(res.BehaviourDef);
-          }
-        });
-      }, () => {});
+      this.openBehaviourEditor(name).then(() => {}, () => {});
     }, () => {});
   }
 
   onViewBehaviour(behaviour: BehaviourDef): void {
-    this.openBehaviourEditor(behaviour.name, behaviour.script);
+    this.openBehaviourEditor(behaviour.name, behaviour);
   }
 
   onEditBehaviour(behaviour: BehaviourDef): void {
-    this.openBehaviourEditor(behaviour.name, behaviour.script).then(result => {
-      behaviour.script = result.data;
-      this.httpService.Put('/behaviours', { BehaviourDef: behaviour }).subscribe(res => {
-        
-      });
-    }, () => {});
+    this.openBehaviourEditor(behaviour.name, behaviour).then(() => {}, () => {});
   }
 
   onDeleteBehaviour(behaviour: BehaviourDef): void {

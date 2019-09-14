@@ -17,6 +17,9 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" ngbAutofocus class="btn btn-outline-secondary" (click)="modal.dismiss('cancel')">Cancel</button>
-  <button type="button" class="btn btn-primary" (click)="modal.close(getPaneEditorData())">Save</button>
+  <button type="button" ngbAutofocus class="btn btn-outline-secondary" (click)="modal.dismiss('cancel')">Close</button>
+  <button type="button" class="btn btn-primary" (click)="onSave(getPaneEditorData())">
+    <i *ngIf="saving" class="fas fa-spinner fa-spin"></i>
+    <span *ngIf="!saving">Save</span>
+  </button>
 </div>
