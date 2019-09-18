@@ -68,7 +68,7 @@ set s_script = 'class BehaviourSprite {
     
     this.image = new Image();
     this.image.crossOrigin = "";
-    this.image.src = ''http://hopper.une.edu.au/codeinventor/files/'' + this.Texture.filename;
+    this.image.src = ''https://hopper.une.edu.au/codeinventor/api/files/'' + this.Texture.filename;
     this.image.addEventListener(''load'', function() {
       gl.bindTexture(gl.TEXTURE_2D, self.tex);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, self.image);
