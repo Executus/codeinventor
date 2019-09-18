@@ -49,6 +49,8 @@ FileUtility.prototype.getFiles = function(appid, type, cb) {
           return cb(null, files);
         }
       );
+    } else {
+      return cb(null, []);
     }
   });
 }

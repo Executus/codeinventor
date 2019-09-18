@@ -6,6 +6,7 @@ import { BehaviourService, BehaviourDef } from '../../services/behaviour.service
 import { HttpService } from '../../services/http.service';
 import { DeleteBehaviourModalComponent } from '../../modals/delete-behaviour-modal/delete-behaviour-modal.component';
 import { FILETYPE } from '../../classes/file';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-assets-view',
@@ -16,6 +17,7 @@ export class AssetsViewComponent implements OnInit {
 
   private files = [];
   private file = null;
+  private api: string = environment.api;
 
   constructor(private modalService: NgbModal, private behaviourService: BehaviourService, private httpService: HttpService) {}
 

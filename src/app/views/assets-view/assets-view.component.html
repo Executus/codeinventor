@@ -52,7 +52,7 @@
           <div class="col-md-12 sprite-gallery">
             <div *ngFor="let row of files" class="card-deck">
               <div *ngFor="let file of row.files" class="card">
-                <img [src]="'http://localhost:3000/files/' + file.filename" class="card-img-top">
+                <img [src]="api + '/files/' + file.filename" class="card-img-top">
               </div>
             </div>
           </div>

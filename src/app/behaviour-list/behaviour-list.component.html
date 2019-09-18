@@ -29,7 +29,7 @@
           <span *ngSwitchCase="'PropertyFile'">
             <button class="btn btn-sm btn-light file-btn" (click)="onChooseFile(property)">
               <i class="far fa-image" *ngIf="!property.Value"></i>
-              <img *ngIf="property.Value" [src]="'http://localhost:3000/files/' + property.filename">
+              <img *ngIf="property.Value" [src]="api + '/files/' + property.filename">
             </button>
           </span>
         </label>

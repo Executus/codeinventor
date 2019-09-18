@@ -7,7 +7,7 @@
 <div class="modal-body">
   <div *ngFor="let row of files" class="card-deck">
     <div *ngFor="let file of row.files" class="card" (click)="onSelectFile(file)" [ngClass]="{'selected': selectedFile && selectedFile.id === file.id}">
-      <img [src]="'http://localhost:3000/files/' + file.filename" class="card-img-top">
+      <img [src]="api + '/files/' + file.filename" class="card-img-top">
     </div>
   </div>
 </div>

@@ -4,6 +4,7 @@ import { Object } from '../classes/object';
 import { RuntimeService } from '../runtime/runtime.service';
 import { HttpService } from './http.service';
 import { ScriptService } from './script.service';
+import { environment } from '../../environments/environment';
 
 export interface PropertyDef {
   propertyDefId: number,
@@ -46,7 +47,7 @@ export class BehaviourService {
     }).includes(behaviourDef.name)) {
       this.behaviourDefinitions.push(behaviourDef);
 
-      this.scriptService.loadScript(behaviourDef.name, 'http://localhost:3000/files/' + behaviourDef.filename + '.js').then((result) => {
+      this.scriptService.loadScript(behaviourDef.name, environment.api + '/files/' + behaviourDef.filename + '.js').then((result) => {
         this.behaviourFactory[behaviourDef.name] = result;
       }, (reason) => {
         console.log('Failed to load script: ' + reason);

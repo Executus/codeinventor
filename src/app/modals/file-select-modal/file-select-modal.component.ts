@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { File, FILETYPE } from '../../classes/file';
 import { HttpService } from '../../services/http.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-file-select-modal',
@@ -13,6 +14,7 @@ export class FileSelectModalComponent implements OnInit {
   private fileType: FILETYPE;
   private files = [];
   private selectedFile: File = null;
+  private api: string = environment.api;
 
   private fileUploaderConfig = {
     multiple: false,

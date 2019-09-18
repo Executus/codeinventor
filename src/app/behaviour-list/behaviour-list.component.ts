@@ -8,6 +8,7 @@ import { FileSelectModalComponent } from '../modals/file-select-modal/file-selec
 import { PropertyFile } from '../classes/property-file';
 import { File } from '../classes/file';
 import { HttpService } from '../services/http.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-behaviour-list',
@@ -17,6 +18,7 @@ import { HttpService } from '../services/http.service';
 export class BehaviourListComponent implements OnInit, OnDestroy, SelectObjectListener {
 
   private selectedObject: Object = null;
+  private api: string = environment.api;
 
   constructor(private objectService: ObjectService, private modalService: NgbModal, private httpService: HttpService) {
     this.objectService.registerSelectObjectListener(this);
