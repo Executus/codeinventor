@@ -9,7 +9,7 @@ export interface Behaviour {
   instanceId: number;
 
   init(runtimeService: RuntimeService): void;
-  update(runtimeService: RuntimeService): void;
+  update(deltaTime, runtimeService: RuntimeService): void;
   draw(runtimeService: RuntimeService): void;
   onKeyDown(key);
   onKeyUp(key);

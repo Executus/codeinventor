@@ -55,10 +55,18 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
   }
 
   private onSelectObject(object: Object): void {
+    if (object.getEditing()) {
+      return;
+    }
+
     if (this.selectedObject === object) {
       this.selectedObject = null;
     } else {
       this.selectedObject = object;
+    }
+
+    if (this.selectedObject && this.selectedObject.getChildren().length > 0 && !this.selectedObject.getExpanded()) {
+      this.selectedObject.toggleExpanded();
     }
 
     this.objectService.setSelectedObject(this.selectedObject);
@@ -94,6 +102,10 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
   }
 
   private editName(object: Object, $event): void {
+    if (object !== this.selectedObject) {
+      this.selectedObject = object;
+    }
+
     object.setEditing(true);
     $event.stopPropagation();
   }
@@ -128,5 +140,15 @@ export class ObjectTreeComponent implements OnInit, OnDestroy {
 
   public getObjectTreeData(): Object[] {
     return this.treeData;
+  }
+
+  public onClickEditNameInput(ev: MouseEvent): void {
+    ev.stopPropagation();
+  };
+
+  public onEditNameKeyDown(ev: KeyboardEvent, object: Object): void {
+    if (ev.key === 'Enter') {
+      object.setEditing(false);
+    }
   }
 }

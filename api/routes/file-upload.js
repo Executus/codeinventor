@@ -21,7 +21,7 @@ router.post('/', upload.single('file'), function(req, res, next) {
     }
 
     let data = {
-      FileId: fileId
+      FileId: parseInt(fileId)
     }
     return res.status(200).send(data);
   });

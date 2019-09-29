@@ -41,8 +41,9 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, u_filename, b_system, t_created
 
   }
 
-  update(runtimeService) {
+  update(deltaTime, runtimeService) {
     // Code here will run every frame (about 60 times every second).
+    // deltaTime is the amount of milliseconds since the previous frame. 
     this.WorldXPosition = this.LocalXPosition.Value;
     this.WorldYPosition = this.LocalYPosition.Value;
     
@@ -157,8 +158,9 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, u_filename, b_system, t_created
     });
   }
 
-  update(runtimeService) {
+  update(deltaTime, runtimeService) {
     // Code here will run every frame (about 60 times every second).
+    // deltaTime is the amount of milliseconds since the previous frame. 
     let transform = this.attachedObject.getBehaviour(''BehaviourTransform'');
     if (transform) {
       let posX = transform.WorldXPosition;
@@ -290,8 +292,9 @@ INSERT INTO tbl_behaviour_def (s_script, s_name, u_filename, b_system, t_created
     runtimeService.registerKeyboardListener(this.attachedObject);
   }
 
-  update(runtimeService) {
+  update(deltaTime, runtimeService) {
     // Code here will run every frame (about 60 times every second).
+    // deltaTime is the amount of milliseconds since the previous frame. 
   }
 
   onKeyDown(key) {

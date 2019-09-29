@@ -1,6 +1,7 @@
 import { Behaviour } from './behaviour';
 import { BehaviourService } from '../services/behaviour.service';
 import { RuntimeService } from '../runtime/runtime.service';
+import { ObjectService } from '../services/object.service';
 
 export class Object {
 
@@ -20,23 +21,23 @@ export class Object {
     //this.behaviours.push(new BehaviourTransform(this));
   }
 
-  public init(runtimeService: RuntimeService): void {
+  public init(runtimeService: RuntimeService, objectService: ObjectService): void {
     for (let i = 0; i < this.behaviours.length; i++) {
       this.behaviours[i].init(runtimeService);
     }
 
     for (let i = 0; i < this.children.length; i++) {
-      this.children[i].init(runtimeService);
+      this.children[i].init(runtimeService, objectService);
     }
   }
 
-  public update(runtimeService: RuntimeService): void {
+  public update(deltaTime, runtimeService: RuntimeService): void {
     for (let i = 0; i < this.behaviours.length; i++) {
-      this.behaviours[i].update(runtimeService);
+      this.behaviours[i].update(deltaTime, runtimeService);
     }
 
     for (let i = 0; i < this.children.length; i++) {
-      this.children[i].update(runtimeService);
+      this.children[i].update(deltaTime, runtimeService);
     }
   }
 
@@ -122,7 +123,14 @@ export class Object {
   }
 
   public getBehaviours(): Behaviour[] {
-    return this.behaviours;
+    return this.behaviours.sort((a: Behaviour, b: Behaviour) => {
+      if (a.instanceId < b.instanceId) {
+        return -1;
+      } else if (a.instanceId > b.instanceId) {
+        return 1;
+      }
+      return 0;
+    });
   }
 
   public getBehaviour(typename: string) {
@@ -153,5 +161,21 @@ export class Object {
       return newBehaviour;
     }
     return null;
+  }
+
+  public getEditing(): boolean {
+    return this.editing;
+  }
+
+  public getChildren(): Object[] {
+    return this.children;
+  }
+
+  public getExpanded(): boolean {
+    return this.expanded;
+  }
+
+  public clearBehaviours(): void {
+    this.behaviours = [];
   }
 }

@@ -59,7 +59,7 @@ router.put('/', function(req, res, next) {
 
       let data = {
         result: 'success',
-        BehaviourDefId: behaviourDefId
+        BehaviourDefId: parseInt(behaviourDefId)
       }
       return res.status(200).send(data);
     });

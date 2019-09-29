@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviourService, BehaviourDef } from '../../services/behaviour.service';
 import { HttpService } from '../../services/http.service';
+import { ObjectService } from '../../services/object.service';
 
 import * as $ from '../../lib/jquery';
 import * as droplet from '../../lib/droplet';
@@ -24,19 +25,24 @@ export class BehaviourEditorComponent implements OnInit, OnDestroy {
   mimeType = 'text/javascript';
   dropletEditor;
   saving: boolean = false;
+  readOnly:boolean = false;
 
-  constructor(public modal: NgbActiveModal, private behaviourService: BehaviourService, private httpService: HttpService) {
+  constructor(public modal: NgbActiveModal, private behaviourService: BehaviourService, private httpService: HttpService,
+              private objectService: ObjectService) {
     this.behaviourName = '';
     this.behaviourDef = null;
   }
 
-  public init(behaviourName: string, behaviourDef?: BehaviourDef): void {
+  public init(behaviourName: string, behaviourDef?: BehaviourDef, readOnly?: boolean): void {
     this.behaviourName = behaviourName;
     if (behaviourDef) {
       this.code = behaviourDef.script;
       this.behaviourDef = behaviourDef;
     } else {
       this.code = this.initBehaviourCode();
+    }
+    if (readOnly === true) {
+      this.readOnly = true;
     }
   }
 
@@ -100,6 +106,8 @@ export class BehaviourEditorComponent implements OnInit, OnDestroy {
       this.saving = true;
       this.httpService.Put('/behaviours', { BehaviourDef: this.behaviourDef }).subscribe(res => {
         this.saving = false;
+        //this.behaviourService.registerBehaviourDef(this.behaviourDef, true);
+        //this.objectService.updateObjectTreeData(true);
       });
     }
   }
@@ -133,8 +141,9 @@ export class BehaviourEditorComponent implements OnInit, OnDestroy {
     code += '\t\t// Code here will run once when the object is created.\n';
     code += '\t\t\n';
     code += '\t}\n\t\t\n';
-    code += '\tupdate(runtimeService) {\n';
+    code += '\tupdate(deltaTime, runtimeService) {\n';
     code += '\t\t// Code here will run every frame (about 60 times every second).\n';
+    code += '\t\t// deltaTime is the amount of milliseconds since the previous frame.\n';
     code += '\t\t\n';
     code += '\t}\n\t\t\n';
     code += '\tonKeyDown(key) {\n';

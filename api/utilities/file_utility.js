@@ -33,7 +33,7 @@ FileUtility.prototype.getFiles = function(appid, type, cb) {
             }
   
             let file = {
-              id: fileRecord['k_file'],
+              id: parseInt(fileRecord['k_file']),
               name: filename
             }
   

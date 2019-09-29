@@ -18,7 +18,7 @@
 </div>
 <div class="modal-footer">
   <button type="button" ngbAutofocus class="btn btn-outline-secondary" (click)="modal.dismiss('cancel')">Close</button>
-  <button type="button" class="btn btn-primary" (click)="onSave(getPaneEditorData())">
+  <button *ngIf="!readOnly" type="button" class="btn btn-primary" (click)="onSave(getPaneEditorData())">
     <i *ngIf="saving" class="fas fa-spinner fa-spin"></i>
     <span *ngIf="!saving">Save</span>
   </button>

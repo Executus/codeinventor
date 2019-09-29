@@ -41,13 +41,13 @@ export class BehaviourService {
     });
   }
 
-  public registerBehaviourDef(behaviourDef: BehaviourDef) {
+  public registerBehaviourDef(behaviourDef: BehaviourDef, reloadScript?: boolean) {
     if (!this.behaviourDefinitions.map(function(def: BehaviourDef) {
       return def.name;
     }).includes(behaviourDef.name)) {
       this.behaviourDefinitions.push(behaviourDef);
 
-      this.scriptService.loadScript(behaviourDef.name, environment.api + '/files/' + behaviourDef.filename + '.js').then((result) => {
+      this.scriptService.loadScript(behaviourDef.name, environment.api + '/files/' + behaviourDef.filename + '.js', false).then((result) => {
         this.behaviourFactory[behaviourDef.name] = result;
       }, (reason) => {
         console.log('Failed to load script: ' + reason);
@@ -65,7 +65,14 @@ export class BehaviourService {
   }
 
   public getBehaviourDefs(): BehaviourDef[] {
-    return this.behaviourDefinitions;
+    return this.behaviourDefinitions.sort((a, b): number => {
+      if (a.id < b.id) {
+        return -1;
+      } else if (a.id > b.id) {
+        return 1;
+      }
+      return 0;
+    });
   }
 
   public createBehaviour(behaviourDef: string, object: Object): Behaviour {

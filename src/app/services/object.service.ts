@@ -4,6 +4,7 @@ import { Object }  from '../classes/object';
 import { Behaviour } from '../classes/behaviour';
 import { BehaviourDef } from '../services/behaviour.service';
 import { HttpService } from './http.service';
+import { Observable } from 'rxjs';
 
 export interface BehavioursChangedListener {
   onObjectBehavioursChanged(behaviours: Behaviour[]): void;
@@ -45,33 +46,64 @@ export class ObjectService {
     }
   }
 
+  public updateObjectTreeData(forceUpdate: boolean): Promise<any> {
+    let self = this;
+    let promises: Promise<any>[] = [];
+    let objectTree = this.getObjectTreeData();
+    if (objectTree) {
+      for (let i = 0; i < objectTree.length; i++) {
+        (function inner(object: Object){
+          if (forceUpdate || !object.upToDate) {
+            let promise: Promise<any> = self.updateBehaviourInstanceData(object, false).toPromise();
+            promises.push(promise);
+          }
+          
+          let children = object.getChildren();
+          for (let j = 0; j < children.length; j++) {
+            inner(children[j]);
+          }
+        })(objectTree[i]);
+      }
+    }
+    return Promise.all(promises);
+  }
+
+  public updateBehaviourInstanceData(object: Object, notifySelectObjListeners: boolean): Observable<any> {
+    let promise = this.httpService.Get('/behaviours/instance/' + object.getId());
+    promise.subscribe(res => {
+      res.BehaviourInstances.forEach(behaviourInstance => {
+        let behaviour: Behaviour = object.addBehaviour(behaviourInstance.name);
+        behaviour.instanceId = behaviourInstance.instanceId;
+        behaviourInstance.propertyInstances.forEach(propertyInstance => {
+          behaviour.properties.forEach(property => {
+            if (property.name === propertyInstance.propertyName) {
+              property.instanceId = propertyInstance.propertyInstanceId;
+              property.Value = propertyInstance.propertyValue;
+              if (propertyInstance.propertyType === 'PropertyFile') {
+                property.filename = propertyInstance.filename;
+              }
+            }
+          });
+        });
+      });
+
+      object.upToDate = true;
+      
+      if (notifySelectObjListeners) {
+        this.selectObjectListeners.forEach(listener => {
+          listener.onObjectSelected(this.selectedObject);
+        });
+      }
+    });
+
+    return promise;
+  }
+
   public setSelectedObject(object: Object): void {
     this.selectedObject = object;
 
     if (object && object.upToDate === false) {
-      this.httpService.Get('/behaviours/instance/' + object.getId()).subscribe(res => {
-        res.BehaviourInstances.forEach(behaviourInstance => {
-          let behaviour: Behaviour = object.addBehaviour(behaviourInstance.name);
-          behaviour.instanceId = behaviourInstance.instanceId;
-          behaviourInstance.propertyInstances.forEach(propertyInstance => {
-            behaviour.properties.forEach(property => {
-              if (property.name === propertyInstance.propertyName) {
-                property.instanceId = propertyInstance.propertyInstanceId;
-                property.Value = propertyInstance.propertyValue;
-                if (propertyInstance.propertyType === 'PropertyFile') {
-                  property.filename = propertyInstance.filename;
-                }
-              }
-            });
-          });
-        });
-
-        object.upToDate = true;
-        
-        this.selectObjectListeners.forEach(listener => {
-          listener.onObjectSelected(this.selectedObject);
-        });
-      });
+      this.updateBehaviourInstanceData(object, true);
     } else {
       this.selectObjectListeners.forEach(listener => {
         listener.onObjectSelected(this.selectedObject);
@@ -165,5 +197,11 @@ export class ObjectService {
         listener.onObjectBehavioursChanged(this.selectedObject.getBehaviours());
       });
     }
+  }
+
+  public behaviourDefsUpdated(): void {
+    this.behavioursChangedListeners.forEach(listener => {
+      listener.onObjectBehavioursChanged(this.selectedObject.getBehaviours());
+    });
   }
 }

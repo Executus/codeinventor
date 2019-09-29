@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import * as $ from '../lib/jquery';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -9,16 +11,19 @@ export class ScriptService {
 
   constructor() { }
 
-  public loadScript(name: string, src: string): Promise<any> {
+  public loadScript(name: string, src: string, reload: boolean): Promise<any> {
     return new Promise((resolve, reject) => {
       //resolve if already loaded
-      if (this.scripts[name] && this.scripts[name].loaded) {
+      if (!reload && this.scripts[name] && this.scripts[name].loaded) {
         resolve({script: name, loaded: true, status: 'Already Loaded'});
       } else {
-        if (!this.scripts[name]) {
-          this.scripts[name] = {
-            loaded: false
-          }
+        this.scripts[name] = {
+          loaded: false
+        }
+
+        if (reload) {
+          // remove old script from the dom
+          $("script[src='" + src + "']").remove();
         }
         
         //load script

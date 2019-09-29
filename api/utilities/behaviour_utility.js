@@ -45,7 +45,7 @@ BehaviourUtility.prototype.getBehaviourDefs = function(appid, cb) {
 
         for (let i = 0; i < propertyDefs.length; i++) {
           properties.push({
-            propertyDefId: propertyDefs[i]['k_behaviour_def_property'],
+            propertyDefId: parseInt(propertyDefs[i]['k_behaviour_def_property']),
             propertyType: propertyDefs[i]['k_property_data_type'],
             propertyName: propertyDefs[i]['s_name']
           });
@@ -60,7 +60,7 @@ BehaviourUtility.prototype.getBehaviourDefs = function(appid, cb) {
               }
 
               behaviourDefs.push({
-                id: record.k_behaviour_def,
+                id: parseInt(record.k_behaviour_def),
                 name: record.s_name,
                 script: record.s_script,
                 isSystemBehaviour: record.b_system,
@@ -72,7 +72,7 @@ BehaviourUtility.prototype.getBehaviourDefs = function(appid, cb) {
             });
           } else {
             behaviourDefs.push({
-              id: record.k_behaviour_def,
+              id: parseInt(record.k_behaviour_def),
               name: record.s_name,
               script: record.s_script,
               isSystemBehaviour: record.b_system,
@@ -117,7 +117,7 @@ BehaviourUtility.prototype.createBehaviourDef = function(appid, behaviourDef, cb
         }
 
         let newBehaviourDef = {
-          id: newBehaviourDefId,
+          id: parseInt(newBehaviourDefId),
           script: script,
           name: name,
           isSystem: isSystem,
@@ -370,7 +370,7 @@ BehaviourUtility.prototype.createPropertyDefs = function(behaviourDefId, script,
           return nextPropCb(err);
         }
         addedPropertyDefs.push({
-          propertyDefId: newPropertyDefId,
+          propertyDefId: parseInt(newPropertyDefId),
           propertyType: propertyType.id,
           propertyName: property
         });
@@ -410,7 +410,7 @@ BehaviourUtility.prototype.updatePropertyDefs = function(behaviourDefId, script,
           async.each(propertyTypeValues, function(val, valueCb) {
             if (existingPropertyMap.hasOwnProperty(val)) {
               updatedProperties.push({
-                propertyDefId: existingPropertyMap[val],
+                propertyDefId: parseInt(existingPropertyMap[val]),
                 propertyType: this.propertyTypeIdMap[propertyType],
                 propertyName: val
               });
@@ -423,7 +423,7 @@ BehaviourUtility.prototype.updatePropertyDefs = function(behaviourDefId, script,
                 }
 
                 updatedProperties.push({
-                  propertyDefId: newBehaviourDefProp['k_behaviour_def_property'],
+                  propertyDefId: parseInt(newBehaviourDefProp['k_behaviour_def_property']),
                   propertyType: newBehaviourDefProp['k_property_data_type'],
                   propertyName: newBehaviourDefProp['s_name']
                 });
@@ -466,7 +466,7 @@ BehaviourUtility.prototype.updateBehaviourDef = function(behaviourDef, cb) {
       }
 
       let updatedDef = {
-        id: result.k_behaviour_def,
+        id: parseInt(result.k_behaviour_def),
         name: result.s_name,
         script: result.s_script,
         isSystemBehaviour: result.b_system,
@@ -550,8 +550,8 @@ BehaviourUtility.prototype.createBehaviourInstance = function(behaviourInstance,
         }
 
         propertyInstances.push({
-          propertyInstanceId: newPropInstanceId,
-          propertyDefinitionId: propertyDefId,
+          propertyInstanceId: parseInt(newPropInstanceId),
+          propertyDefinitionId: parseInt(propertyDefId),
           propertyValue: propertyValue
         });
         return next();
@@ -562,9 +562,9 @@ BehaviourUtility.prototype.createBehaviourInstance = function(behaviourInstance,
       }
 
       let behaviourInstance = {
-        instanceId: newBehaviourInstanceId,
-        objectId: objectId,
-        definitionId: behaviourDefId,
+        instanceId: parseInt(newBehaviourInstanceId),
+        objectId: parseInt(objectId),
+        definitionId: parseInt(behaviourDefId),
         propertyInstances: propertyInstances
       };
 
@@ -610,8 +610,8 @@ BehaviourUtility.prototype.getBehaviourInstances = function(objectId, cb) {
             }
             
             propertyInstances.push({
-              propertyInstanceId: property['k_behaviour_instance_property'],
-              propertyDefinitionId: property['k_behaviour_def_property'],
+              propertyInstanceId: parseInt(property['k_behaviour_instance_property']),
+              propertyDefinitionId: parseInt(property['k_behaviour_def_property']),
               propertyValue: propertyValue,
               propertyName: property['s_name'],
               propertyType: property['s_type'],
@@ -625,9 +625,9 @@ BehaviourUtility.prototype.getBehaviourInstances = function(objectId, cb) {
           }
 
           behaviourInstances.push({
-            instanceId: behaviour['k_behaviour_instance'],
-            objectId: behaviour['k_object'],
-            definitionId: behaviour['k_behaviour_def'],
+            instanceId: parseInt(behaviour['k_behaviour_instance']),
+            objectId: parseInt(behaviour['k_object']),
+            definitionId: parseInt(behaviour['k_behaviour_def']),
             name: behaviour['s_name'],
             propertyInstances: propertyInstances
           });
@@ -670,8 +670,8 @@ BehaviourUtility.prototype.updatePropertyInstance = function(propertyInstance, c
     }
 
     let updatedPropInstance = {
-      propertyInstanceId: result[0]['k_behaviour_instance_property'],
-      propertyDefinitionId: result[0]['k_behaviour_def_property'],
+      propertyInstanceId: parseInt(result[0]['k_behaviour_instance_property']),
+      propertyDefinitionId: parseInt(result[0]['k_behaviour_def_property']),
       propertyValue: propertyValue,
       propertyName: result[0]['s_name'],
       propertyType: result[0]['s_type']

@@ -7,6 +7,7 @@ import { HttpService } from '../../services/http.service';
 import { DeleteBehaviourModalComponent } from '../../modals/delete-behaviour-modal/delete-behaviour-modal.component';
 import { FILETYPE } from '../../classes/file';
 import { environment } from '../../../environments/environment';
+import { ObjectService } from '../../services/object.service';
 
 @Component({
   selector: 'app-assets-view',
@@ -19,7 +20,8 @@ export class AssetsViewComponent implements OnInit {
   private file = null;
   private api: string = environment.api;
 
-  constructor(private modalService: NgbModal, private behaviourService: BehaviourService, private httpService: HttpService) {}
+  constructor(private modalService: NgbModal, private behaviourService: BehaviourService, private httpService: HttpService,
+              private objectService: ObjectService) {}
 
   ngOnInit() {
     this.getFiles();
@@ -57,10 +59,10 @@ export class AssetsViewComponent implements OnInit {
     });
   }
 
-  private openBehaviourEditor(name: string, behaviourDef?: BehaviourDef): Promise<any> {
+  private openBehaviourEditor(name: string, behaviourDef?: BehaviourDef, readOnly?: boolean): Promise<any> {
     let modal: NgbModalRef = this.modalService.open(BehaviourEditorComponent, { windowClass: 'behav-editor-modal' });
     let modalComponent: BehaviourEditorComponent = modal.componentInstance as BehaviourEditorComponent;
-    modalComponent.init(name, behaviourDef);
+    modalComponent.init(name, behaviourDef, readOnly);
     return modal.result;
   }
 
@@ -75,11 +77,11 @@ export class AssetsViewComponent implements OnInit {
   }
 
   onViewBehaviour(behaviour: BehaviourDef): void {
-    this.openBehaviourEditor(behaviour.name, behaviour);
+    this.openBehaviourEditor(behaviour.name, behaviour, true);
   }
 
   onEditBehaviour(behaviour: BehaviourDef): void {
-    this.openBehaviourEditor(behaviour.name, behaviour).then(() => {}, () => {});
+    this.openBehaviourEditor(behaviour.name, behaviour, false).then(() => {}, () => {});
   }
 
   onDeleteBehaviour(behaviour: BehaviourDef): void {
@@ -95,6 +97,7 @@ export class AssetsViewComponent implements OnInit {
         this.httpService.Delete('/behaviours/' + behaviour.id).subscribe(res => {
           if (res.result === 'success') {
             this.behaviourService.unregisterBehaviourDef(behaviour);
+            this.objectService.updateObjectTreeData(true);
           }
         });
       }

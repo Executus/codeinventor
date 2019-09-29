@@ -15,6 +15,7 @@ export class RuntimeComponent implements OnInit, OnDestroy {
   private programInfo;
   private sceneTree: Object[] = [];
   private intervalId;
+  private currentTime;
 
   private vsSource = `
     attribute vec2 a_position;
@@ -87,62 +88,82 @@ export class RuntimeComponent implements OnInit, OnDestroy {
     this.runtimeService.setGlContext(this.gl);
     this.runtimeService.setShaderProgramInfo(this.programInfo);
 
-    this.initScene();
-    this.initInput();
+    this.gl.useProgram(this.programInfo.program);
 
-    this.intervalId = setInterval(function(context) {
-      context.mainLoop();
-    }, 20, this);
+    this.initScene().then(() => {
+      this.initInput();
+      this.currentTime = performance.now();
+
+      this.intervalId = setInterval(function(context) {
+        context.mainLoop();
+      }, 20, this);
+    });
   }
 
   ngOnDestroy() {
     clearInterval(this.intervalId);
+    this.sceneTree = [];
+    document.removeEventListener('keydown', this.keyDownHandler);
+    document.removeEventListener('keyup', this.keyUpHandler);
+    this.programInfo = null;
+    this.gl = null;
   }
 
   private mainLoop() {
     if (this.runtimeService.isRuntimeRunning()) {
-      this.updateScene();
+      let newTime = performance.now();
+      let deltaTime = newTime - this.currentTime;
+      this.currentTime = newTime;
+
+      this.updateScene(deltaTime);
       this.drawScene();
     }
   }
 
+  private keyDownHandler(ev) {
+    let key = ev.key || ev.keyCode;
+
+    let keyboardListeners = this.runtimeService.getKeyboardListeners();
+    keyboardListeners.forEach(obj => {
+      obj.onKeyDown(key);
+    })
+  }
+
+  private keyUpHandler(ev) {
+    let key = ev.key || ev.keyCode;
+
+    let keyboardListeners = this.runtimeService.getKeyboardListeners();
+    keyboardListeners.forEach(obj => {
+      obj.onKeyUp(key);
+    })
+  }
+
   private initInput() {
     let self = this;
-    document.addEventListener('keydown', function(ev) {
-      let key = ev.key || ev.keyCode;
-
-      let keyboardListeners = self.runtimeService.getKeyboardListeners();
-      keyboardListeners.forEach(obj => {
-        obj.onKeyDown(key);
-      })
-    });
-
-    document.addEventListener('keyup', function(ev) {
-      let key = ev.key || ev.keyCode;
-
-      let keyboardListeners = self.runtimeService.getKeyboardListeners();
-      keyboardListeners.forEach(obj => {
-        obj.onKeyUp(key);
-      })
-    });
+    document.addEventListener('keydown', this.keyDownHandler.bind(this));
+    document.addEventListener('keyup', this.keyUpHandler.bind(this));
   }
 
-  private initScene() {
-    let objectTree = this.objectService.getObjectTreeData();
-    if (objectTree) {
-      // deep copy the tree
-      this.sceneTree = cloneDeep(objectTree);
-
-      for (let i = 0; i < this.sceneTree.length; i++) {
-        this.sceneTree[i].init(this.runtimeService);
+  private initScene(): Promise<any> {
+    let promise: Promise<any> = this.objectService.updateObjectTreeData(false);
+    promise.then(() => {
+      let objectTree = this.objectService.getObjectTreeData();
+      if (objectTree) {
+        // deep copy the tree
+        this.sceneTree = cloneDeep(objectTree);
+  
+        for (let i = 0; i < this.sceneTree.length; i++) {
+          this.sceneTree[i].init(this.runtimeService, this.objectService);
+        }
       }
-    }
+    });
+    return promise;
   }
 
-  private updateScene() {
+  private updateScene(deltaTime) {
     if (this.sceneTree) {
       for (let i = 0; i < this.sceneTree.length; i++) {
-        this.sceneTree[i].update(this.runtimeService);
+        this.sceneTree[i].update(deltaTime, this.runtimeService);
       }
     }
   }
@@ -152,7 +173,6 @@ export class RuntimeComponent implements OnInit, OnDestroy {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
-    this.gl.useProgram(this.programInfo.program);
 
     if (this.sceneTree) {
       for (let i = 0; i < this.sceneTree.length; i++) {
