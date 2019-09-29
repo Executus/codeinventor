@@ -411,7 +411,7 @@ BehaviourUtility.prototype.updatePropertyDefs = function(behaviourDefId, script,
             if (existingPropertyMap.hasOwnProperty(val)) {
               updatedProperties.push({
                 propertyDefId: parseInt(existingPropertyMap[val]),
-                propertyType: this.propertyTypeIdMap[propertyType],
+                propertyType: self.propertyTypeIdMap[propertyType],
                 propertyName: val
               });
               delete existingPropertyMap[val];
