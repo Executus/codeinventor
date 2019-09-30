@@ -1,4 +1,7 @@
 .modal-body {
+  max-height: 600px;
+  overflow: auto;
+  
   .card-deck {
     margin-bottom: 10px;
   }
