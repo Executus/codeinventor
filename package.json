@@ -26,7 +26,7 @@
     "rxjs": "^6.3.3",
     "tslib": "^1.9.3",
     "zone.js": "^0.8.26",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "angular-file-uploader": "^5.0.2",
     "ng-click-outside": "~5.0.0"
   },
